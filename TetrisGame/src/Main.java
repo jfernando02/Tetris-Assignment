@@ -29,13 +29,14 @@ TetrisGame/
  */
 
 import ui.SplashScreen;
+import javax.swing.*;
 
 public class Main {
     public static void main(String[] args)
     {
-        // Show the splash screen:
-        int duration = 3000;
-        SplashScreen splash = new SplashScreen(duration);
-        splash.showSplashAndExit(duration);
+        SwingUtilities.invokeLater(() -> {
+            SplashScreen splash = new SplashScreen(4000);
+            splash.showSplash();
+        });
     }
 }

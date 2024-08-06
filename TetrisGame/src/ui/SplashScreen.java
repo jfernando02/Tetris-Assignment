@@ -5,25 +5,25 @@ package ui;
 import javax.swing.*;
 import java.awt.*;
 
-// Error: Progress Bar doesn't go all the way to 100% (More noticeable on longer durations)
-// Will add more information later on (names, etc).
-
 public class SplashScreen extends JWindow
 {
-    int duration;
+    private final int duration;
+    private JProgressBar progressBar;
+
     public SplashScreen(int duration)
     {
         this.duration = duration;
+        showSplash();
     }
 
-    public void showSplash(int duration)
+    public void showSplash()
     {
         JPanel content = (JPanel) getContentPane();
-        content.setBackground(Color.white);
+        content.setBackground(Color.WHITE);
 
         // Set the window's bounds
-        int width = 400;
-        int height = 300;
+        int width = 450;
+        int height = 350;
 
         // Centering the Window
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
@@ -36,24 +36,28 @@ public class SplashScreen extends JWindow
         Image scaledImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH); // To Scale Image to Window
         JLabel SplashImage = new JLabel(new ImageIcon(scaledImage));
 
-
         // Splash Screen - Text
-        JLabel textLabel = new JLabel("Group 4, 2805ICT/3815ICT Assignment", JLabel.CENTER);
+        JLabel textLabel = new JLabel("Group 4, 2805ICT/3815ICT Assignment: ", JLabel.CENTER);
         textLabel.setFont(new Font("Times New Roman", Font.BOLD, 12));
+
+        JLabel nameLabel = new JLabel("Fiston Kayeye, Jack Carrall, Lucas Setiady, Stefan Barosan, Joseph Fernando", JLabel.CENTER);
+        nameLabel.setFont(new Font("Times New Roman", Font.BOLD, 12));
 
         // Splash Screen - Border
         Color oraRed = new Color(156, 20, 20, 255);
         content.setBorder(BorderFactory.createLineBorder(oraRed, 2));
 
         // Splash Screen - Progress Bar
-        JProgressBar progressBar = new JProgressBar(0, 100);
+        progressBar = new JProgressBar(0, 100);
+        progressBar.setValue(0);
         progressBar.setStringPainted(true); // Display the progress percentage
 
         // Building the Splash Screen
         JPanel bottomPanel = new JPanel();
         bottomPanel.setLayout(new BorderLayout());
-        bottomPanel.add(progressBar, BorderLayout.SOUTH);
-        bottomPanel.add(textLabel, BorderLayout.NORTH);
+        bottomPanel.add(nameLabel, BorderLayout.SOUTH);
+        bottomPanel.add(progressBar, BorderLayout.NORTH);
+        bottomPanel.add(textLabel, BorderLayout.CENTER);
 
         content.add(SplashImage, BorderLayout.CENTER);
         content.add(bottomPanel, BorderLayout.SOUTH);
@@ -61,36 +65,27 @@ public class SplashScreen extends JWindow
         // Display
         setVisible(true);
 
-        new Thread(() -> {
-            int increment = duration / 100;
-            for (int i = 0; i <= 100; i++)
-            {
-                try
-                {
-                    progressBar.setValue(i); // Update progress bar value
-                    Thread.sleep(increment);
-                }
-                catch (InterruptedException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-
-        // Wait a little while, maybe showing a progress bar
-        try
-        {
-            Thread.sleep(duration);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        setVisible(false);
+        new Thread(this::updateProgress).start();
     }
-    public void showSplashAndExit(int duration)
+
+    private void updateProgress()
     {
-        showSplash(duration);
-        System.exit(0);
+        int increment = duration / 100;
+        int delay = Math.max(increment, 60); // To Eliminate Graphic Jitter
+
+        for (int i = 0; i <= 100; i++)
+        {
+            try {
+                final int progress = i; // For Lambda Expression requirements
+                SwingUtilities.invokeLater(() -> progressBar.setValue(progress));
+                Thread.sleep(delay);
+            }
+            catch (InterruptedException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        // Hide splash screen after progress completes
+        setVisible(false);
     }
 }

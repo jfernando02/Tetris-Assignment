@@ -27,9 +27,15 @@ TetrisGame/
 │   └── util/
 │       └── CommFun.java // Contains common utility functions used throughout the application
  */
-public class Main {
-    public static void main(String[] args) {
 
-        System.out.println("Stefan Test Run");
+import ui.SplashScreen;
+
+public class Main {
+    public static void main(String[] args)
+    {
+        // Show the splash screen:
+        int duration = 3000;
+        SplashScreen splash = new SplashScreen(duration);
+        splash.showSplashAndExit(duration);
     }
 }

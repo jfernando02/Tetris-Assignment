@@ -29,8 +29,17 @@ TetrisGame/
 │   └── util/
 │       └── CommFun.java // Contains common utility functions used throughout the application
  */
+
+import ui.SplashScreen;
+import javax.swing.*;
+
 public class Main {
     public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            SplashScreen splash = new SplashScreen(4000);
+            splash.showSplash();
+        });
+
         Game game = new Game();
         while(true){
             game.play();

@@ -1,5 +1,7 @@
 // Our entry point to the application which will handle the game loop and other game related logic
 
+import model.Game;
+
 /* Structure of the project:
 TetrisGame/
 ├── src/
@@ -32,11 +34,15 @@ import ui.SplashScreen;
 import javax.swing.*;
 
 public class Main {
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             SplashScreen splash = new SplashScreen(4000);
             splash.showSplash();
         });
+
+        Game game = new Game();
+        while(true){
+            game.play();
+        }
     }
 }

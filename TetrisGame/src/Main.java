@@ -1,5 +1,7 @@
 // Our entry point to the application which will handle the game loop and other game related logic
 
+import model.Game;
+
 /* Structure of the project:
 TetrisGame/
 ├── src/
@@ -29,7 +31,9 @@ TetrisGame/
  */
 public class Main {
     public static void main(String[] args) {
-
-        System.out.println("Stefan Test Run");
+        Game game = new Game();
+        while(true){
+            game.play();
+        }
     }
 }

@@ -11,8 +11,8 @@ public class TetrisShape {
     public static final int[][] L_SHAPE = {{-1,1},{0,1},{0,0},{0,-1}};
     public static final int[][] REVERSE_L_SHAPE = {{1,1},{0,1},{0,0},{0,-1}};
 
-    private int[][] coordinates; //coordinates are [y,x]
-    private int id;
+    private int[][] coordinates; //coordinates are [x,y]
+    private final int id;
 
     public TetrisShape(String shape){
         switch (shape.toUpperCase()) {
@@ -53,16 +53,19 @@ public class TetrisShape {
         }
     }
 
-    public void rotate() {
+    public int[][] rotate() {
+        int[] x = new int[4];
+        int[] y = new int[4];
         for (int i = 0; i < coordinates.length; i++) {
-            int original_x=coordinates[i][0];
-            int original_y=coordinates[i][1];
-            coordinates[i][0]=original_y*-1;
-            coordinates[i][1]=original_x*-1;
+            x[i] = coordinates[i][0]*-1;
+            y[i] = coordinates[i][1]*-1;
         }
+        return new int[][]{x,y};
     }
 
-    public void translate(String direction){
+    public int[][] translate(String direction){
+        int[] x = new int[4];
+        int[] y = new int[4];
         int x_change=0;
         int y_change=0;
         switch(direction.toUpperCase()){
@@ -79,8 +82,16 @@ public class TetrisShape {
                 throw new IllegalArgumentException("Invalid direction: " + direction);
         }
         for (int i = 0; i < coordinates.length; i++) {
-            coordinates[i][0]+=y_change;
-            coordinates[i][1]+=x_change;
+            x[i]=coordinates[i][0]+x_change;
+            y[i]=coordinates[i][1]+y_change;
+        }
+        return new int[][]{x,y};
+    }
+
+    public void moveShape(int[][]xy){
+        for (int i = 0; i < coordinates.length; i++) {
+            coordinates[i][0]=xy[0][i];
+            coordinates[i][1]=xy[1][i];
         }
     }
 

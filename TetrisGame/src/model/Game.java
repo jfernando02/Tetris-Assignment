@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class Game {
     int width=11;
     int height=20;
-    int[][] board=new int[width][height]; //Top left is (0,0), bottom right is (20,11)
+    int[][] board=new int[width][height]; //Top left is (0,0), bottom right is (10,19)
     static int[] spawn_location={5,3}; //Top middle of board
     TetrisShape active_shape;
 
@@ -26,6 +26,7 @@ public class Game {
     }
     public void play(){
         int[][] move;
+        int[][] gravity;
         Scanner scanner = new Scanner(System.in);  // Create a Scanner object
         System.out.println("Enter input: ");
         String input = scanner.nextLine();  // Read user input
@@ -33,19 +34,19 @@ public class Game {
         // Process user input
         if(input.equals("up")){
             move=active_shape.rotate();
-            if(validMove(move)){
-                active_shape.moveShape(move);
-            }
         }
         else if(input.equals("left") || input.equals("right")){
             move=active_shape.translate(input);
-            if(validMove(move)){
-                active_shape.moveShape(move);
-            }
         }
-        move=active_shape.translate("down");
+        else{
+            move=active_shape.getCoordinates();
+        }
         if(validMove(move)){
             active_shape.moveShape(move);
+        }
+        gravity=active_shape.translate("down");
+        if(validMove(gravity)){
+            active_shape.moveShape(gravity);
         }
         else{
             System.out.println("Landed!");
@@ -59,17 +60,17 @@ public class Game {
     }
 
     private void clearActiveShape() {
-        for (int i = 0; i < active_shape.getCoordinates().length; i++) {
-            int boardX = spawn_location[0] + active_shape.getCoordinates()[i][0];
-            int boardY = spawn_location[1] + active_shape.getCoordinates()[i][1];
+        for (int i = 0; i < active_shape.getCoordinates()[0].length; i++) {
+            int boardX = spawn_location[0] + active_shape.getCoordinates()[0][i];
+            int boardY = spawn_location[1] + active_shape.getCoordinates()[1][i];
             board[boardX][boardY] = 0;
         }
     }
 
     private void update(){
-        for (int i = 0; i < active_shape.getCoordinates().length; i++) {
-            int boardX = spawn_location[0] + active_shape.getCoordinates()[i][0];
-            int boardY = spawn_location[1] + active_shape.getCoordinates()[i][1];
+        for (int i = 0; i < active_shape.getCoordinates()[0].length; i++) {
+            int boardX = spawn_location[0] + active_shape.getCoordinates()[0][i];
+            int boardY = spawn_location[1] + active_shape.getCoordinates()[1][i];
             board[boardX][boardY]=active_shape.getId();
         }
     }
@@ -77,16 +78,17 @@ public class Game {
     private boolean validMove(int[][] coordinates){
         int x;
         int y;
-        for (int[] coordinate : coordinates) {
-            x = coordinate[0];
-            y = coordinate[1];
-            System.out.println(spawn_location[0] + x);
-            System.out.println(spawn_location[1] + y);
-            if (spawn_location[0] + x > width || spawn_location[0] + x < 0 ||
-                    spawn_location[1] + y > height || spawn_location[1] + y < 0 ||
-                    board[spawn_location[0] + x][spawn_location[1] + y] != 0) {
+        for (int i = 0; i < coordinates[0].length; i++) {
+            x = coordinates[0][i];
+            y = coordinates[1][i];
+            if (spawn_location[0] + x >= width || spawn_location[0] + x < 0 ||
+                    spawn_location[1] + y >= height || spawn_location[1] + y < 0){
                 return false;
             }
+            else if(board[spawn_location[0] + x][spawn_location[1] + y] != 0) {
+                return false;
+            }
+
         }
         return true;
     }

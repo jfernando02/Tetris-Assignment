@@ -49,7 +49,9 @@ public class Game {
             active_shape.moveShape(gravity);
         }
         else{
-            System.out.println("Landed!");
+            System.out.println("Landed! New shape incoming");
+            update();
+            spawn();
         }
         update();
         display();

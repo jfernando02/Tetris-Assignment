@@ -1,6 +1,7 @@
 package model;
 
 import java.util.Arrays;
+import java.util.Random;
 
 public enum TetrisShapes {
     NO_SHAPE(new int[][] {{}}),
@@ -24,5 +25,10 @@ public enum TetrisShapes {
             copy[row] = Arrays.copyOf(coordinates[row], coordinates[row].length);
         }
         return copy;
+    }
+
+    public static TetrisShapes getRandomShape() {
+        Random random = new Random();
+        return values()[random.nextInt(values().length)];
     }
 }

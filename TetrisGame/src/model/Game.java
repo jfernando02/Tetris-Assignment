@@ -1,6 +1,7 @@
 // Manages the game state, updates and overall control
 package model;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Game {
@@ -49,8 +50,8 @@ public class Game {
             active_shape.moveShape(gravity);
         }
         else{
-            System.out.println("Landed! New shape incoming");
             update();
+            clearLines();
             spawn();
         }
         update();
@@ -58,7 +59,7 @@ public class Game {
     }
 
     private void spawn(){
-        active_shape=new TetrisShape("LINE");
+        active_shape= new TetrisShape(TetrisShapes.getRandomShape().name());
     }
 
     private void clearActiveShape() {
@@ -66,6 +67,39 @@ public class Game {
             int boardX = spawn_location[0] + active_shape.getCoordinates()[0][i];
             int boardY = spawn_location[1] + active_shape.getCoordinates()[1][i];
             board[boardX][boardY] = 0;
+        }
+    }
+
+    private void clearLines() {
+        ArrayList<Integer> fullLines = new ArrayList<>();
+
+        // First, find all full lines
+        for (int j = 0; j < height; j++) {
+            boolean isLineFull = true;
+            for (int i = 0; i < width; i++) {
+                if (board[i][j] == 0) {
+                    isLineFull = false;
+                    break;
+                }
+            }
+            if (isLineFull) {
+                fullLines.add(j);
+            }
+        }
+
+        // Now, remove the full lines and shift down the rest
+        for (int fullLineIndex = fullLines.size() - 1; fullLineIndex >= 0; fullLineIndex--) {
+            int fullLine = fullLines.get(fullLineIndex);
+
+            for (int j = fullLine; j > 0; j--) {
+                for (int i = 0; i < width; i++) {
+                    board[i][j] = board[i][j - 1];
+                }
+            }
+
+            for (int i = 0; i < width; i++) {
+                board[i][0] = 0;
+            }
         }
     }
 

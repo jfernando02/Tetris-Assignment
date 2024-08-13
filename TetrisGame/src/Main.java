@@ -1,7 +1,5 @@
 // Our entry point to the application which will handle the game loop and other game related logic
 
-import model.Game;
-
 /* Structure of the project:
 TetrisGame/
 ├── src/
@@ -24,25 +22,35 @@ TetrisGame/
 │   │   │   ├── MainPanel.java // The main panel that might include menus or game start options
 │   │   │   └── PlayPanel.java // Specific to gameplay, probably includes controls and active game display
 │   │   ├── MainFrame.java // The main application window/frame
-│   │   ├── SplashScreen.java // The initial screen shown when the game starts
+│   │   ├── SplashPanel.java // The initial screen shown when the game starts
 │   │   └── UIGenerator.java // Helper class for generating UI components
 │   └── util/
 │       └── CommFun.java // Contains common utility functions used throughout the application
  */
 
-import ui.SplashScreen;
+import model.Game;
+import ui.MainFrame;
+
 import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            SplashScreen splash = new SplashScreen(4000);
-            splash.showSplash();
+            MainFrame mainFrame = new MainFrame("Tetris Game", 800, 600);
+            mainFrame.showSplashScreen();
+            mainFrame.setVisible(true);
         });
 
         Game game = new Game();
-        while(true){
-            game.play();
-        }
+        // Game thread (outside of main screen thread)
+        new Thread(() -> {
+            while (true) {
+                try {
+                    game.play();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 }

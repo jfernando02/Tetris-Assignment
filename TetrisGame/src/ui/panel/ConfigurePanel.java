@@ -1,5 +1,5 @@
 // Panel for the configuration screen
-// Panel for the configuration screen
+// TODO (Idea): hover effect over the settings to explain what they do
 package ui.panel;
 
 import ui.UIGenerator;
@@ -76,7 +76,7 @@ public class ConfigurePanel extends JDialog {
                 mainFrame.isMusic(), e -> mainFrame.setMusic(((JCheckBox) e.getSource()).isSelected()));
 
         // Sound Effect Checkbox
-        addCheckBox(configBox, gbc, 0, 4, "Sound Effect On/Off:",
+        addCheckBox(configBox, gbc, 0, 4, "Sound Effect:",
                 mainFrame.isSoundEffect(), e -> mainFrame.setSoundEffect(((JCheckBox) e.getSource()).isSelected()));
 
         // AI Play Checkbox

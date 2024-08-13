@@ -25,7 +25,7 @@ public class SplashPanel extends JPanel {
         int y = (screen.height - height) / 2;
         setPreferredSize(new Dimension(width, height));
 
-        Image originalImage = Toolkit.getDefaultToolkit().getImage("TetrisGame/src/resources.images/tetrisSplashScreen.jpg");
+        Image originalImage = Toolkit.getDefaultToolkit().getImage("src/resources.images/tetrisSplashScreen.jpg");
         Image scaledImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         JLabel splashImage = new JLabel(new ImageIcon(scaledImage));
 

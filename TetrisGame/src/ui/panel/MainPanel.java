@@ -27,9 +27,9 @@ public class MainPanel extends JPanel {
         add(layeredPane, BorderLayout.CENTER);
 
         // Loads the original background image
-        backGroundImage = Toolkit.getDefaultToolkit().getImage("TetrisGame/src/resources.images/background2.jpg");
+        backGroundImage = Toolkit.getDefaultToolkit().getImage("src/resources.images/background2.jpg");
         // Load custom logo image
-        menuLogo = new ImageIcon("TetrisGame/src/resources.images/MenuLogo.PNG").getImage();
+        menuLogo = new ImageIcon("src/resources.images/MenuLogo.PNG").getImage();
 
         // Background image label to hold background image
         backgroundLabel = new JLabel();

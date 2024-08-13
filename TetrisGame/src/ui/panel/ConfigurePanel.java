@@ -27,7 +27,7 @@ public class ConfigurePanel extends JDialog {
         getRootPane().setWindowDecorationStyle(JRootPane.NONE);
 
         // Set background image using JLabel as the content pane
-        JLabel backgroundLabel = new JLabel(new ImageIcon("TetrisGame/src/resources.images/configBackground.png"));
+        JLabel backgroundLabel = new JLabel(new ImageIcon("/src/resources.images/configBackground.png"));
         setContentPane(backgroundLabel);
         backgroundLabel.setLayout(new BorderLayout());
         Color whiteBackground = Color.WHITE; // Define white background color

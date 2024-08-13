@@ -51,19 +51,22 @@ public class ConfigurePanel extends JDialog {
 
 
         // Field Width
-        addSlider(configBox, gbc, 0, 0, "Field Width (No of cells):", 5, 15, mainFrame.getFieldWidth(), e -> {
+        addSlider(configBox, gbc, 0, 0, "Field Width (No of cells):",
+                5, 15, mainFrame.getFieldWidth(), e -> {
             int newValue = ((JSlider) e.getSource()).getValue();
             mainFrame.setFieldWidth(newValue);
         });
 
         // Field Height
-        addSlider(configBox, gbc, 0, 1, "Field Height (No of cells):", 15, 30, mainFrame.getFieldHeight(), e -> {
+        addSlider(configBox, gbc, 0, 1, "Field Height (No of cells):",
+                15, 30, mainFrame.getFieldHeight(), e -> {
             int newValue = ((JSlider) e.getSource()).getValue();
-            mainFrame.setFieldWidth(newValue);
+            mainFrame.setFieldHeight(newValue);
         });
 
         // Game Level
-        addSlider(configBox, gbc, 0, 2, "Game Level:", 1, 10, mainFrame.getLevel(), e -> {
+        addSlider(configBox, gbc, 0, 2, "Game Level:",
+                1, 10, mainFrame.getLevel(), e -> {
             int newValue = ((JSlider) e.getSource()).getValue();
             mainFrame.setLevel(newValue);
         });
@@ -99,7 +102,10 @@ public class ConfigurePanel extends JDialog {
     }
 
     //helper method to create checkboxes
-    public static void addSlider(JPanel panel, GridBagConstraints gbc, int gridx, int gridy, String labelText, int min, int max, int value, ChangeListener changeListener) {
+    public static void addSlider(JPanel panel, GridBagConstraints gbc,
+                                 int gridx, int gridy, String labelText, int min,
+                                 int max, int value, ChangeListener changeListener) {
+
         gbc.gridx = gridx;
         gbc.gridy = gridy;
         JLabel label = new JLabel(labelText);
@@ -126,8 +132,9 @@ public class ConfigurePanel extends JDialog {
     }
 
     // Helper method to create checkboxes
-    public static void addCheckBox(JPanel panel, GridBagConstraints gbc, int gridx, int gridy,
-                                   String labelText, boolean isSelected, ActionListener actionListener) {
+    public static void addCheckBox(JPanel panel, GridBagConstraints gbc, int gridx,
+                                   int gridy, String labelText, boolean isSelected,
+                                   ActionListener actionListener) {
         gbc.gridx = gridx;
         gbc.gridy = gridy;
         JLabel label = new JLabel(labelText);

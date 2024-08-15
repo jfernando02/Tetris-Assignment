@@ -98,7 +98,7 @@ public class ConfigurePanel extends JDialog {
         //back closes the dialog
         backButton.addActionListener(e -> {
             soundEffects.playSound("TetrisGame/src/resources.sounds/MenuKeyPresses.wav"); // TO INCLUDE SOUND PLAY
-            mainFrame.dispose(); // TO INCLUDE SOUND PLAY
+            mainFrame.dispose(); // TO INCLUDE SOUND PLAY -> However this is not right at the moment. Closes the whole window.
         });
         configBox.add(backButton, gbc);
 

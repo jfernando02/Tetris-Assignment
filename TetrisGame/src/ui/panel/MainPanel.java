@@ -4,6 +4,7 @@ package ui.panel;
 import ui.MainFrame;
 import ui.UIGenerator;
 import util.soundEffects; // TO INCLUDE SOUND PLAY
+import util.backgroundMusic; // TO INCLUDE MUSIC PALY
 
 import javax.swing.*;
 import java.awt.*;
@@ -101,6 +102,12 @@ public class MainPanel extends JPanel {
 
         // Initial resize to set the correct dimensions
         resizeComponents();
+
+        backgroundMusic audioPlayer = new backgroundMusic();
+        audioPlayer.playMusic("TetrisGame/src/resources.sounds/InGameMusic.wav");
+
+        // Stop the audio when needed
+        // audioPlayer.stopAudio();
     }
 
     private void resizeComponents() {

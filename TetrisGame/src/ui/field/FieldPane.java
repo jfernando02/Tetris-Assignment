@@ -2,5 +2,13 @@
 // Grid + Tetris shapes + Rendering
 package ui.field;
 
-public class FieldPane {
+import ui.MainFrame;
+import model.Game;
+
+import java.awt.*;
+import javax.swing.*;
+
+public class FieldPane extends JPanel {
+
 }
+

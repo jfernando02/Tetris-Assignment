@@ -21,7 +21,7 @@ public class backgroundMusic {
         }
     }
 
-    // Method to stop the audio
+    // to stop audio
     public void stopMusic() {
         if (music != null && music.isRunning()) {
             music.stop();

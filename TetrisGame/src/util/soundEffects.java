@@ -1,4 +1,3 @@
-// File: SoundUtils.java
 package util;
 
 import javax.sound.sampled.*;

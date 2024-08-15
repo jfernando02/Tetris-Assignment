@@ -40,7 +40,6 @@ public class Main {
             mainFrame.showSplashScreen();
             mainFrame.setVisible(true);
         });
-
         Game game = new Game();
         // Game thread (outside of main screen thread)
         new Thread(() -> {

@@ -3,6 +3,7 @@ package ui.panel;
 
 import ui.MainFrame;
 import ui.UIGenerator;
+import util.soundEffects; // TO INCLUDE SOUND PLAY
 
 import javax.swing.*;
 import java.awt.*;
@@ -77,6 +78,7 @@ public class MainPanel extends JPanel {
         configButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                soundEffects.playSound("TetrisGame/src/resources.sounds/MenuKeyPresses.wav"); // TO INCLUDE SOUND PLAY
                 mainFrame.showConfigurePanel();
             }
         });

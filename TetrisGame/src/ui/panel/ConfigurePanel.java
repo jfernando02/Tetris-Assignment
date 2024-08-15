@@ -4,6 +4,7 @@ package ui.panel;
 
 import ui.UIGenerator;
 import ui.MainFrame;
+import util.soundEffects; // TO INCLUDE SOUND PLAY
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
@@ -95,7 +96,10 @@ public class ConfigurePanel extends JDialog {
         JButton backButton = UIGenerator.createCustomButton("Back", 700, 20);
         //centre the button
         //back closes the dialog
-        backButton.addActionListener(e -> dispose());
+        backButton.addActionListener(e -> {
+            soundEffects.playSound("TetrisGame/src/resources.sounds/MenuKeyPresses.wav"); // TO INCLUDE SOUND PLAY
+            mainFrame.dispose(); // TO INCLUDE SOUND PLAY
+        });
         configBox.add(backButton, gbc);
 
         add(configBox, BorderLayout.CENTER);

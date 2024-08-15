@@ -81,6 +81,14 @@ public class MainPanel extends JPanel {
             }
         });
 
+        // Adding ActionListener to open the HighScorePanel
+        highScoresButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainFrame.showHighScoresPanel(); // Navigate to HighScorePanel
+            }
+        });
+
         // Adding ActionListener to Exit the application
         exitButton.addActionListener(new ActionListener() {
             @Override

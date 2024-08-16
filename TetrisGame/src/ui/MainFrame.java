@@ -4,9 +4,11 @@ package ui;
 
 
 import ui.panel.ConfigurePanel;
+import ui.panel.HighScorePanel;
 import ui.panel.MainPanel;
 import ui.panel.SplashPanel;
 
+import java.awt.*;
 import java.util.ArrayList; //for scores list
 
 import javax.swing.*;
@@ -51,6 +53,11 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
     }
 
+    public MainFrame() {
+        MainFrame frame = new MainFrame("Game Title", 800, 600); // Assuming you have a MainFrame constructor with parameters
+        HighScorePanel highScoresPanel = new HighScorePanel(frame);
+    }
+
     // Method to show the splash screen
     public void showSplashScreen() {
         getContentPane().removeAll();
@@ -59,6 +66,7 @@ public class MainFrame extends JFrame {
         revalidate();
         repaint();
     }
+
 
     // Method to show the main panel
     public void showMainPanel() {
@@ -73,6 +81,14 @@ public class MainFrame extends JFrame {
     public void showConfigurePanel() {
         ConfigurePanel configurePanel = new ConfigurePanel(this);
         configurePanel.setVisible(true);
+    }
+
+    public void showHighScorePanel() {
+        HighScorePanel highScorePanel = new HighScorePanel(this);
+        getContentPane().removeAll();
+        setContentPane(highScorePanel);
+        revalidate();
+        repaint();
     }
 
     //getters and setters
@@ -172,6 +188,4 @@ public class MainFrame extends JFrame {
     public void clearScores() {
         scores.clear();
     }
-
-    // more if you need
 }

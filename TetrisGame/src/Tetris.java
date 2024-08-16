@@ -81,7 +81,7 @@ public class Tetris extends JFrame {
             public void run() {
                 Tetris tetris = new Tetris();
                 tetris.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                tetris.setSize(400, 400);
+                tetris.setSize(400, 800);
                 tetris.setVisible(true);
             }
         });

@@ -11,9 +11,9 @@ public class HighScorePanel extends JPanel {
 
     private Image image;
     private JButton backButton;
-    private JLabel[] labels = new JLabel[30]; // Updated size to accommodate all labels
+    private JLabel[] labels = new JLabel[30]; // Array to hold all labels
 
-    public HighScorePanel(MainFrame parentFrame) {
+    public HighScorePanel(MainFrame mainFrame) {
         // Load the image using a relative path or as a resource
         URL imageUrl = getClass().getResource("/resources.images/highscore.jpg"); // Adjust path as needed
         if (imageUrl == null) {
@@ -35,7 +35,7 @@ public class HighScorePanel extends JPanel {
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                parentFrame.showMainPanel(); // Call method to show MainPanel
+                mainFrame.showMainPanel(); // Call method to show MainPanel
             }
         });
 
@@ -122,7 +122,7 @@ public class HighScorePanel extends JPanel {
     }
 
     public static void main(String[] args) {
-        MainFrame frame = new MainFrame("Tetris", 800, 800);
+        MainFrame frame = new MainFrame("Tetris High Score", 800, 600);
         HighScorePanel highScorePanel = new HighScorePanel(frame);
 
         frame.add(highScorePanel);

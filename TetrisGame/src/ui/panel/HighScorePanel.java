@@ -122,7 +122,7 @@ public class HighScorePanel extends JPanel {
     }
 
     public static void main(String[] args) {
-        MainFrame frame = new MainFrame();
+        MainFrame frame = new MainFrame("Tetris", 800, 800);
         HighScorePanel highScorePanel = new HighScorePanel(frame);
 
         frame.add(highScorePanel);

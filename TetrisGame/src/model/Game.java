@@ -2,12 +2,11 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Game {
     int width=11;
     int height=20;
-    int[][] board=new int[width][height]; //Top left is (0,0), bottom right is (10,19)
+    public int[][] board=new int[width][height]; //Top left is (0,0), bottom right is (10,19)
     static int[] spawn_location={5,3}; //Top middle of board
     TetrisShape active_shape;
 
@@ -15,6 +14,14 @@ public class Game {
         spawn();
         update();
         display();
+    }
+
+    public int getWidth(){
+        return width;
+    }
+
+    public int getHeight(){
+        return height;
     }
 
     private void display(){
@@ -25,26 +32,36 @@ public class Game {
             System.out.println();
         }
     }
+
+    public void handleKeyPress(String keyStroke) {
+        clearActiveShape();
+        int[][] move = switch (keyStroke) {
+            case "DOWN" ->
+                // Code to move a game piece down
+                    active_shape.translate("DOWN");
+            case "LEFT" ->
+                // Code to move a game piece down
+                    active_shape.translate("LEFT");
+            case "RIGHT" ->
+                // Code to move a game piece down
+                    active_shape.translate("RIGHT");
+            case "UP" ->
+                // Code to move a game piece down
+                    active_shape.rotate();
+            default -> active_shape.getCoordinates();
+            // Handle the key press here. For example:
+        };
+        if(move!=null && validMove(move)){
+            active_shape.moveShape(move);
+            update();
+            clearLines();
+        }
+    }
+
     public void play(){
-        int[][] move;
         int[][] gravity;
-        Scanner scanner = new Scanner(System.in);  // Create a Scanner object
-        System.out.println("Enter input: ");
-        String input = scanner.nextLine();  // Read user input
         clearActiveShape();
         // Process user input
-        if(input.equals("up")){
-            move=active_shape.rotate();
-        }
-        else if(input.equals("left") || input.equals("right")){
-            move=active_shape.translate(input);
-        }
-        else{
-            move=active_shape.getCoordinates();
-        }
-        if(validMove(move)){
-            active_shape.moveShape(move);
-        }
         gravity=active_shape.translate("down");
         if(validMove(gravity)){
             active_shape.moveShape(gravity);

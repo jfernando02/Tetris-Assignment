@@ -85,7 +85,7 @@ public class MainPanel extends JPanel {
         highScoresButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainFrame.showHighScoresPanel(); // Navigate to HighScorePanel
+                // Navigate to HighScorePanel
             }
         });
 

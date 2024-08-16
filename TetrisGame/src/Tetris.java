@@ -30,10 +30,45 @@ TetrisGame/
 
 import model.Game;
 import ui.MainFrame;
+import ui.panel.GamePanel;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class Main {
+public class Tetris extends JFrame {
+    public Tetris() {
+        Game game = new Game();
+        GamePanel gamePanel = new GamePanel(game);
+        add(gamePanel);
+        setupKeyBinding(game, "DOWN");
+        setupKeyBinding(game, "LEFT");
+        setupKeyBinding(game, "RIGHT");
+        setupKeyBinding(game, "UP");
+        Timer timer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                game.play();
+                repaint();  // Optional: calls paintComponent() if you override it for drawing
+            }
+        });
+        timer.setRepeats(true);
+        timer.start();
+    }
+
+    private void setupKeyBinding(Game game, String direction) {
+        getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke("pressed " + direction), "move" + direction);
+        getRootPane().getActionMap()
+                .put("move" + direction, new AbstractAction() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        System.out.println("Key pressed: " + direction);
+                        game.handleKeyPress(direction);
+                    }
+                });
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             MainFrame mainFrame = new MainFrame("Tetris Game", 800, 600);
@@ -41,16 +76,14 @@ public class Main {
             mainFrame.setVisible(true);
         });
 
-        Game game = new Game();
-        // Game thread (outside of main screen thread)
-        new Thread(() -> {
-            while (true) {
-                try {
-                    game.play();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                Tetris tetris = new Tetris();
+                tetris.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                tetris.setSize(400, 400);
+                tetris.setVisible(true);
             }
-        }).start();
+        });
     }
 }

@@ -73,19 +73,29 @@ public class MainPanel extends JPanel {
         buttonPanel.setBounds(0, 0, getWidth(), getHeight());
         layeredPane.add(buttonPanel, JLayeredPane.PALETTE_LAYER);
 
-        // Adding ActionListener to open the ConfigurePanel
-        configButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mainFrame.showConfigurePanel();
-            }
-        });
-
         // Adding ActionListener to open the HighScorePanel
         highScoresButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mainFrame.showHighScorePanel(); // Navigate to HighScorePanel
+            }
+        });
+
+        // Adding ActionListener to open the GamePanel
+        playButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainFrame.showGamePanel();
+                //focus on mainPanel
+                mainFrame.getGamePanel().requestFocusInWindow();
+            }
+        });
+
+        // Adding ActionListener to open the ConfigurePanel
+        configButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainFrame.showConfigurePanel();
             }
         });
 
@@ -138,3 +148,5 @@ public class MainPanel extends JPanel {
         buttonPanel.repaint();
     }
 }
+
+

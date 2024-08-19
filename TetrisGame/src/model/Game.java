@@ -1,148 +1,202 @@
 // Manages the game state, updates and overall control
 package model;
 
-import java.util.ArrayList;
+import ui.MainFrame;
+
+import javax.swing.*;
+import java.awt.event.KeyEvent;
 
 public class Game {
-    int width=11;
-    int height=20;
-    public int[][] board=new int[width][height]; //Top left is (0,0), bottom right is (10,19)
-    static int[] spawn_location={5,3}; //Top middle of board
-    TetrisShape active_shape;
+    private MainFrame mainFrame;
+    private Board board;
+    private TetrisBlock activeShape;
+    private boolean playing;
 
-    public Game(){
-        spawn();
-        update();
-        display();
+    private int score = 0;
+    private int level;
+
+    private int spawnX;
+    private int spawnY;
+    private int numBlocks = 0; //number of blocks spawned
+
+    public Game(MainFrame mainFrame, Board board) {
+        this.mainFrame = mainFrame;
+        this.board = board;
+        board.setGame(this); //assign the board to the game
+        this.spawnX = (board.getWidth() / 2)-1;
+        this.spawnY = 2;
+        this.activeShape = null;
+        this.level = mainFrame.getLevel();
     }
 
-    public int getWidth(){
-        return width;
+    public void start() {
+        this.playing = true;
     }
 
-    public int getHeight(){
-        return height;
-    }
-
-    private void display(){
-        for(int j = 0; j < height; j++) {
-            for(int i = 0; i < width; i++) {
-                System.out.print(board[i][j] + " ");
+    public void play() {
+        if (playing) {
+            if (this.activeShape == null) {
+                spawn();
+            } else {
+                if (activeShape.hasLanded()) {
+                    finalizeShape();
+                    this.activeShape = null;
+                } else {
+                    //block thread until activeShape.softDrop() is finished
+                    activeShape.softDrop();
+                }
             }
-            System.out.println();
+        }
+        this.mainFrame.repaintBoard();
+    }
+
+    public void spawn() {
+        TetrisBlock newBlock = new TetrisBlock(this.board);
+        this.activeShape = newBlock.spawnBlock(numBlocks);
+        numBlocks++;
+    }
+
+    // Finalize the shape and place it on the board
+    private void finalizeShape() {
+        activeShape.placeOnBoard();
+        checkForLineClear();
+        if (isGameOver()) {
+            stop();
         }
     }
 
-    public void handleKeyPress(String keyStroke) {
-        clearActiveShape();
-        int[][] move = switch (keyStroke) {
-            case "DOWN" ->
-                // Code to move a game piece down
-                    active_shape.translate("DOWN");
-            case "LEFT" ->
-                // Code to move a game piece down
-                    active_shape.translate("LEFT");
-            case "RIGHT" ->
-                // Code to move a game piece down
-                    active_shape.translate("RIGHT");
-            case "UP" ->
-                // Code to move a game piece down
-                    active_shape.rotate();
-            default -> active_shape.getCoordinates();
-            // Handle the key press here. For example:
-        };
-        if(move!=null && validMove(move)){
-            active_shape.moveShape(move);
-            update();
-            clearLines();
+    private boolean isGameOver() {
+        // Logic to determine if the game is over
+        // For instance, check if the new spawn location is already occupied
+        return board.isOccupied(spawnX, spawnY);
+    }
+
+    private void checkForLineClear() {
+        // Logic to check and clear full lines on the board
+        board.clearCompleteLines();
+    }
+
+    public void pause() {
+        // TODO: add JDialog for pause
+        if (playing) {
+            System.out.println("Game paused");
+            playing = false;
+        } else {
+            System.out.println("Game resumed");
+            playing = true;
         }
     }
 
-    public void play(){
-        int[][] gravity;
-        clearActiveShape();
-        // Process user input
-        gravity=active_shape.translate("down");
-        if(validMove(gravity)){
-            active_shape.moveShape(gravity);
+    public void stop() {
+        //TODO: still needs code to handle stopping the game, resetting the board, etc.
+        if (playing) {
+            System.out.println("Game paused");
+            playing = false;
         }
-        else{
-            update();
-            clearLines();
-            spawn();
+        //new JDIalog for game over to ask if they're sure if they want to quit
+        JDialog dialog = new JDialog();
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.setTitle("Stop Game");
+        dialog.setSize(200, 200);
+        dialog.setVisible(false);
+        //centre the dialog
+        dialog.setLocationRelativeTo(null);
+
+        //ask if they want to quit the game
+        int result = JOptionPane.showConfirmDialog(dialog,
+                "Are you sure you want to quit the game?", "Stop Game", JOptionPane.YES_NO_OPTION);
+
+        if (result == JOptionPane.YES_OPTION) {
+            System.out.println("Game stopped");
+            resetGame();
+            dialog.dispose();
+        } else {
+            System.out.println("Game resumed");
+            playing = true;
+            //refocus on game panel
+            mainFrame.getGamePanel().requestFocusInWindow();
+            dialog.dispose();
         }
-        update();
-        display();
     }
 
-    private void spawn(){
-        active_shape= new TetrisShape(TetrisShapes.getRandomShape().name());
+    public int getScore() {
+        return score;
     }
 
-    private void clearActiveShape() {
-        for (int i = 0; i < active_shape.getCoordinates()[0].length; i++) {
-            int boardX = spawn_location[0] + active_shape.getCoordinates()[0][i];
-            int boardY = spawn_location[1] + active_shape.getCoordinates()[1][i];
-            board[boardX][boardY] = 0;
+    //TODO: fix leveling system, this is just a placeholder
+    public void addScore(int addScore) {
+        this.score+=(addScore * level);
+    }
+
+    public void update(int keyCode) {
+        if (activeShape==null) {
+            return;
         }
-    }
-
-    private void clearLines() {
-        ArrayList<Integer> fullLines = new ArrayList<>();
-
-        // First, find all full lines
-        for (int j = 0; j < height; j++) {
-            boolean isLineFull = true;
-            for (int i = 0; i < width; i++) {
-                if (board[i][j] == 0) {
-                    isLineFull = false;
+        if (playing) {
+            switch (keyCode) {
+                case KeyEvent.VK_LEFT:
+                    System.out.println("Left key pressed");
+                    activeShape.moveLeft();
                     break;
-                }
+                case KeyEvent.VK_RIGHT:
+                    System.out.println("Right key pressed");
+                    activeShape.moveRight();
+                    break;
+                case KeyEvent.VK_DOWN:
+                    System.out.println("Down key pressed");
+                    activeShape.softDrop();
+                    break;
+                case KeyEvent.VK_UP:
+                    System.out.println("Up key pressed");
+                    activeShape.rotateRight();
+                    break;
+                case KeyEvent.VK_CONTROL:
+                    System.out.println("Control key pressed");
+                    activeShape.rotateLeft();
+                    break;
+                case KeyEvent.VK_SPACE:
+                    System.out.println("Space key pressed"); // hard drop
+                    activeShape.hardDrop();
+                    break;
             }
-            if (isLineFull) {
-                fullLines.add(j);
-            }
+            mainFrame.repaintBoard();
         }
-
-        // Now, remove the full lines and shift down the rest
-        for (int fullLineIndex = fullLines.size() - 1; fullLineIndex >= 0; fullLineIndex--) {
-            int fullLine = fullLines.get(fullLineIndex);
-
-            for (int j = fullLine; j > 0; j--) {
-                for (int i = 0; i < width; i++) {
-                    board[i][j] = board[i][j - 1];
-                }
-            }
-
-            for (int i = 0; i < width; i++) {
-                board[i][0] = 0;
-            }
+        switch (keyCode) {
+            case KeyEvent.VK_P:
+                System.out.println("P key pressed"); //pause
+                pause();
+                break;
+            case KeyEvent.VK_S:
+                System.out.println("S key pressed"); //stop
+                stop();
+                break;
         }
+        mainFrame.repaintBoard();
     }
 
-    private void update(){
-        for (int i = 0; i < active_shape.getCoordinates()[0].length; i++) {
-            int boardX = spawn_location[0] + active_shape.getCoordinates()[0][i];
-            int boardY = spawn_location[1] + active_shape.getCoordinates()[1][i];
-            board[boardX][boardY]=active_shape.getId();
-        }
+    public Board<TetrisCell> getBoard() {
+        return board;
     }
 
-    private boolean validMove(int[][] coordinates){
-        int x;
-        int y;
-        for (int i = 0; i < coordinates[0].length; i++) {
-            x = coordinates[0][i];
-            y = coordinates[1][i];
-            if (spawn_location[0] + x >= width || spawn_location[0] + x < 0 ||
-                    spawn_location[1] + y >= height || spawn_location[1] + y < 0){
-                return false;
-            }
-            else if(board[spawn_location[0] + x][spawn_location[1] + y] != 0) {
-                return false;
-            }
+    public boolean isPlaying() {
+        return playing;
+    }
 
-        }
-        return true;
+    public int getLevel() {
+        return level;
+    }
+
+    public void resetGame() {
+        this.board.clearBoard();
+        this.activeShape = null;
+        this.playing = false;
+        this.score = 0;
+        this.numBlocks = 0;
+        this.level = mainFrame.getLevel();
+        mainFrame.repaintBoard();
+    }
+
+    public void setPlaying(boolean b) {
+        this.playing = b;
     }
 }

@@ -18,8 +18,8 @@ public class ConfigurePanel extends JDialog {
     public ConfigurePanel(MainFrame mainFrame) {
         super(mainFrame, "Configuration", true);
         setLayout(new BorderLayout());
-        setSize(mainFrame.getWidth(), mainFrame.getHeight());
-        setPreferredSize(new Dimension(mainFrame.getWidth(), mainFrame.getHeight()));
+        setSize(800, 600);
+        setPreferredSize(new Dimension(800, 600));
         setResizable(false); // locks the size of the panel, remove line for resizable
         setLocationRelativeTo(mainFrame);
         // make the JDialog immovable
@@ -31,7 +31,6 @@ public class ConfigurePanel extends JDialog {
         setContentPane(backgroundLabel);
         backgroundLabel.setLayout(new BorderLayout());
         Color whiteBackground = Color.WHITE; // Define white background color
-        //getContentPane().setBackground(whiteBackground); // Set background for the entire dialog
 
         // Title label
         JLabel titleLabel = new JLabel("Configuration", JLabel.CENTER);
@@ -53,23 +52,29 @@ public class ConfigurePanel extends JDialog {
         // Field Width
         addSlider(configBox, gbc, 0, 0, "Field Width (No of cells):",
                 5, 15, mainFrame.getFieldWidth(), e -> {
-            int newValue = ((JSlider) e.getSource()).getValue();
-            mainFrame.setFieldWidth(newValue);
-        });
+                    int newValue = ((JSlider) e.getSource()).getValue();
+                    mainFrame.setFieldWidth(newValue);
+                    mainFrame.refreshBoard(); //added for grid expansion of field pane (width)
+                    //reset game
+                    mainFrame.resetGame();
+                });
 
         // Field Height
         addSlider(configBox, gbc, 0, 1, "Field Height (No of cells):",
                 15, 30, mainFrame.getFieldHeight(), e -> {
-            int newValue = ((JSlider) e.getSource()).getValue();
-            mainFrame.setFieldHeight(newValue);
-        });
+                    int newValue = ((JSlider) e.getSource()).getValue();
+                    mainFrame.setFieldHeight(newValue);
+                    mainFrame.refreshBoard(); //added for grid expansion of field pane (height)
+                    //reset game
+                    mainFrame.resetGame();
+                });
 
         // Game Level
         addSlider(configBox, gbc, 0, 2, "Game Level:",
                 1, 10, mainFrame.getLevel(), e -> {
-            int newValue = ((JSlider) e.getSource()).getValue();
-            mainFrame.setLevel(newValue);
-        });
+                    int newValue = ((JSlider) e.getSource()).getValue();
+                    mainFrame.setLevel(newValue);
+                });
 
         // Music Checkbox
         addCheckBox(configBox, gbc, 0, 3, "Music:",

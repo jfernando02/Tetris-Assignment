@@ -19,6 +19,7 @@ public class MainPanel extends JPanel {
     private Image backGroundImage;
     private Image menuLogo;
 
+
     public MainPanel(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
         setLayout(new BorderLayout());
@@ -77,14 +78,17 @@ public class MainPanel extends JPanel {
         highScoresButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                mainFrame.playSound("src/resources.sounds/MenuKeyPresses.wav", false);
                 mainFrame.showHighScorePanel(); // Navigate to HighScorePanel
             }
+
         });
 
         // Adding ActionListener to open the GamePanel
         playButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                mainFrame.playSound("src/resources.sounds/MenuKeyPresses.wav", false);
                 mainFrame.showGamePanel();
                 //focus on mainPanel
                 mainFrame.getGamePanel().requestFocusInWindow();
@@ -95,6 +99,7 @@ public class MainPanel extends JPanel {
         configButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                mainFrame.playSound("src/resources.sounds/MenuKeyPresses.wav", false);
                 mainFrame.showConfigurePanel();
             }
         });
@@ -103,6 +108,7 @@ public class MainPanel extends JPanel {
         exitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                mainFrame.playSound("src/resources.sounds/MenuKeyPresses.wav", false);
                 System.exit(0);
             }
         });

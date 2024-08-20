@@ -35,6 +35,7 @@ public class HighScorePanel extends JPanel {
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                mainFrame.playSound("src/resources.sounds/MenuKeyPresses.wav", false);
                 mainFrame.showMainPanel(); // Call method to show MainPanel
             }
         });

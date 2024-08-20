@@ -8,6 +8,14 @@ import model.Board;
 import model.Game;
 import ui.panel.*;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import java.io.File;
+import java.io.IOException;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+
 
 import java.util.ArrayList; //for scores list
 import java.util.concurrent.ScheduledExecutorService;
@@ -27,13 +35,11 @@ public class MainFrame extends JFrame {
 
     //to manage gameplay state (not executed extra threads)
     private ScheduledExecutorService executor;
-    private boolean newGame = false;
-
 
     // Configuration settings
     private int fieldWidth;
     private int fieldHeight;
-    private int level =1;
+    private int level = 1;
     private boolean music;
     private boolean soundEffect;
     private boolean aiPlay; // ghost piece
@@ -73,8 +79,13 @@ public class MainFrame extends JFrame {
     }
 
     //all getters and setters for private variables
-    public int getFieldWidth() { return fieldWidth; }
-    public int getFieldHeight() { return fieldHeight; }
+    public int getFieldWidth() {
+        return fieldWidth;
+    }
+
+    public int getFieldHeight() {
+        return fieldHeight;
+    }
 
     public void setFieldWidth(int fieldWidth) {
         this.fieldWidth = fieldWidth;
@@ -97,7 +108,9 @@ public class MainFrame extends JFrame {
         System.out.println("Updated game level: " + level);
     }
 
-    public boolean isMusic() { return music; }
+    public boolean isMusic() {
+        return music;
+    }
 
     public void setMusic(boolean music) {
         this.music = music;
@@ -131,7 +144,7 @@ public class MainFrame extends JFrame {
         System.out.println("Updated extended mode setting: " + extendedMode);
     }
 
-    // Method to show the splash screen
+    // First state user sees when the game is launched
     public void showSplashScreen() {
         getContentPane().removeAll();
         SplashPanel splashPanel = new SplashPanel(1000, this::showMainPanel);
@@ -140,7 +153,7 @@ public class MainFrame extends JFrame {
         repaint();
     }
 
-    // Method to show the game panel
+    // For play button to show the gamePanel
     public void showGamePanel() {
         if (game == null) {
             //new board
@@ -157,7 +170,7 @@ public class MainFrame extends JFrame {
         repaint();
     }
 
-    // Method to show the main panel
+    // To transition from the splash screen to the main panel
     public void showMainPanel() {
         getContentPane().removeAll();
         MainPanel mainPanel = new MainPanel(this);
@@ -173,7 +186,7 @@ public class MainFrame extends JFrame {
     }
 
 
-    // Modify the startGame method
+    // >> LOGIC FOR GAME LOOP <<
     public void startGame() {
         if (game.isPlaying()) {
             //game.stop(); // Stop the current game if it's already running
@@ -191,7 +204,7 @@ public class MainFrame extends JFrame {
         executor = Executors.newSingleThreadScheduledExecutor();
         game.start();
         long period = 1000 - (level * 50); // TODO: Adjust the period based on the level: Milliseconds
-        executor.scheduleAtFixedRate(() -> {
+        executor.scheduleAtFixedRate(() -> { //TODO: Still need to implement level (update) system, just a socket
             if (game.isPlaying()) {
                 game.play();
             }
@@ -209,6 +222,8 @@ public class MainFrame extends JFrame {
 
     // Modify the stopGame method
     public void stopGame() {
+        //stop the playing sound
+
         game.stop();
         System.out.println("MainFrame said: Game Stopped");
     }
@@ -220,18 +235,22 @@ public class MainFrame extends JFrame {
         gamePanel.requestFocusInWindow();
     }
 
+    // Important for rendering the current board state in the field pane
     public void repaintBoard() {
         gamePanel.updateField(game.getBoard());
     }
 
+    //Method to get the game to manage it
     public Object getGame() {
         return game;
     }
 
+    //Method to get the game panel so other classes have access to it
     public Component getGamePanel() {
         return gamePanel;
     }
 
+    // Method to update the score MainFrame -> GamePanel -> Game and back
     public void showHighScorePanel() {
         HighScorePanel highScorePanel = new HighScorePanel(this);
         getContentPane().removeAll();
@@ -240,11 +259,33 @@ public class MainFrame extends JFrame {
         repaint();
     }
 
+    // TODO: Validate if extra mainFrame can be resolved for state management
     public MainFrame() {
         MainFrame frame = new MainFrame("Game Title", 800, 600); // Assuming you have a MainFrame constructor with parameters
         HighScorePanel highScoresPanel = new HighScorePanel(frame);
     }
+
+
+    // Method to play sound with an option to loop, returns the clip for stoppping
+    public Clip playSound(String soundFile, boolean loop) {
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(soundFile).getAbsoluteFile());
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioInputStream);
+            if (loop) {
+                clip.loop(Clip.LOOP_CONTINUOUSLY);
+            } else {
+                clip.start();
+            }
+            return clip;
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    //stop sound helper function
+    public void stopSound(Clip clip) {
+        clip.stop();
+    }
 }
-
-
-

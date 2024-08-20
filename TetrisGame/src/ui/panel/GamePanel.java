@@ -7,6 +7,7 @@ import model.TetrisCell;
 import ui.MainFrame;
 import ui.field.FieldPane;
 
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
@@ -20,6 +21,7 @@ public class GamePanel extends JPanel {
     private JButton stopButton;
     private JButton pauseButton;
     private JLabel levelLabel;
+    private Clip gameMusic;
 
     public GamePanel(MainFrame mainFrame, Game game) {
         this.mainFrame = mainFrame;
@@ -68,6 +70,7 @@ public class GamePanel extends JPanel {
 
         JButton backButton = new JButton("Back");
         backButton.addActionListener(e -> {
+            mainFrame.playSound("src/resources.sounds/MenuKeyPresses.wav", false);
             mainFrame.showMainPanel();
             game.setPlaying(false);
         });
@@ -102,18 +105,24 @@ public class GamePanel extends JPanel {
 
     // For controller to update the field
     private void startGame() {
+        mainFrame.playSound("src/resources.sounds/MenuKeyPresses.wav", false);
         mainFrame.startGame();
         System.out.println("GamePanel says:Game started");
         requestFocusInWindow(); // Don't delete
     }
 
     private void stopGame() {
+        mainFrame.playSound("src/resources.sounds/MenuKeyPresses.wav", false);
         mainFrame.stopGame();
         System.out.println("GamePanel says: Game stopped");
     }
 
     private void pauseGame() {
+        //first pause stops the game music
+
+        mainFrame.playSound("src/resources.sounds/MenuKeyPresses.wav", false);
         mainFrame.pauseGame();
+        //if not
         System.out.println("GamePanel says: Game paused");
     }
 

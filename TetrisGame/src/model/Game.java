@@ -3,6 +3,7 @@ package model;
 
 import ui.MainFrame;
 
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 
@@ -11,13 +12,14 @@ public class Game {
     private Board board;
     private TetrisBlock activeShape;
     private boolean playing;
-
     private int score = 0;
     private int level;
 
     private int spawnX;
     private int spawnY;
     private int numBlocks = 0; //number of blocks spawned
+
+    private Clip gameMusic;
 
     public Game(MainFrame mainFrame, Board board) {
         this.mainFrame = mainFrame;
@@ -30,6 +32,7 @@ public class Game {
     }
 
     public void start() {
+        this.gameMusic = mainFrame.playSound("src/resources.sounds/InGameMusic.wav", true);
         this.playing = true;
     }
 
@@ -59,15 +62,15 @@ public class Game {
     // Finalize the shape and place it on the board
     private void finalizeShape() {
         activeShape.placeOnBoard();
+        mainFrame.playSound("src/resources.sounds/BlockPlacement.wav", false);
         checkForLineClear();
         if (isGameOver()) {
+            mainFrame.playSound("src/resources.sounds/GameOver.wav", false);
             stop();
         }
     }
 
     private boolean isGameOver() {
-        // Logic to determine if the game is over
-        // For instance, check if the new spawn location is already occupied
         return board.isOccupied(spawnX, spawnY);
     }
 
@@ -79,9 +82,11 @@ public class Game {
     public void pause() {
         // TODO: add JDialog for pause
         if (playing) {
+            mainFrame.stopSound(gameMusic);
             System.out.println("Game paused");
             playing = false;
         } else {
+            this.gameMusic = mainFrame.playSound("src/resources.sounds/InGameMusic.wav", true);
             System.out.println("Game resumed");
             playing = true;
         }
@@ -89,6 +94,7 @@ public class Game {
 
     public void stop() {
         //TODO: still needs code to handle stopping the game, resetting the board, etc.
+        mainFrame.stopSound(gameMusic);
         if (playing) {
             System.out.println("Game paused");
             playing = false;
@@ -112,6 +118,7 @@ public class Game {
             dialog.dispose();
         } else {
             System.out.println("Game resumed");
+            this.gameMusic = mainFrame.playSound("src/resources.sounds/InGameMusic.wav", true);
             playing = true;
             //refocus on game panel
             mainFrame.getGamePanel().requestFocusInWindow();

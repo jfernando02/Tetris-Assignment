@@ -100,7 +100,10 @@ public class ConfigurePanel extends JDialog {
         JButton backButton = UIGenerator.createCustomButton("Back", 700, 20);
         //centre the button
         //back closes the dialog
-        backButton.addActionListener(e -> dispose());
+        backButton.addActionListener(e -> {
+            mainFrame.playSound("src/resources.sounds/MenuKeyPresses.wav", false);
+            dispose();
+        });
         configBox.add(backButton, gbc);
 
         add(configBox, BorderLayout.CENTER);

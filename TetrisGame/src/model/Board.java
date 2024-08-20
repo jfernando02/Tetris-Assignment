@@ -18,6 +18,7 @@ public class Board<T> {
         this.board = (T[][]) new Object[width][height];
         this.spawnX = (width / 2)-1;
         this.spawnY = 0;
+        this.mainFrame = mainFrame;
     }
 
     public void setGame(Game game) {
@@ -65,6 +66,12 @@ public class Board<T> {
                     destroyCell(i, j);
                 }
             }
+        }
+        //clear line sound
+        try {
+            mainFrame.playSound("src/resources.sounds/LineClear.wav", false);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

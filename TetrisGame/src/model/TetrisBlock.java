@@ -5,14 +5,13 @@ package model;
 import java.awt.*;
 import java.util.ArrayList;
 
-
 public class TetrisBlock {
     private TetrisShape shape;
     private int currentRotation;
     private Board<TetrisCell> board;
     private boolean hasLanded;
-
     private ArrayList<TetrisCell> cells = new ArrayList<>();
+
     public TetrisBlock(Board<TetrisCell> board) {
         this.board = board;
         this.hasLanded = false;
@@ -33,9 +32,8 @@ public class TetrisBlock {
     }
 
     public boolean leftCollision() {
-        System.out.println("Checking left collision");;
+        System.out.println("Checking left collision");
         for (TetrisCell cell : this.cells) {
-            //check if a left cell exists, and if it is a different id
             if (cell.getX() == 0) {
                 System.out.println("Left wall detected");
                 return true;
@@ -48,6 +46,10 @@ public class TetrisBlock {
                     return true;
                 }
             }
+            //check bottom collision
+            if (bottomCollision()) {
+                return true;
+            }
         }
         return false;
     }
@@ -55,7 +57,6 @@ public class TetrisBlock {
     public boolean rightCollision() {
         System.out.println("Checking right collision");
         for (TetrisCell cell : this.cells) {
-            //check if a right cell exists, and if it is a different id
             if (cell.getX() == board.getWidth() - 1) {
                 System.out.println("Right wall detected");
                 return true;
@@ -68,23 +69,26 @@ public class TetrisBlock {
                     return true;
                 }
             }
+            //check bottom collision
+            if (bottomCollision()) {
+                return true;
+
+            }
         }
         return false;
     }
 
     public boolean bottomCollision() {
         for (TetrisCell cell : this.cells) {
-            //check if a bottom cell exists, and if it is a different id
             if (cell.getY() == board.getHeight() - 1) {
                 System.out.println("Bottom barrier detected");
                 return true;
             }
             if (board.isOccupied(cell.getX(), cell.getY() + 1) &&
                     !this.cells.contains(board.getCell(cell.getX(), cell.getY() + 1))) {
-
                 TetrisCell bottomCell = board.getCell(cell.getX(), cell.getY() + 1);
                 System.out.println("Cell detected");
-                if (!bottomCell.isActive && !this.cells.contains(bottomCell)) {
+                if (!bottomCell.isActive) {
                     System.out.println("Different id detected");
                     return true;
                 }
@@ -93,17 +97,13 @@ public class TetrisBlock {
         return false;
     }
 
-    // move the cells appropriately so prior spaces are nullified
     public void moveCells(int moveX, int moveY) {
-        // Remove cells from the board
         for (TetrisCell cell : this.cells) {
             cell.destroy();
         }
-        // Move cells
         for (TetrisCell cell : this.cells) {
             int newX = cell.getX() + moveX;
             int newY = cell.getY() + moveY;
-            // Ensure the new coordinates are within the board boundaries
             if (newX >= 0 && newX < board.getWidth() && newY >= 0 && newY < board.getHeight()) {
                 cell.setX(newX);
                 cell.setY(newY);
@@ -111,25 +111,27 @@ public class TetrisBlock {
                 System.out.println("Error: Coordinates out of bounds");
             }
         }
-        // Add cells back to the board
         for (TetrisCell cell : this.cells) {
             cell.setOnBoard();
         }
     }
 
-    //Gentle (down arrow) drop and part of gravity
     public void softDrop() {
         if (bottomCollision()) {
             deactivate();
         } else {
             moveCells(0, 1);
+            for (TetrisCell cell : this.cells) {
+                cell.updateInterpolatedY();
+            }
         }
     }
 
-    // Drops fast (spacebar)
     public void hardDrop() {
-        softDrop();
-        softDrop();
+        while (!bottomCollision()) {
+            moveCells(0, 1);
+        }
+        deactivate();
     }
 
     public void moveLeft() {
@@ -137,6 +139,9 @@ public class TetrisBlock {
         if (!leftCollision()) {
             System.out.println("No collision detected, moving left");
             moveCells(-1, 0);
+            for (TetrisCell cell : this.cells) {
+                cell.resetInterpolation();
+            }
         } else {
             System.out.println("Left collision detected");
         }
@@ -147,6 +152,9 @@ public class TetrisBlock {
         if (!rightCollision()) {
             System.out.println("No collision detected, moving right");
             moveCells(1, 0);
+            for (TetrisCell cell : this.cells) {
+                cell.resetInterpolation();
+            }
         } else {
             System.out.println("Right collision detected");
         }
@@ -172,13 +180,9 @@ public class TetrisBlock {
         pivot(this.currentRotation);
     }
 
-    //Checks for rotational collision (one hard coded left/right)
     public boolean checkValidPivot(int rotation) {
-        //find pivot point
         int pivotX = this.cells.get(1).getX();
         int pivotY = this.cells.get(1).getY();
-
-        //extract values from next rotation
         int[][] nextRotation = shape.getCoordinates(rotation);
 
         for (int i = 0; i < 4; i++) {
@@ -194,34 +198,26 @@ public class TetrisBlock {
         }
         return true;
     }
-    //pivot reconstructs the block based on the new rotation
+
     public void pivot(int rotation) {
-        //if valid pivot, continue
         if (!checkValidPivot(rotation)) {
             return;
         }
-        //find pivot point
         int pivotX = this.cells.get(1).getX();
         int pivotY = this.cells.get(1).getY();
-
-        //extract values from next rotation
         int[][] nextRotation = shape.getCoordinates(rotation);
-        //destroy old cells on board
+
         for (TetrisCell cell : this.cells) {
             cell.destroy();
         }
-        //reconstruct cells
-        for (TetrisCell cell: this.cells) {
-            //if cell is blu
-            cell.setX(nextRotation[0][this.cells.indexOf(cell)] + pivotX-1);
+        for (TetrisCell cell : this.cells) {
+            cell.setX(nextRotation[0][this.cells.indexOf(cell)] + pivotX - 1);
             cell.setY(nextRotation[1][this.cells.indexOf(cell)] + pivotY);
+            cell.resetInterpolation();
         }
-
-        //add new cells to board
         for (TetrisCell cell : this.cells) {
             cell.setOnBoard();
         }
-
     }
 
     public void deactivate() {

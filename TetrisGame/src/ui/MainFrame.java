@@ -67,6 +67,7 @@ public class MainFrame extends JFrame {
         this.extendedMode = false; // default extended mode setting
         this.gamePanel = null;
 
+
         setTitle(this.title);
         setSize(this.mainWidth, this.mainHeight);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -188,24 +189,31 @@ public class MainFrame extends JFrame {
 
     // >> LOGIC FOR GAME LOOP <<
     public void startGame() {
-        if (game.isPlaying()) {
-            //game.stop(); // Stop the current game if it's already running
-            game.resetGame(); // Reset the game state
-        }
 
-        updateGamePeriod(); // Restart the game loop with the current settings
+        updateGamePeriod();
         System.out.println("MainFrame said: New Game Started");
+
     }
 
     // Add a method to update the game period (TODO: check and fix speed of level)
     public void updateGamePeriod() {
-        //delete prior threads
+        // Delete prior threads
         executor.shutdownNow();
         executor = Executors.newSingleThreadScheduledExecutor();
         game.start();
         long period = 300 - (level * 50); // TODO: Adjust the period based on the level: Milliseconds
-        executor.scheduleAtFixedRate(() -> { //TODO: Still need to implement level (update) system, just a socket
+        executor.scheduleAtFixedRate(() -> { // TODO: Still need to implement level (update) system, just a socket
             if (game.isPlaying()) {
+                for (int i = 0; i < 10; i++) {
+                    SwingUtilities.invokeLater(() -> {
+                        gamePanel.repaint();
+                    });
+                    try {
+                        Thread.sleep(period / 10); // Sleep for a fraction of the period
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
                 game.play();
             }
         }, 0, period, TimeUnit.MILLISECONDS);
@@ -285,6 +293,11 @@ public class MainFrame extends JFrame {
 
     //stop sound helper function
     public void stopSound(Clip clip) {
-        clip.stop();
+        //if the clip is not null
+        if (clip != null) {
+            clip.stop();
+        }
     }
+
+
 }

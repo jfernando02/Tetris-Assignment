@@ -118,4 +118,11 @@ public class Board<T> {
         }
     }
 
+    public MainFrame getMainFrame() {
+        if (mainFrame != null) {
+            return mainFrame;
+        }
+        return null;
+    }
+
 }

@@ -56,8 +56,13 @@ public class GamePanel extends JPanel {
         pauseButton = new JButton("Pause");
 
         startButton.addActionListener(e -> {
-            startGame();
+            //if not playing
+            if (!game.isPlaying()) {
+                startGame();
+                requestFocusInWindow();
+            }
             requestFocusInWindow();
+
         });
         stopButton.addActionListener(e -> stopGame());
         pauseButton.addActionListener(e -> pauseGame());
@@ -71,8 +76,7 @@ public class GamePanel extends JPanel {
         JButton backButton = new JButton("Back");
         backButton.addActionListener(e -> {
             mainFrame.playSound("src/resources.sounds/MenuKeyPresses.wav", false);
-            mainFrame.showMainPanel();
-            game.setPlaying(false);
+            stopGame();
         });
         add(backButton, BorderLayout.SOUTH);
 
@@ -92,16 +96,6 @@ public class GamePanel extends JPanel {
         levelLabel.setHorizontalAlignment(JLabel.LEFT);
         add(levelLabel, BorderLayout.WEST);
     }
-
-    // to request focus after GamePanel has been added to the window
-    /* TODO: testing if we need this or not
-    @Override
-    public void addNotify() {
-        super.addNotify();
-        // Request focus after GamePanel has been added to the window
-        requestFocusInWindow();
-    }
-    */
 
     // For controller to update the field
     private void startGame() {

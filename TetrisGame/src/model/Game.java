@@ -50,7 +50,7 @@ public class Game {
                 }
             }
         }
-        this.mainFrame.repaintBoard();
+        //this.mainFrame.repaintBoard();
     }
 
     public void spawn() {
@@ -71,7 +71,15 @@ public class Game {
     }
 
     private boolean isGameOver() {
-        return board.isOccupied(spawnX, spawnY);
+        //if any x in the first 3 lines is occupied
+        for (int y = 0; y < 3; y++) {
+            for (int x = 0; x < board.getWidth(); x++) {
+                if (board.getCell(x, y) != null) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private void checkForLineClear() {
@@ -95,7 +103,7 @@ public class Game {
 
         int result = JOptionPane.showConfirmDialog(pauseDialog,
                 "Game Paused. Do you want to continue?", "Pause Game", JOptionPane.YES_NO_OPTION);
-        if (result == JOptionPane.NO_OPTION) {
+        if (result == JOptionPane.YES_OPTION) {
             this.gameMusic = mainFrame.playSound("src/resources.sounds/InGameMusic.wav", true);
             System.out.println("Game resumed");
             playing = true;
@@ -126,12 +134,14 @@ public class Game {
 
         //ask if they want to quit the game
         int result = JOptionPane.showConfirmDialog(dialog,
-                "Are you sure you want to quit the game?", "Stop Game", JOptionPane.YES_NO_OPTION);
+                "Are you sure you want to quit the game and go to the main menu?", "Stop Game", JOptionPane.YES_NO_OPTION);
 
         if (result == JOptionPane.YES_OPTION) {
             System.out.println("Game stopped");
             resetGame();
             dialog.dispose();
+            //go to main panel
+            mainFrame.showMainPanel();
         } else {
             System.out.println("Game resumed");
             this.gameMusic = mainFrame.playSound("src/resources.sounds/InGameMusic.wav", true);
@@ -194,7 +204,7 @@ public class Game {
                 stop();
                 break;
         }
-        mainFrame.repaintBoard();
+        //mainFrame.repaintBoard();
     }
 
     public Board<TetrisCell> getBoard() {
@@ -216,7 +226,7 @@ public class Game {
         this.score = 0;
         this.numBlocks = 0;
         this.level = mainFrame.getLevel();
-        mainFrame.repaintBoard();
+        mainFrame.repaintBoard(); //don't delete
     }
 
     public void setPlaying(boolean b) {

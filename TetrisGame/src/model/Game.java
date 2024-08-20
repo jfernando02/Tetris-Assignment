@@ -80,15 +80,31 @@ public class Game {
     }
 
     public void pause() {
-        // TODO: add JDialog for pause
         if (playing) {
             mainFrame.stopSound(gameMusic);
             System.out.println("Game paused");
             playing = false;
-        } else {
+        }
+        JDialog pauseDialog = new JDialog();
+        pauseDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        pauseDialog.setTitle("Pause Game");
+        pauseDialog.setSize(200, 200);
+        pauseDialog.setVisible(false);
+        //centre the dialog
+        pauseDialog.setLocationRelativeTo(null);
+
+        int result = JOptionPane.showConfirmDialog(pauseDialog,
+                "Game Paused. Do you want to continue?", "Pause Game", JOptionPane.YES_NO_OPTION);
+        if (result == JOptionPane.NO_OPTION) {
             this.gameMusic = mainFrame.playSound("src/resources.sounds/InGameMusic.wav", true);
             System.out.println("Game resumed");
             playing = true;
+            mainFrame.getGamePanel().requestFocusInWindow();
+            pauseDialog.dispose();
+        } else {
+            System.out.println("Game stopped");
+            resetGame();
+            pauseDialog.dispose();
         }
     }
 

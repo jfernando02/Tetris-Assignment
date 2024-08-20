@@ -76,18 +76,16 @@ public class TetrisBlock {
         }
     }
 
+
     public void softDrop() {
         if (bottomCollision()) {
             if (!hasLanded) {
+                hasLanded = true;
                 landTime = System.currentTimeMillis();
-            } while (hasEmptyCellsUnderneath() && landTime + BUFFER_TIME < System.currentTimeMillis()) {
-                moveCells(0, 1);
-                for (TetrisCell cell : this.cells) {
-                    cell.updateInterpolatedY();
-                }
+            } else if (System.currentTimeMillis() - landTime >= BUFFER_TIME && !hasEmptyCellsUnderneath()
+                    && bottomCollision()) {
+                deactivate();
             }
-            hasLanded = true;
-            deactivate();
         } else {
             moveCells(0, 1);
             for (TetrisCell cell : this.cells) {
@@ -181,10 +179,12 @@ public class TetrisBlock {
     }
 
     public void deactivate() {
-        for (TetrisCell cell : this.cells) {
-            cell.isActive = false;
+        if (bottomCollision()){
+            for (TetrisCell cell : this.cells) {
+                cell.updateInterpolatedY();
+                cell.isActive = false;
+            }
         }
-        this.hasLanded = true;
     }
 
     public void placeOnBoard() {
@@ -226,3 +226,4 @@ public class TetrisBlock {
         return false;
     }
 }
+

@@ -7,6 +7,7 @@ import java.io.IOException;
 public class soundEffects {
     public static void playSound(String soundFile) {
         try {
+            // get audio, set it and load it
             File soundPath = new File(soundFile);
             AudioInputStream audio = AudioSystem.getAudioInputStream(soundPath);
             Clip soundEffect = AudioSystem.getClip();

@@ -3,8 +3,6 @@ package ui.panel;
 
 import ui.MainFrame;
 import ui.UIGenerator;
-import util.soundEffects; // TO INCLUDE SOUND PLAY
-import util.backgroundMusic; // TO INCLUDE MUSIC PALY
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,6 +18,7 @@ public class MainPanel extends JPanel {
     private JPanel buttonPanel;
     private Image backGroundImage;
     private Image menuLogo;
+
 
     public MainPanel(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
@@ -75,11 +74,32 @@ public class MainPanel extends JPanel {
         buttonPanel.setBounds(0, 0, getWidth(), getHeight());
         layeredPane.add(buttonPanel, JLayeredPane.PALETTE_LAYER);
 
+        // Adding ActionListener to open the HighScorePanel
+        highScoresButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainFrame.playSound("src/resources.sounds/MenuKeyPresses.wav", false);
+                mainFrame.showHighScorePanel(); // Navigate to HighScorePanel
+            }
+
+        });
+
+        // Adding ActionListener to open the GamePanel
+        playButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainFrame.playSound("src/resources.sounds/MenuKeyPresses.wav", false);
+                mainFrame.showGamePanel();
+                //focus on mainPanel
+                mainFrame.getGamePanel().requestFocusInWindow();
+            }
+        });
+
         // Adding ActionListener to open the ConfigurePanel
         configButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                soundEffects.playSound("TetrisGame/src/resources.sounds/MenuKeyPresses.wav"); // TO INCLUDE SOUND PLAY
+                mainFrame.playSound("src/resources.sounds/MenuKeyPresses.wav", false);
                 mainFrame.showConfigurePanel();
             }
         });
@@ -88,6 +108,7 @@ public class MainPanel extends JPanel {
         exitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                mainFrame.playSound("src/resources.sounds/MenuKeyPresses.wav", false);
                 System.exit(0);
             }
         });
@@ -102,12 +123,6 @@ public class MainPanel extends JPanel {
 
         // Initial resize to set the correct dimensions
         resizeComponents();
-
-        backgroundMusic audioPlayer = new backgroundMusic();
-        audioPlayer.playMusic("TetrisGame/src/resources.sounds/InGameMusic.wav");
-
-        // Stop the audio when needed
-        // audioPlayer.stopAudio();
     }
 
     private void resizeComponents() {
@@ -139,3 +154,5 @@ public class MainPanel extends JPanel {
         buttonPanel.repaint();
     }
 }
+
+

@@ -203,7 +203,7 @@ public class MainFrame extends JFrame {
         executor.shutdownNow();
         executor = Executors.newSingleThreadScheduledExecutor();
         game.start();
-        long period = 1000 - (level * 50); // TODO: Adjust the period based on the level: Milliseconds
+        long period = 300 - (level * 50); // TODO: Adjust the period based on the level: Milliseconds
         executor.scheduleAtFixedRate(() -> { //TODO: Still need to implement level (update) system, just a socket
             if (game.isPlaying()) {
                 game.play();
@@ -223,7 +223,6 @@ public class MainFrame extends JFrame {
     // Modify the stopGame method
     public void stopGame() {
         //stop the playing sound
-
         game.stop();
         System.out.println("MainFrame said: Game Stopped");
     }

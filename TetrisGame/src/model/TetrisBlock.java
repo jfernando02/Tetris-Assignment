@@ -93,7 +93,7 @@ public class TetrisBlock {
         return false;
     }
 
-    // TetrisBlock.java
+    // move the cells appropriately so prior spaces are nullified
     public void moveCells(int moveX, int moveY) {
         // Remove cells from the board
         for (TetrisCell cell : this.cells) {
@@ -101,8 +101,15 @@ public class TetrisBlock {
         }
         // Move cells
         for (TetrisCell cell : this.cells) {
-            cell.setX(cell.getX() + moveX);
-            cell.setY(cell.getY() + moveY);
+            int newX = cell.getX() + moveX;
+            int newY = cell.getY() + moveY;
+            // Ensure the new coordinates are within the board boundaries
+            if (newX >= 0 && newX < board.getWidth() && newY >= 0 && newY < board.getHeight()) {
+                cell.setX(newX);
+                cell.setY(newY);
+            } else {
+                System.out.println("Error: Coordinates out of bounds");
+            }
         }
         // Add cells back to the board
         for (TetrisCell cell : this.cells) {
@@ -231,7 +238,7 @@ public class TetrisBlock {
     }
 
     public boolean hasLanded() {
-        return hasLanded;
+        return this.hasLanded;
     }
 }
 

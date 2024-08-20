@@ -41,7 +41,7 @@ public class Game {
             if (this.activeShape == null) {
                 spawn();
             } else {
-                if (activeShape.hasLanded() && shouldSettle()) {
+                if (activeShape.hasLanded() && shouldSettle() && activeShape.bottomCollision()) {
                     finalizeShape();
                     this.activeShape = null;
                 } else {
@@ -49,7 +49,6 @@ public class Game {
                 }
             }
         }
-        //this.mainFrame.repaintBoard();
     }
 
     // For safety, not sure if we need it

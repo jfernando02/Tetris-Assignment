@@ -62,4 +62,8 @@ public class TetrisCell {
     public void resetInterpolation() {
         this.interpolatedY = this.y;
     }
+
+    public boolean isActive() {
+        return isActive;
+    }
 }

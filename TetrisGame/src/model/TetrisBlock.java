@@ -84,6 +84,7 @@ public class TetrisBlock {
                 landTime = System.currentTimeMillis();
             } else if (System.currentTimeMillis() - landTime >= BUFFER_TIME && !hasEmptyCellsUnderneath()
                     && bottomCollision()) {
+                System.out.println("Block has landed via buffered soft drop");
                 deactivate();
             }
         } else {
@@ -226,4 +227,3 @@ public class TetrisBlock {
         return false;
     }
 }
-

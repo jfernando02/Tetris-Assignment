@@ -113,10 +113,8 @@ public class GamePanel extends JPanel {
 
     private void pauseGame() {
         //first pause stops the game music
-
         mainFrame.playSound("src/resources.sounds/MenuKeyPresses.wav", false);
         mainFrame.pauseGame();
-        //if not
         System.out.println("GamePanel says: Game paused");
     }
 

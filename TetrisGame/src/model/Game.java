@@ -1,4 +1,4 @@
-// Manages the game state, updates and overall control
+// Game.java
 package model;
 
 import ui.MainFrame;
@@ -41,16 +41,20 @@ public class Game {
             if (this.activeShape == null) {
                 spawn();
             } else {
-                if (activeShape.hasLanded()) {
+                if (activeShape.hasLanded() && shouldSettle()) {
                     finalizeShape();
                     this.activeShape = null;
                 } else {
-                    //block thread until activeShape.softDrop() is finished
                     activeShape.softDrop();
                 }
             }
         }
         //this.mainFrame.repaintBoard();
+    }
+
+    // For safety, not sure if we need it
+    private boolean shouldSettle() {
+        return System.currentTimeMillis() - activeShape.getLandTime() >= TetrisBlock.getBufferTime();
     }
 
     public void spawn() {

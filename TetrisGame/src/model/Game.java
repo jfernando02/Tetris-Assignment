@@ -5,7 +5,10 @@ import ui.MainFrame;
 
 import javax.sound.sampled.Clip;
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 public class Game {
     private MainFrame mainFrame;
@@ -14,7 +17,7 @@ public class Game {
     private boolean playing;
     private int score = 0;
     private int level;
-
+    private boolean paused = false;
     private int spawnX;
     private int spawnY;
     private int numBlocks = 0; //number of blocks spawned
@@ -93,31 +96,68 @@ public class Game {
     public void pause() {
         if (playing) {
             mainFrame.stopSound(gameMusic);
-            System.out.println("Game paused");
+            System.out.println("Game Object says: Game paused");
             playing = false;
-        }
-        JDialog pauseDialog = new JDialog();
-        pauseDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        pauseDialog.setTitle("Pause Game");
-        pauseDialog.setSize(200, 200);
-        pauseDialog.setVisible(false);
-        //centre the dialog
-        pauseDialog.setLocationRelativeTo(null);
-
-        int result = JOptionPane.showConfirmDialog(pauseDialog,
-                "Game Paused. Do you want to continue?", "Pause Game", JOptionPane.YES_NO_OPTION);
-        if (result == JOptionPane.YES_OPTION) {
-            this.gameMusic = mainFrame.playSound("src/resources.sounds/InGameMusic.wav", true);
-            System.out.println("Game resumed");
-            playing = true;
-            mainFrame.getGamePanel().requestFocusInWindow();
-            pauseDialog.dispose();
+            paused = true;
         } else {
-            System.out.println("Game stopped");
-            resetGame();
-            pauseDialog.dispose();
+            return;
         }
+
+        // Create a JOptionPane for the pause message
+        JOptionPane pane = new JOptionPane(
+                "Game Paused! (Press P to resume)",
+                JOptionPane.INFORMATION_MESSAGE,
+                JOptionPane.DEFAULT_OPTION,
+                null,
+                new String[]{"Resume"}
+        );
+
+        // Create a JDialog from the JOptionPane
+        JDialog dialog = pane.createDialog(mainFrame, "Pause Game");
+
+        // Add a KeyListener to the JDialog to listen for the "P" key press
+        dialog.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent evt) {
+                if (evt.getKeyCode() == KeyEvent.VK_P) {
+                    System.out.println("Game Object says: P key pressed, resuming game...");
+                    resumeGame();
+                    dialog.dispose();  // Close the dialog when P is pressed
+                }
+            }
+        });
+
+        // Make sure the dialog is focusable and requests focus
+        dialog.setFocusable(true);
+        dialog.requestFocusInWindow();
+
+        // Show the dialog
+        dialog.setVisible(true);
+
+        // Refocus on the game panel after closing the dialog
+        mainFrame.getGamePanel().requestFocusInWindow();
+        //if pressing P again, resume game
+        mainFrame.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent evt) {
+                if (evt.getKeyCode() == KeyEvent.VK_P) {
+                    System.out.println("Game Object says: P key pressed, resuming game...");
+                    resumeGame();
+                }
+            }
+        });
+
     }
+
+    public void resumeGame() {
+        this.gameMusic = mainFrame.playSound("src/resources.sounds/InGameMusic.wav", true);
+        System.out.println("Game Object says: Game resumed");
+        playing = true;
+        paused = false;
+        mainFrame.getGamePanel().requestFocusInWindow();
+    }
+
+
 
     public void stop() {
         //TODO: still needs code to handle stopping the game, resetting the board, etc.
@@ -147,14 +187,13 @@ public class Game {
             mainFrame.showMainPanel();
         } else {
             System.out.println("Game resumed");
-            this.gameMusic = mainFrame.playSound("src/resources.sounds/InGameMusic.wav", true);
-            playing = true;
             //refocus on game panel
             mainFrame.getGamePanel().requestFocusInWindow();
             dialog.dispose();
         }
     }
 
+    //for implementing future scoring logic (don't delete)
     public int getScore() {
         return score;
     }
@@ -181,6 +220,9 @@ public class Game {
                 case KeyEvent.VK_DOWN:
                     System.out.println("Down key pressed");
                     activeShape.softDrop();
+                    //activeShape.softDrop(); //TODO: review down speed logic
+
+                    mainFrame.repaintBoard();
                     break;
                 case KeyEvent.VK_UP:
                     System.out.println("Up key pressed");
@@ -199,8 +241,12 @@ public class Game {
         }
         switch (keyCode) {
             case KeyEvent.VK_P:
-                System.out.println("P key pressed"); //pause
-                pause();
+                System.out.println("P key pressed");
+                if (paused) {
+                    resumeGame();//pause
+                } else {
+                    pause();
+                }
                 break;
             case KeyEvent.VK_S:
                 System.out.println("S key pressed"); //stop

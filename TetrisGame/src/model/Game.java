@@ -15,9 +15,11 @@ public class Game {
     private Board board;
     private TetrisBlock activeShape;
     private boolean playing;
+    private boolean paused = false;
+
     private int score = 0;
     private int level;
-    private boolean paused = false;
+
     private int spawnX;
     private int spawnY;
     private int numBlocks = 0; //number of blocks spawned
@@ -36,6 +38,32 @@ public class Game {
 
     public void start() {
         this.gameMusic = mainFrame.playSound("src/resources.sounds/InGameMusic.wav", true);
+        if(isGameOver()) {
+            //new panel asking if they want to play a new game
+            JDialog dialog = new JDialog();
+            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            dialog.setTitle("New Game Panel");
+            dialog.setSize(200, 200);
+            dialog.setVisible(false);
+            //centre the dialog
+            dialog.setLocationRelativeTo(null);
+
+            //ask if they want to play a new game
+            int result = JOptionPane.showConfirmDialog(dialog,
+                    "Do you want to play a new game?", "New Game", JOptionPane.YES_NO_OPTION);
+
+            if (result == JOptionPane.YES_OPTION) {
+                System.out.println("Game Object said: starting new game");
+                resetGame();
+            } else {
+                System.out.println("Game Object said: going to main menu");
+                resetGame();
+                dialog.dispose();
+                //go to main panel
+                mainFrame.showMainPanel();
+            }
+
+        }
         this.playing = true;
     }
 
@@ -71,15 +99,48 @@ public class Game {
         mainFrame.playSound("src/resources.sounds/BlockPlacement.wav", false);
         checkForLineClear();
         if (isGameOver()) {
+            this.playing = false;
             mainFrame.playSound("src/resources.sounds/GameOver.wav", false);
-            stop();
+            gameOverPanel();
+            //block start button
+
         }
     }
+
+    public void gameOverPanel() {
+        mainFrame.stopSound(gameMusic);
+        //new JDIalog for game over to ask if they're sure if they want to quit
+        JDialog dialog = new JDialog();
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.setTitle("Game Over Panel");
+        dialog.setSize(200, 200);
+        dialog.setVisible(false);
+        //centre the dialog
+        dialog.setLocationRelativeTo(null);
+
+        //ask if they want to quit the game
+        int result = JOptionPane.showConfirmDialog(dialog,
+                "Game Over! Do you want to go to the main menu?", "Game Over", JOptionPane.YES_NO_OPTION);
+
+        if (result == JOptionPane.YES_OPTION) {
+            System.out.println("Game Object said: going to main menu");
+            resetGame();
+            dialog.dispose();
+            //go to main panel
+            mainFrame.showMainPanel();
+        } else {
+            System.out.println("Game Object said: staying in game");
+            //refocus on game panel
+            mainFrame.getGamePanel().requestFocusInWindow();
+            dialog.dispose();
+        }
+    }
+
 
     private boolean isGameOver() {
         //if any x in the first 3 lines is occupied
         for (int y = 0; y < 3; y++) {
-            for (int x = 0; x < board.getWidth(); x++) {
+            for (int x = spawnX; x < spawnX + 4; x++) {
                 if (board.getCell(x, y) != null) {
                     return true;
                 }
@@ -94,6 +155,11 @@ public class Game {
     }
 
     public void pause() {
+        if (paused) {
+            playing=true;
+            paused=false;
+            return;
+        }
         if (playing) {
             mainFrame.stopSound(gameMusic);
             System.out.println("Game Object says: Game paused");
@@ -158,9 +224,8 @@ public class Game {
     }
 
 
-
+    //Stops the game and goes back to the main menu
     public void stop() {
-        //TODO: still needs code to handle stopping the game, resetting the board, etc.
         mainFrame.stopSound(gameMusic);
         if (playing) {
             System.out.println("Game paused");

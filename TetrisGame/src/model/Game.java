@@ -248,6 +248,7 @@ public class Game {
 
     //Stops the game and goes back to the main menu
     public void stop() {
+        boolean wasPaused=isPaused();
         mainFrame.stopSound(gameMusic);
         if (playing) {
             System.out.println("Game paused");
@@ -277,6 +278,9 @@ public class Game {
         } else {
             //else refocus on
             mainFrame.getGamePanel().requestFocusInWindow();
+            if(!wasPaused){
+                resumeGame();
+            }
             dialog.dispose();
         }
     }

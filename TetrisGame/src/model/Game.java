@@ -155,9 +155,11 @@ public class Game {
     }
 
     public void pause() {
-        if (paused) {
+        if (paused && !playing) {
             playing=true;
             paused=false;
+            //resume music
+            this.gameMusic = mainFrame.playSound("src/resources.sounds/InGameMusic.wav", true);
             return;
         }
         if (playing) {

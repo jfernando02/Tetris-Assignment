@@ -1,4 +1,3 @@
-// GamePanel which extends JPanel and implements ActionListeners
 package ui.panel;
 
 import model.Board;
@@ -21,6 +20,7 @@ public class GamePanel extends JPanel {
     private JButton stopButton;
     private JButton pauseButton;
     private JLabel levelLabel;
+    private JLabel pauseLabel;
     private Clip gameMusic;
 
     public GamePanel(MainFrame mainFrame, Game game) {
@@ -41,13 +41,22 @@ public class GamePanel extends JPanel {
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.CENTER;
 
+        // Add pause label
+        pauseLabel = new JLabel("Game Paused");
+        pauseLabel.setHorizontalAlignment(JLabel.CENTER);
+        pauseLabel.setForeground(Color.RED);
+        pauseLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        pauseLabel.setVisible(false);
+        gbc.gridy = 0;
+        centerPanel.add(pauseLabel, gbc);
+
+        // Add field pane
         fieldPane = new FieldPane(game.getBoard(), 15);
         fieldPane.setBorder(BorderFactory.createLineBorder(Color.BLUE));
-
-        fieldPane.setPreferredSize(new Dimension(mainFrame.getFieldWidth() * 15,
-                mainFrame.getFieldHeight() * 15));
-
+        fieldPane.setPreferredSize(new Dimension(mainFrame.getFieldWidth() * 15, mainFrame.getFieldHeight() * 15));
+        gbc.gridy = 1;
         centerPanel.add(fieldPane, gbc);
+
         add(centerPanel, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
@@ -56,13 +65,11 @@ public class GamePanel extends JPanel {
         pauseButton = new JButton("Pause");
 
         startButton.addActionListener(e -> {
-            //if not playing
             if (!game.isPlaying()) {
                 startGame();
                 requestFocusInWindow();
             }
             requestFocusInWindow();
-
         });
         stopButton.addActionListener(e -> stopGame());
         pauseButton.addActionListener(e -> pauseGame());
@@ -80,29 +87,25 @@ public class GamePanel extends JPanel {
         });
         add(backButton, BorderLayout.SOUTH);
 
-        // Add KeyListener to GamePanel
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                //convert key code to string
                 String keyText = KeyEvent.getKeyText(e.getKeyCode());
                 System.out.println("Key pressed: " + keyText);
                 game.update(e.getKeyCode());
             }
         });
 
-        // Add level label
         levelLabel = new JLabel("Level: " + mainFrame.getLevel());
         levelLabel.setHorizontalAlignment(JLabel.LEFT);
         add(levelLabel, BorderLayout.WEST);
     }
 
-    // For controller to update the field
     private void startGame() {
         mainFrame.playSound("src/resources.sounds/MenuKeyPresses.wav", false);
         mainFrame.startGame();
         System.out.println("GamePanel says:Game started");
-        requestFocusInWindow(); // Don't delete
+        requestFocusInWindow();
     }
 
     private void stopGame() {
@@ -112,19 +115,20 @@ public class GamePanel extends JPanel {
     }
 
     private void pauseGame() {
-        //first pause stops the game music
         mainFrame.playSound("src/resources.sounds/MenuKeyPresses.wav", false);
         mainFrame.pauseGame();
         System.out.println("GamePanel says: Game paused");
     }
 
-    // To update the field after changes occur
     public void updateField(Board<TetrisCell> board) {
-        fieldPane.updateBoard(board); //don't delete IMPORTANT
+        fieldPane.updateBoard(board);
     }
 
-    // Method to update the level label
     public void updateLevelLabel() {
         levelLabel.setText("Level: " + mainFrame.getLevel());
+    }
+
+    public void setPaused(boolean paused) {
+        pauseLabel.setVisible(paused);
     }
 }

@@ -238,7 +238,6 @@ public class MainFrame extends JFrame {
 
     public void pauseGame() {
         game.pause();
-        //refocus on the game panel
         gamePanel.requestFocusInWindow();
     }
 

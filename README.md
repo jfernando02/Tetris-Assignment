@@ -34,22 +34,21 @@ TetrisGame/
 - `images/`: Stores image resources like Tetris block images.
 
 ### UI
-![image](https://github.com/user-attachments/assets/13f41e00-0bb3-47f9-be14-0a586174d31e)
+![image](https://github.com/user-attachments/assets/2f65645a-2954-419d-bb2d-93b1cd7d4e2e)
 
 - `field/`
   - `FieldPane.java`: Panel that displays the game field (interactive area of game).
 - `panel/`
   - `ConfigurePanel.java`: Allows user configuration or settings.
-  - `GamePanel.java`: Displays the main game interface.
+  - `GamePanel.java`: Displays the main game interface which nests the FieldPane.
   - `HighScorePanel.java`: Shows high scores.
   - `MainPanel.java`: The main panel that might include menus or game start options.
-  - `PlayPanel.java`: Specific to gameplay, includes controls and active game display.
-- `MainFrame.java`: The main application window/frame.
-- `SplashScreen.java`: The initial screen shown when the game starts.
-- `UIGenerator.java`: Helper class for generating UI components.
+  - `SplashPanel.java`: The initial screen shown when the game starts.
+- `MainFrame.java`: The main application window/frame which triggers different pannels and holds the main game state to share data.
+- `UIGenerator.java`: Helper class for generating UI components (needs refactoring)
 
 ### Util
-- `CommFun.java`: Contains common utility functions used throughout the application.
+- `CommFun.java`: Contains common utility functions used throughout the application. (needs refactoring)
 
 ## Getting Started
 
@@ -59,7 +58,9 @@ TetrisGame/
 
 ## Features
 
-- Classic Tetris gameplay
-- High score tracking
-- Configurable settings
+- Smooth Tetris Gameplay, with a potential future optional feature of discrete Tetromino movement.
+- High score tracking (In the works)
+- Configurable settings (In the works)
+- AI Gameplay (In the works)
+- Multiplayer (In the works)
 - Splash screen on startup

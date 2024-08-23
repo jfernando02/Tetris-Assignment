@@ -4,9 +4,10 @@ package ui;
 
 import java.awt.*;
 import java.util.concurrent.Executors;
+
+import ui.panel.*;
 import model.Board;
 import model.Game;
-import ui.panel.*;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -31,7 +32,7 @@ public class MainFrame extends JFrame {
     // Game state
     private Game game;
     private Board board;
-    private GamePanel gamePanel;
+    private ui.panel.GamePanel gamePanel;
 
     //to manage gameplay state (not executed extra threads)
     private ScheduledExecutorService executor;
@@ -148,7 +149,7 @@ public class MainFrame extends JFrame {
     // First state user sees when the game is launched
     public void showSplashScreen() {
         getContentPane().removeAll();
-        SplashPanel splashPanel = new SplashPanel(1000, this::showMainPanel);
+        ui.panel.SplashPanel splashPanel = new ui.panel.SplashPanel(1000, this::showMainPanel);
         setContentPane(splashPanel);
         revalidate();
         repaint();
@@ -160,7 +161,7 @@ public class MainFrame extends JFrame {
             //new board
             game = new Game(this, board);
         }
-        gamePanel = new GamePanel(this, game);
+        gamePanel = new ui.panel.GamePanel(this, game);
 
         // Request focus for the game panel to ensure it receives key events
         gamePanel.setFocusable(true);
@@ -174,7 +175,7 @@ public class MainFrame extends JFrame {
     // To transition from the splash screen to the main panel
     public void showMainPanel() {
         getContentPane().removeAll();
-        MainPanel mainPanel = new MainPanel(this);
+        ui.panel.MainPanel mainPanel = new ui.panel.MainPanel(this);
         setContentPane(mainPanel);
         revalidate();
         repaint();
@@ -182,7 +183,7 @@ public class MainFrame extends JFrame {
 
     // Method to show the configuration panel
     public void showConfigurePanel() {
-        ConfigurePanel configurePanel = new ConfigurePanel(this);
+        ui.panel.ConfigurePanel configurePanel = new ui.panel.ConfigurePanel(this);
         configurePanel.setVisible(true);
     }
 

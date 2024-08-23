@@ -1,6 +1,22 @@
-// Handles scoring logic for the game and keeps track of the player's score (state)
-// This state can be used to display the score in a UI component (panel)
 package model;
 
 public class Score {
+    private int score;
+    private String name; // for gameover logic
+
+    public Score() {
+        this.score = 0;
+    }
+    public void updateScore(int clearedLines, int levelMultiplier){
+        this.score += clearedLines * 100 * levelMultiplier;
+    }
+    public int getScore(){
+        return score;
+    }
+    public void setName(String name){
+        this.name = name;
+    }
+    public String getName(){
+        return name;
+    }
 }

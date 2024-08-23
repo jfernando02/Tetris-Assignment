@@ -1,5 +1,6 @@
 package ui.panel;
 
+import model.Score;
 import ui.MainFrame;
 import javax.swing.*;
 import java.awt.*;

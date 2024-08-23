@@ -1,9 +1,9 @@
 Griffith University 2805ICT/3815ICT/7805ICT (Group 4)
-* Student name: Fiston Kayeye, Student ID: 5303300, Enrolled Course Code: 2805ICT,
-* Student name: Jack Carrall, Student ID: 5241918, Enrolled Course Code: 3815ICT
-* Student name: Lucas Setiady, Student ID: 5178088, Enrolled Course Code: 2805ICT
-* Student name: Stefan Barosan, Student ID: 5277574, Enrolled Course Code: 2805ICT
-* Student name: Joseph Fernando, Student ID: 5326097, Enrolled Course Code: 2805ICT
+* Student name: Fiston Kayeye, Student ID: 5303300, Enrolled Course Code: 2805ICT, GH: **Sarvinfils**
+* Student name: Jack Carrall, Student ID: 5241918, Enrolled Course Code: 3815ICT, GH: **TheCarrot3702**
+* Student name: Lucas Setiady, Student ID: 5178088, Enrolled Course Code: 2805ICT, GH: **Iseti1**
+* Student name: Stefan Barosan, Student ID: 5277574, Enrolled Course Code: 2805ICT, GH: **MatchaBreak**
+* Student name: Joseph Fernando, Student ID: 5326097, Enrolled Course Code: 2805ICT, GH: **jfernando02**
 
 # Tetris Game
 This is a custom Java implementation of the classic Tetris game utilising IntelliJ
@@ -34,7 +34,7 @@ TetrisGame/
 - `images/`: Stores image resources like Tetris block images.
 
 ### UI
-![image](https://github.com/user-attachments/assets/2f65645a-2954-419d-bb2d-93b1cd7d4e2e)
+![image](https://github.com/user-attachments/assets/989910a6-6b1d-467e-ba2e-7e3327004abf)
 
 - `field/`
   - `FieldPane.java`: Panel that displays the game field (interactive area of game).

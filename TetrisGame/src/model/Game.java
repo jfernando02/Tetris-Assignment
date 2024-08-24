@@ -17,7 +17,8 @@ public class Game {
     private boolean playing;
     private boolean paused = false;
     private boolean gameOver = false;
-    private int score = 0;
+    private Score score;
+    //private int score = 0;
     private int level;
     GamePanel gamePanel;
     private int spawnX;
@@ -71,6 +72,7 @@ public class Game {
             }
         } else {
             this.playing = true;
+            this.score = new Score();
             this.gameMusic = mainFrame.playSound("src/resources.sounds/InGameMusic.wav", true);
         }
 
@@ -284,16 +286,6 @@ public class Game {
         }
     }
 
-    //for implementing future scoring logic (don't delete)
-    public int getScore() {
-        return score;
-    }
-
-    //TODO: fix leveling system, this is just a placeholder
-    public void addScore(int addScore) {
-        this.score+=(addScore * level);
-    }
-
     public void update(int keyCode) {
         if (activeShape==null) {
             return;
@@ -342,6 +334,13 @@ public class Game {
         //mainFrame.repaintBoard();
     }
 
+    public Score getScoreObject(){
+        return score;
+    }
+    public void updateScoreObject(int clearedLines){
+        score.updateScore(clearedLines, this.level);
+    }
+
     public Board<TetrisCell> getBoard() {
         return board;
     }
@@ -358,7 +357,7 @@ public class Game {
         this.board.clearBoard();
         this.activeShape = null;
         this.playing = false;
-        this.score = 0;
+        //this.score = 0;
         this.numBlocks = 0;
         this.level = mainFrame.getLevel();
         mainFrame.repaintBoard(); //don't delete

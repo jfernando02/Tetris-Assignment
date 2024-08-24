@@ -69,7 +69,6 @@ public class Game {
                 gameOver = false;
                 mainFrame.showMainPanel();
             }
-
         } else {
             this.playing = true;
             this.gameMusic = mainFrame.playSound("src/resources.sounds/InGameMusic.wav", true);

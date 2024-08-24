@@ -38,9 +38,15 @@ public class Game {
         gamePanel = (GamePanel) mainFrame.getGamePanel();
     }
 
+    public void newGame() {
+        this.playing = true;
+        this.score = new Score();
+        this.gameMusic = mainFrame.playSound("src/resources.sounds/InGameMusic.wav", true);
+    }
+
     public void start() {
         //if game over or the game is paused, ignore start button
-        if(gameOver || paused) {
+        if(gameOver) {
             return;
         }
         if(isGameOver()) {
@@ -71,9 +77,7 @@ public class Game {
                 mainFrame.showMainPanel();
             }
         } else {
-            this.playing = true;
-            this.score = new Score();
-            this.gameMusic = mainFrame.playSound("src/resources.sounds/InGameMusic.wav", true);
+            newGame();
         }
 
     }

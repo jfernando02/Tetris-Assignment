@@ -18,13 +18,11 @@ import java.io.IOException;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-
 import java.util.ArrayList; //for scores list
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.*;
-
 
 public class MainFrame extends JFrame {
     private String title;
@@ -36,8 +34,9 @@ public class MainFrame extends JFrame {
     private ui.panel.GamePanel gamePanel;
 
     //to manage gameplay state (not executed extra threads)
-    private ScheduledExecutorService executor;
-
+    private ScheduledExecutorService renderExecutor;
+    private ScheduledExecutorService gameLogicExecutor;
+    private volatile long period; //will need two periods for multiplayer, each handling different speeds according to level
     // Configuration settings
     private int fieldWidth;
     private int fieldHeight;
@@ -61,14 +60,14 @@ public class MainFrame extends JFrame {
         //initialise to maintain states for rendering the field and grid
         this.board = new Board(this);
         this.game = new Game(this, board);
-        this.executor = Executors.newSingleThreadScheduledExecutor();
+        this.renderExecutor = Executors.newSingleThreadScheduledExecutor();
+        this.gameLogicExecutor = Executors.newSingleThreadScheduledExecutor();
         //this.level = 1; // default level setting
         this.music = true; // default music setting
         this.soundEffect = true; // default sound effect setting
         this.aiPlay = false; // default ghost piece setting
         this.extendedMode = false; // default extended mode setting
-        this.gamePanel = null;
-
+        this.gamePanel = new GamePanel(this, game);
 
         setTitle(this.title);
         setSize(this.mainWidth, this.mainHeight);
@@ -93,7 +92,8 @@ public class MainFrame extends JFrame {
             game = new Game(this, board);
         }
         gamePanel = new ui.panel.GamePanel(this, game);
-
+        //repaint TODO: check if we need this
+        gamePanel.repaint();
         // Request focus for the game panel to ensure it receives key events
         gamePanel.setFocusable(true);
         gamePanel.requestFocusInWindow();
@@ -118,7 +118,7 @@ public class MainFrame extends JFrame {
         configurePanel.setVisible(true);
     }
 
-    // Method to update the score MainFrame -> GamePanel -> Game and back (TODO: get scores array from mainframe and order them)
+    // Method to update the score MainFrame -> GamePanel -> Game and back
     public void showHighScorePanel() {
         HighScorePanel highScorePanel = new HighScorePanel(this);
         getContentPane().removeAll();
@@ -126,42 +126,58 @@ public class MainFrame extends JFrame {
         revalidate();
         repaint();
     }
-
     // --------------------- METHODS FOR SHOWING PANELS --------------------- END
 
-
     //--------------------- METHODS FOR THE GAME LOGIC --------------------- START
+    // Start a game
     public void startGame() {
         System.out.println("MainFrame said: New Game Started");
+
+        game.setStartLevel(startLevel);
+        runGamePeriod();
+    }
+
+    // Add a method to update the game period
+    private void runGamePeriod() {
+        game.resetGame();
+        // Ensure the previous executors are properly shut down
+        while (!renderExecutor.isShutdown()) {
+            renderExecutor.shutdownNow();
+        }
+        while (!gameLogicExecutor.isShutdown()) {
+            gameLogicExecutor.shutdownNow();
+        }
+        renderExecutor = Executors.newSingleThreadScheduledExecutor();
+        gameLogicExecutor = Executors.newSingleThreadScheduledExecutor();
+        game.start();
+        //period now handled by game.getPeriod() (Stefan)
+        this.period = game.getPeriod(); //starting period
         updateGamePeriod();
     }
 
-    // Add a method to update the game period (TODO: assign to a specific game at some stage for multiplayer)
-    private void updateGamePeriod() {
-        // Ensure the previous executor is properly shut down
-        if (!executor.isShutdown()) {
-            executor.shutdownNow();
+    // Update the game period
+    public void updateGamePeriod() {
+        System.out.println("MainFrame says: Updating period to " + this.period);
+
+        // Shut down the existing gameLogicExecutor
+        if (!gameLogicExecutor.isShutdown()) {
+            gameLogicExecutor.shutdownNow();
         }
-        executor = Executors.newSingleThreadScheduledExecutor();
-        game.start();
 
-        int period = game.getPeriod(); //period now handled by game.getPeriod() (Stefan)
+        // Create a new gameLogicExecutor with the updated period
+        gameLogicExecutor = Executors.newSingleThreadScheduledExecutor();
 
-        // Calculate the new period based on the game leve
-        System.out.println("MainFrame says: Thread started with " + game.getLevel() + "period: " + game.getPeriod());
-
-        executor.scheduleAtFixedRate(() -> {
+        // Ensure renderExecutor continues to handle rendering
+        renderExecutor.scheduleAtFixedRate(() -> {
             if (game.isPlaying()) {
-                for (int i = 0; i < 10; i++) {
-                    SwingUtilities.invokeLater(() -> {
-                        gamePanel.repaint();
-                    });
-                    try {
-                        Thread.sleep(period/ 10); // Sleep for a fraction of the period
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                    }
-                }
+                SwingUtilities.invokeLater(() -> {
+                    gamePanel.repaint();
+                });
+            }
+        }, 0, period / 10, TimeUnit.MILLISECONDS);
+
+        gameLogicExecutor.scheduleAtFixedRate(() -> {
+            if (game.isPlaying()) {
                 game.play();
             }
         }, 0, period, TimeUnit.MILLISECONDS);
@@ -182,7 +198,7 @@ public class MainFrame extends JFrame {
     }
 
     //for the configure panel (not game logic which has its own reset logic)
-    public void resetGame() {
+    public void resetGameConfig() {
         this.board = new Board(this); // Reset the board state
         this.game = new Game(this, board); // Reset the game state
         if (gamePanel != null) {
@@ -199,9 +215,16 @@ public class MainFrame extends JFrame {
 
     // Important for rendering the current board state in the field pane, used by GAME PANEL
     public void repaintBoard() {
-        gamePanel.updateField(game.getBoard());
+        if (gamePanel != null) {
+            gamePanel.updateField(game.getBoard());
+        } else {
+            System.err.println("Error: gamePanel is null");
+        }
     }
 
+    public void setPeriod(int period) {
+        this.period = period;
+    }
 
     //all getters and setters for private variables
     public int getFieldWidth() {
@@ -224,14 +247,22 @@ public class MainFrame extends JFrame {
     }
 
     // for GamePanel
-    public int getLevel() {
+    public int getStartLevel() {
         return this.startLevel;
     }
 
     //This level is the STARTING LEVEL set by the configuration panel BEFORE a game starts.
-    public void setLevel(int level) {
+    public void setStartLevel(int level) {
         this.startLevel = level;
-        System.out.println("Updated game level: " + level);
+        game.setStartLevel(level);
+        //set period of executor
+        this.period = game.getPeriod();
+        System.out.println("MainFrame says: Updated game level: " + level + " with period: " + period);
+    }
+
+    //set current level of a game to the GamePanel
+    public void setCurrentLevel(int level) {
+        gamePanel.updateLevelLabel(level);
     }
 
     public boolean isMusic() {

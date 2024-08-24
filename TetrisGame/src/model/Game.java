@@ -14,42 +14,52 @@ public class Game {
     private MainFrame mainFrame;
     private Board board;
     private TetrisBlock activeShape;
+    GamePanel gamePanel;
+    private Clip gameMusic;
+
     private boolean playing;
     private boolean paused = false;
     private boolean gameOver = false;
+
+    // TODO: Some info for the PlayPanel (milestone 2)
     private Score score;
     private int level;
-    private int period; //period to set the thread timer
-    GamePanel gamePanel;
+    private int linesCleared;
     private int numBlocks = 0; //number of blocks spawned
 
-    private Clip gameMusic;
+    private int period; //period to set the thread timer
+    private int periodDecr = 15;
+    private boolean wasStarted;
 
     public Game(MainFrame mainFrame, Board board) {
         this.mainFrame = mainFrame;
         this.board = board;
         board.setGame(this); //assign the board to the game
         this.activeShape = null;
-        this.level = mainFrame.getLevel();
-        this.period = 200 - (level*15); //starting period, each level will decrease this by 15 (can be changed)
+        this.level = mainFrame.getStartLevel();
+        this.linesCleared = 0;
+        this.period = 200 - (level*periodDecr); //starting period, each level will decrease this by 10 (can be changed)
         gamePanel = (GamePanel) mainFrame.getGamePanel();
+        wasStarted = false;
     }
 
     //method which holds the logic for starting a new game
     public void newGame() {
         this.playing = true;
+        this.paused = false;
         this.score = new Score();
-        this.level = mainFrame.getLevel(); //starting level
+        this.level = mainFrame.getStartLevel(); //starting level
+        this.period = 200 - (level*periodDecr);
         this.gameMusic = mainFrame.playSound("src/resources.sounds/InGameMusic.wav", true);
         System.out.println("Game object says: New game Started at level " + level);
     }
 
+    // Start the game or offer user to start a new game if the prior game is over
     public void start() {
         //if game over or the game is paused, ignore start button
         if(gameOver) {
             return;
-        }
-        if(isGameOver()) {
+        } else if (isGameOver()) {
             gameOver = true;
             //new panel asking if they want to play a new game
             JDialog dialog = new JDialog();
@@ -102,6 +112,7 @@ public class Game {
         return System.currentTimeMillis() - activeShape.getLandTime() >= TetrisBlock.getBufferTime();
     }
 
+    // Spawn new block on the board at the spawn location (in board)
     public void spawn() {
         TetrisBlock newBlock = new TetrisBlock(this.board);
         this.activeShape = newBlock.spawnBlock(numBlocks);
@@ -167,9 +178,30 @@ public class Game {
     // Check for line clear (TODO: refactor for board.clearCompleteLines() to return the number of lines cleared (for scoring logic))
     private void checkForLineClear() {
         // Logic to check and clear full lines on the board
-        board.clearCompleteLines();
+        this.linesCleared+= board.clearCompleteLines();
+
+        //update level will also update the period for the MainFrame
+        updateLevel();
     }
 
+    private void updateLevel() {
+        //testing levelling up every 2 cleared lines
+        int newLevel = linesCleared / 2 + mainFrame.getStartLevel(); // want start level
+        int difference = newLevel - this.level;
+        if (difference > 0) {
+
+            //update period
+            this.period -= (difference*periodDecr);
+            System.out.println("Game Object says: Level up! New level: " + newLevel + " Period: " + period);
+            mainFrame.setPeriod(period);
+            mainFrame.updateGamePeriod(); //finally works
+        }
+        this.level = newLevel;
+        //update mainframe level for testing, remove if working
+        mainFrame.setCurrentLevel(this.level);
+    }
+
+    // Pauses the game if it's playing, resumes if it's paused
     public void pause() {
         gamePanel = (GamePanel) mainFrame.getGamePanel();
         if (paused && !playing) {
@@ -240,6 +272,7 @@ public class Game {
         });
     }
 
+    // Resumes a paused game
     public void resumeGame() {
         this.gameMusic = mainFrame.playSound("src/resources.sounds/InGameMusic.wav", true);
         System.out.println("Game Object says: Game resumed");
@@ -252,7 +285,7 @@ public class Game {
     }
 
 
-    //Stops the game and goes back to the main menu
+    //Stops the game and offers the user an option to terurn to the main menu
     public void stop() {
         boolean wasPaused=isPaused();
         mainFrame.stopSound(gameMusic);
@@ -291,6 +324,7 @@ public class Game {
         }
     }
 
+    //Update handles user keyboard input and updates the game state accordingly
     public void update(int keyCode) {
         if (activeShape==null) {
             return;
@@ -339,9 +373,12 @@ public class Game {
         //mainFrame.repaintBoard();
     }
 
+    //TODO: socket needs to be implemented for HighScore Panel
     public Score getScoreObject(){
         return score;
     }
+
+    //TODO: Score needs to updated when game over (or potentially for saving a game)
     public void updateScoreObject(int clearedLines){
         score.updateScore(clearedLines, this.level);
     }
@@ -361,9 +398,12 @@ public class Game {
     public void resetGame() {
         this.board.clearBoard();
         this.activeShape = null;
+        this.wasStarted = false;
         this.playing = false;
         this.numBlocks = 0;
-        this.level = mainFrame.getLevel();
+        this.linesCleared = 0;
+        this.level = mainFrame.getStartLevel();
+        this.period = 200 - (level*periodDecr);
         mainFrame.repaintBoard(); //don't delete or a new game won't render its new state on the fieldPanel in the GamePanel
     }
 
@@ -373,11 +413,15 @@ public class Game {
 
     //update period and return it to the thread assigned to the game
     public int getPeriod() {
-        period = 200 - (level*15);
         return period;
     }
 
-    public String getlevel() {
-        return "Level: " + level;
+    public void setStartLevel(int level) {
+        resetGame();
+        this.level = level;
+        this.period = 200 - (level*periodDecr);
+        mainFrame.setPeriod(period);
+        System.out.println("Game Object says: Level set to " + level);
     }
+
 }

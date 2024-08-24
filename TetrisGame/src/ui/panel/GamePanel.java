@@ -96,7 +96,7 @@ public class GamePanel extends JPanel {
             }
         });
 
-        levelLabel = new JLabel("Level: " + mainFrame.getLevel());
+        levelLabel = new JLabel("Level: " + mainFrame.getStartLevel());
         levelLabel.setHorizontalAlignment(JLabel.LEFT);
         add(levelLabel, BorderLayout.WEST);
     }
@@ -124,8 +124,8 @@ public class GamePanel extends JPanel {
         fieldPane.updateBoard(board);
     }
 
-    public void updateLevelLabel() {
-        levelLabel.setText("Level: " + mainFrame.getLevel());
+    public void updateLevelLabel(int level) {
+        levelLabel.setText("Level: " + level);
     }
 
     public void setPaused(boolean paused) {

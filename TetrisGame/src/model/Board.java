@@ -57,6 +57,7 @@ public class Board<T> {
         setCell(x, y, (T) cell);
     }
 
+    //Clears the line and shifts the cells above down
     public void clearLines(int y) {
         for (int j = y; j > 0; j--) {
             for (int i = 0; i < width; i++) {
@@ -76,7 +77,9 @@ public class Board<T> {
         }
     }
 
-    public void clearCompleteLines() {
+    // Clear all complete lines (accessed by Game) and return the number of lines cleared
+    public int clearCompleteLines() {
+        int clearedLines = 0;
         for (int i = height - 1; i >= 0; i--) {
             boolean rowComplete = true;
             for (int j = 0; j < width; j++) {
@@ -86,11 +89,12 @@ public class Board<T> {
                 }
             }
             if (rowComplete) {
+                clearedLines++;
                 clearLines(i);
                 i++; // Recheck the same row after shifting
             }
-
         }
+        return clearedLines;
     }
 
 

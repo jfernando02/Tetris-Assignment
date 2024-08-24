@@ -56,7 +56,7 @@ public class ConfigurePanel extends JDialog {
                     mainFrame.setFieldWidth(newValue);
                     mainFrame.refreshBoard(); //added for grid expansion of field pane (width)
                     //reset game
-                    mainFrame.resetGame();
+                    mainFrame.resetGameConfig();
                 });
 
         // Field Height
@@ -66,14 +66,14 @@ public class ConfigurePanel extends JDialog {
                     mainFrame.setFieldHeight(newValue);
                     mainFrame.refreshBoard(); //added for grid expansion of field pane (height)
                     //reset game
-                    mainFrame.resetGame();
+                    mainFrame.resetGameConfig();
                 });
 
         // Game Level
         addSlider(configBox, gbc, 0, 2, "Game Level:",
-                1, 10, mainFrame.getLevel(), e -> {
+                1, 10, mainFrame.getStartLevel(), e -> {
                     int newValue = ((JSlider) e.getSource()).getValue();
-                    mainFrame.setLevel(newValue);
+                    mainFrame.setStartLevel(newValue);
                 });
 
         // Music Checkbox

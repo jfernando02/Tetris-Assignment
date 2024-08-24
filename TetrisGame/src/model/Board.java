@@ -16,7 +16,8 @@ public class Board<T> {
         this.width = mainFrame.getFieldWidth();
         this.height = mainFrame.getFieldHeight();
         this.board = (T[][]) new Object[width][height];
-        this.spawnX = (width / 2)-1;
+        //get spawn from Game
+        this.spawnX = (this.width /2-2);
         this.spawnY = 0;
         this.mainFrame = mainFrame;
     }

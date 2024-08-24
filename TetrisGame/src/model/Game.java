@@ -18,11 +18,9 @@ public class Game {
     private boolean paused = false;
     private boolean gameOver = false;
     private Score score;
-    //private int score = 0;
     private int level;
+    private int period; //period to set the thread timer
     GamePanel gamePanel;
-    private int spawnX;
-    private int spawnY;
     private int numBlocks = 0; //number of blocks spawned
 
     private Clip gameMusic;
@@ -31,17 +29,19 @@ public class Game {
         this.mainFrame = mainFrame;
         this.board = board;
         board.setGame(this); //assign the board to the game
-        this.spawnX = (board.getWidth() / 2)-1;
-        this.spawnY = 2;
         this.activeShape = null;
         this.level = mainFrame.getLevel();
+        this.period = 200 - (level*15); //starting period, each level will decrease this by 15 (can be changed)
         gamePanel = (GamePanel) mainFrame.getGamePanel();
     }
 
+    //method which holds the logic for starting a new game
     public void newGame() {
         this.playing = true;
         this.score = new Score();
+        this.level = mainFrame.getLevel(); //starting level
         this.gameMusic = mainFrame.playSound("src/resources.sounds/InGameMusic.wav", true);
+        System.out.println("Game object says: New game Started at level " + level);
     }
 
     public void start() {
@@ -79,9 +79,9 @@ public class Game {
         } else {
             newGame();
         }
-
     }
 
+    //logic for playing whilst "playing = true"
     public void play() {
         if (playing) {
             if (this.activeShape == null) {
@@ -151,11 +151,11 @@ public class Game {
         }
     }
 
-
+    // Determine if game over conditions are met
     private boolean isGameOver() {
         //if any x in the first 3 lines is occupied
         for (int y = 0; y < 3; y++) {
-            for (int x = spawnX; x < spawnX + 4; x++) {
+            for (int x = board.getSpawnY(); x < board.getSpawnX() + 4; x++) {
                 if (board.getCell(x, y) != null) {
                     return true;
                 }
@@ -164,6 +164,7 @@ public class Game {
         return false;
     }
 
+    // Check for line clear (TODO: refactor for board.clearCompleteLines() to return the number of lines cleared (for scoring logic))
     private void checkForLineClear() {
         // Logic to check and clear full lines on the board
         board.clearCompleteLines();
@@ -361,17 +362,22 @@ public class Game {
         this.board.clearBoard();
         this.activeShape = null;
         this.playing = false;
-        //this.score = 0;
         this.numBlocks = 0;
         this.level = mainFrame.getLevel();
-        mainFrame.repaintBoard(); //don't delete
-    }
-
-    public void setPlaying(boolean b) {
-        this.playing = b;
+        mainFrame.repaintBoard(); //don't delete or a new game won't render its new state on the fieldPanel in the GamePanel
     }
 
     public boolean isPaused() {
         return paused;
+    }
+
+    //update period and return it to the thread assigned to the game
+    public int getPeriod() {
+        period = 200 - (level*15);
+        return period;
+    }
+
+    public String getlevel() {
+        return "Level: " + level;
     }
 }

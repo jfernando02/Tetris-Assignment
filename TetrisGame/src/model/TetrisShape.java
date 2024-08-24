@@ -30,7 +30,7 @@ public enum TetrisShape {
                 case 3 -> new int[][]{{1, 1, 1, 1}, {0, 1, 2, 3}};
                 default -> new int[][]{{0, 1, 2, 3}, {2, 2, 2, 2}};
             };
-            case O -> new int[][]{{0, 1, 0, 1}, {0, 0, 1, 1}};
+            case O -> new int[][]{{1, 2, 1, 2}, {0, 0, 1, 1}};
             case T -> switch (rotation) {
                 case 0 -> new int[][]{{0, 1, 1, 2}, {1, 1, 2, 1}};
                 case 1 -> new int[][]{{1, 1, 1, 0}, {0, 1, 2, 1}};

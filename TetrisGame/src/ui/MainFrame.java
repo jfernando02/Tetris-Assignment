@@ -5,6 +5,7 @@ package ui;
 import java.awt.*;
 import java.util.concurrent.Executors;
 
+import model.Score;
 import ui.panel.*;
 import model.Board;
 import model.Game;
@@ -40,7 +41,7 @@ public class MainFrame extends JFrame {
     // Configuration settings
     private int fieldWidth;
     private int fieldHeight;
-    private int level = 1;
+    private int startLevel = 1;
     private boolean music;
     private boolean soundEffect;
     private boolean aiPlay; // ghost piece
@@ -49,7 +50,7 @@ public class MainFrame extends JFrame {
     // For scores (and HighScorePanel)
     private int currentScore; // for the current gameplay score which is dynamically updated
     //dynamic array of scores to the high score panel
-    private ArrayList<Integer> scores = new ArrayList<Integer>();
+    private ArrayList<Score> scores = new ArrayList<Score>();
 
     public MainFrame(String title, int mainWidth, int mainHeight) {
         this.title = title;
@@ -75,77 +76,7 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    //getters and setters
-    public void refreshBoard() {
-        this.board.refreshBoard(this);
-    }
-
-    //all getters and setters for private variables
-    public int getFieldWidth() {
-        return fieldWidth;
-    }
-
-    public int getFieldHeight() {
-        return fieldHeight;
-    }
-
-    public void setFieldWidth(int fieldWidth) {
-        this.fieldWidth = fieldWidth;
-        System.out.println("Updated game field width: " + fieldWidth);
-    }
-
-
-    public void setFieldHeight(int fieldHeight) {
-        this.fieldHeight = fieldHeight;
-        System.out.println("Updated game field height: " + fieldHeight);
-    }
-
-    // for GamePanel
-    public int getLevel() {
-        return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
-        System.out.println("Updated game level: " + level);
-    }
-
-    public boolean isMusic() {
-        return music;
-    }
-
-    public void setMusic(boolean music) {
-        this.music = music;
-        System.out.println("Updated music setting: " + music);
-    }
-
-    public boolean isSoundEffect() {
-        return soundEffect;
-    }
-
-    public void setSoundEffect(boolean soundEffect) {
-        this.soundEffect = soundEffect;
-        System.out.println("Updated sound effect setting: " + soundEffect);
-    }
-
-    public boolean isAiPlay() {
-        return aiPlay;
-    }
-
-    public void setAiPlay(boolean aiPlay) {
-        this.aiPlay = aiPlay;
-        System.out.println("Updated AI play setting: " + aiPlay);
-    }
-
-    public boolean isExtendedMode() {
-        return extendedMode;
-    }
-
-    public void setExtendedMode(boolean extendedMode) {
-        this.extendedMode = extendedMode;
-        System.out.println("Updated extended mode setting: " + extendedMode);
-    }
-
+    // --------------------- METHODS FOR SHOWING PANELS --------------------- START
     // First state user sees when the game is launched
     public void showSplashScreen() {
         getContentPane().removeAll();
@@ -187,30 +118,46 @@ public class MainFrame extends JFrame {
         configurePanel.setVisible(true);
     }
 
-
-    // >> LOGIC FOR GAME LOOP <<
-    public void startGame() {
-
-        updateGamePeriod();
-        System.out.println("MainFrame said: New Game Started");
-
+    // Method to update the score MainFrame -> GamePanel -> Game and back (TODO: get scores array from mainframe and order them)
+    public void showHighScorePanel() {
+        HighScorePanel highScorePanel = new HighScorePanel(this);
+        getContentPane().removeAll();
+        setContentPane(highScorePanel);
+        revalidate();
+        repaint();
     }
 
-    // Add a method to update the game period (TODO: check and fix speed of level)
-    public void updateGamePeriod() {
-        // Delete prior threads
-        executor.shutdownNow();
+    // --------------------- METHODS FOR SHOWING PANELS --------------------- END
+
+
+    //--------------------- METHODS FOR THE GAME LOGIC --------------------- START
+    public void startGame() {
+        System.out.println("MainFrame said: New Game Started");
+        updateGamePeriod();
+    }
+
+    // Add a method to update the game period (TODO: assign to a specific game at some stage for multiplayer)
+    private void updateGamePeriod() {
+        // Ensure the previous executor is properly shut down
+        if (!executor.isShutdown()) {
+            executor.shutdownNow();
+        }
         executor = Executors.newSingleThreadScheduledExecutor();
         game.start();
-        long period = 300 - (level * 50); // TODO: Adjust the period based on the level: Milliseconds
-        executor.scheduleAtFixedRate(() -> { // TODO: Still need to implement level (update) system, just a socket
+
+        int period = game.getPeriod(); //period now handled by game.getPeriod() (Stefan)
+
+        // Calculate the new period based on the game leve
+        System.out.println("MainFrame says: Thread started with " + game.getLevel() + "period: " + game.getPeriod());
+
+        executor.scheduleAtFixedRate(() -> {
             if (game.isPlaying()) {
                 for (int i = 0; i < 10; i++) {
                     SwingUtilities.invokeLater(() -> {
                         gamePanel.repaint();
                     });
                     try {
-                        Thread.sleep(period / 10); // Sleep for a fraction of the period
+                        Thread.sleep(period/ 10); // Sleep for a fraction of the period
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                     }
@@ -218,14 +165,6 @@ public class MainFrame extends JFrame {
                 game.play();
             }
         }, 0, period, TimeUnit.MILLISECONDS);
-    }
-
-    public void resetGame() {
-        this.board = new Board(this); // Reset the board state
-        this.game = new Game(this, board); // Reset the game state
-        if (gamePanel != null) {
-            gamePanel.requestFocusInWindow(); // Refocus on the game panel
-        }
     }
 
 
@@ -242,10 +181,99 @@ public class MainFrame extends JFrame {
         gamePanel.requestFocusInWindow();
     }
 
-    // Important for rendering the current board state in the field pane
+    //for the configure panel (not game logic which has its own reset logic)
+    public void resetGame() {
+        this.board = new Board(this); // Reset the board state
+        this.game = new Game(this, board); // Reset the game state
+        if (gamePanel != null) {
+            gamePanel.requestFocusInWindow(); // Refocus on the game panel
+        }
+    }
+
+    //--------------------- METHODS FOR THE GAME LOGIC --------------------- STOP
+
+    //Refresh the board dimensions when the field dimensions are updated by the CONFIGURATION PANEL
+    public void refreshBoard() {
+        this.board.refreshBoard(this);
+    }
+
+    // Important for rendering the current board state in the field pane, used by GAME PANEL
     public void repaintBoard() {
         gamePanel.updateField(game.getBoard());
     }
+
+
+    //all getters and setters for private variables
+    public int getFieldWidth() {
+        return fieldWidth;
+    }
+
+    public int getFieldHeight() {
+        return fieldHeight;
+    }
+
+    public void setFieldWidth(int fieldWidth) {
+        this.fieldWidth = fieldWidth;
+        System.out.println("Updated game field width: " + fieldWidth);
+    }
+
+
+    public void setFieldHeight(int fieldHeight) {
+        this.fieldHeight = fieldHeight;
+        System.out.println("Updated game field height: " + fieldHeight);
+    }
+
+    // for GamePanel
+    public int getLevel() {
+        return this.startLevel;
+    }
+
+    //This level is the STARTING LEVEL set by the configuration panel BEFORE a game starts.
+    public void setLevel(int level) {
+        this.startLevel = level;
+        System.out.println("Updated game level: " + level);
+    }
+
+    public boolean isMusic() {
+        return music;
+    }
+
+    // TODO: change event listeners to respond to if music if on/off
+    public void setMusic(boolean music) {
+        this.music = music;
+        System.out.println("Updated music setting: " + music);
+    }
+
+    // TODO: set event listeners to respond to if sound effects are on/off
+    public boolean isSoundEffect() {
+        return soundEffect;
+    }
+
+    public void setSoundEffect(boolean soundEffect) {
+        this.soundEffect = soundEffect;
+        System.out.println("Updated sound effect setting: " + soundEffect);
+    }
+
+    public boolean isAiPlay() {
+        return aiPlay;
+    }
+
+    // For ghost piece (TODO: validate AI method (Joseph's idea: https://github.com/nuno-faria/tetris-ai)
+    public void setAiPlay(boolean aiPlay) {
+        this.aiPlay = aiPlay;
+        System.out.println("Updated AI play setting: " + aiPlay);
+    }
+
+    // For rendering two play panels (nesting fieldPanes) unto the one game panel (TODO: implement
+    public boolean isExtendedMode() {
+        return extendedMode;
+    }
+
+    public void setExtendedMode(boolean extendedMode) {
+        this.extendedMode = extendedMode;
+        System.out.println("Updated extended mode setting: " + extendedMode);
+    }
+
 
     //Method to get the game to manage it
     public Object getGame() {
@@ -256,22 +284,6 @@ public class MainFrame extends JFrame {
     public Component getGamePanel() {
         return gamePanel;
     }
-
-    // Method to update the score MainFrame -> GamePanel -> Game and back
-    public void showHighScorePanel() {
-        HighScorePanel highScorePanel = new HighScorePanel(this);
-        getContentPane().removeAll();
-        setContentPane(highScorePanel);
-        revalidate();
-        repaint();
-    }
-
-    // TODO: Validate if extra mainFrame can be resolved for state management
-    public MainFrame() {
-        MainFrame frame = new MainFrame("Game Title", 800, 600); // Assuming you have a MainFrame constructor with parameters
-        HighScorePanel highScoresPanel = new HighScorePanel(frame);
-    }
-
 
     // Method to play sound with an option to loop, returns the clip for stoppping
     public Clip playSound(String soundFile, boolean loop) {
@@ -298,6 +310,5 @@ public class MainFrame extends JFrame {
             clip.stop();
         }
     }
-
 
 }

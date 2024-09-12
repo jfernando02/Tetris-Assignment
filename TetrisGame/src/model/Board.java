@@ -31,6 +31,8 @@ public class Board<T> {
         this.width = mainFr.getFieldWidth();
         this.height = mainFr.getFieldHeight();
         this.board = (T[][]) new Object[width][height];
+        this.spawnX = (this.width /2-2);
+        this.spawnY = 0;
     }
 
     public void setCell(int x, int y, T cell) {
@@ -71,7 +73,7 @@ public class Board<T> {
         }
         //clear line sound
         try {
-            mainFrame.playSound("src/resources.sounds/LineClear.wav", false);
+            mainFrame.playSound("src/resources/sounds/lineClear.wav", false);
         } catch (Exception e) {
             e.printStackTrace();
         }

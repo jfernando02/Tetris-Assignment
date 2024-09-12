@@ -3,12 +3,11 @@ package model;
 
 import ui.MainFrame;
 import ui.panel.GamePanel;
-import javax.sound.sampled.Clip;
+
+import javax.sound.sampled.*;
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
 public class Game {
     private MainFrame mainFrame;
@@ -19,7 +18,6 @@ public class Game {
 
     private boolean playing;
     private boolean paused = false;
-    private boolean gameOver = false;
 
     // TODO: Some info for the PlayPanel (milestone 2)
     private Score score;
@@ -28,8 +26,9 @@ public class Game {
     private int numBlocks = 0; //number of blocks spawned
 
     private int period; //period to set the thread timer
+    // decreases thread period by 15 every level up
     private int periodDecr = 15;
-    private boolean wasStarted;
+    private boolean gameRunning;
 
     public Game(MainFrame mainFrame, Board board) {
         this.mainFrame = mainFrame;
@@ -40,27 +39,31 @@ public class Game {
         this.linesCleared = 0;
         this.period = 200 - (level*periodDecr); //starting period, each level will decrease this by 10 (can be changed)
         gamePanel = (GamePanel) mainFrame.getGamePanel();
-        wasStarted = false;
+        gameRunning = false;
     }
 
     //method which holds the logic for starting a new game
     public void newGame() {
-        this.playing = true;
-        this.paused = false;
-        this.score = new Score();
-        this.level = mainFrame.getStartLevel(); //starting level
-        this.period = 200 - (level*periodDecr);
-        this.gameMusic = mainFrame.playSound("src/resources.sounds/InGameMusic.wav", true);
-        System.out.println("Game object says: New game Started at level " + level);
+        if (!gameRunning) {
+            this.gameRunning = true;
+            this.playing = true;
+            this.paused = false;
+            this.score = new Score();
+            this.level = mainFrame.getStartLevel(); //starting level
+            this.period = 200 - (level*periodDecr);
+            this.gameMusic = mainFrame.playSound("src/resources.sounds/InGameMusic.wav", true);
+            System.out.println("Game object says: New game Started at level " + level);
+        }
     }
 
     // Start the game or offer user to start a new game if the prior game is over
     public void start() {
         //if game over or the game is paused, ignore start button
-        if(gameOver) {
+        if(gameRunning) {
+            System.out.println("Game Object said: Game is already running");
+            //exit if the game is already running
             return;
         } else if (isGameOver()) {
-            gameOver = true;
             //new panel asking if they want to play a new game
             JDialog dialog = new JDialog();
             dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -76,14 +79,12 @@ public class Game {
 
             if (result == JOptionPane.YES_OPTION) {
                 System.out.println("Game Object said: starting new game");
-                gameOver = false;
-                resetGame();
+                newGame();
                 start();
             } else {
                 System.out.println("Game Object said: going to main menu");
                 resetGame();
                 dialog.dispose();
-                gameOver = false;
                 mainFrame.showMainPanel();
             }
         } else {
@@ -133,6 +134,8 @@ public class Game {
 
     public void gameOverPanel() {
         mainFrame.stopSound(gameMusic);
+        this.gameRunning = false;
+        pause();
         //new JDIalog for game over to ask if they're sure if they want to quit
         JDialog dialog = new JDialog();
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -161,7 +164,7 @@ public class Game {
     }
 
     // Determine if game over conditions are met
-    private boolean isGameOver() {
+    public boolean isGameOver() {
         //if any x in the first 3 lines is occupied
         for (int y = 0; y < 3; y++) {
             for (int x = board.getSpawnY(); x < board.getSpawnX() + 4; x++) {
@@ -207,6 +210,7 @@ public class Game {
             paused = false;
             // Resume music
             this.gameMusic = mainFrame.playSound("src/resources.sounds/InGameMusic.wav", true);
+
             gamePanel.setPaused(false);
             return;
         }
@@ -283,10 +287,12 @@ public class Game {
     }
 
 
-    //Stops the game and offers the user an option to terurn to the main menu
+    //Stops the game and offers the user an option to return to the main menu
     public void stop() {
-        boolean wasPaused=isPaused();
+
+        boolean wasPaused = paused;
         mainFrame.stopSound(gameMusic);
+
         if (playing) {
             System.out.println("Game paused");
             playing = false;
@@ -315,7 +321,7 @@ public class Game {
         } else {
             //else refocus on
             mainFrame.getGamePanel().requestFocusInWindow();
-            if(!wasPaused){
+            if(!wasPaused && gameRunning){
                 resumeGame();
             }
             dialog.dispose();
@@ -395,18 +401,18 @@ public class Game {
 
     public void resetGame() {
         this.board.clearBoard();
+        this.gameRunning = false;
         this.activeShape = null;
-        this.wasStarted = false;
         this.playing = false;
+        this.paused = false;
+        this.score = new Score();
+        // TODO: integrate to scoring logic start
         this.numBlocks = 0;
         this.linesCleared = 0;
+        // TODO: integrate to scoring logic end
         this.level = mainFrame.getStartLevel();
         this.period = 200 - (level*periodDecr);
         mainFrame.repaintBoard(); //don't delete or a new game won't render its new state on the fieldPanel in the GamePanel
-    }
-
-    public boolean isPaused() {
-        return paused;
     }
 
     //update period and return it to the thread assigned to the game
@@ -420,6 +426,11 @@ public class Game {
         this.period = 200 - (level*periodDecr);
         mainFrame.setPeriod(period);
         System.out.println("Game Object says: Level set to " + level);
+    }
+
+    // For if the game is running (even if paused) so the start button doesn't reset the game
+    public boolean isGameRunning() {
+        return gameRunning;
     }
 
 }

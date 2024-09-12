@@ -1,7 +1,7 @@
 {
-  "fieldWidth": 15,
-  "fieldHeight": 29,
-  "startLevel": 1,
+  "fieldWidth": 10,
+  "fieldHeight": 20,
+  "startLevel": 6,
   "music": true,
   "soundEffect": true,
   "aiPlay": false,

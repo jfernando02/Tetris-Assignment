@@ -121,6 +121,10 @@ public class MainFrame extends JFrame {
     //--------------------- METHODS FOR THE GAME LOGIC --------------------- START
     // Start a game
     public void startGame() {
+        if (game.isGameRunning() && !game.isGameOver()) {
+            System.out.println("Game is already running");
+            return;
+        }
         System.out.println("MainFrame said: New Game Started");
 
         game.setStartLevel(configData.getStartLevel());
@@ -129,7 +133,6 @@ public class MainFrame extends JFrame {
 
     // Add a method to update the game period
     private void runGamePeriod() {
-        game.resetGame();
         // Ensure the previous executors are properly shut down
         while (!renderExecutor.isShutdown()) {
             renderExecutor.shutdownNow();
@@ -262,14 +265,12 @@ public class MainFrame extends JFrame {
         return configData.isMusic();
     }
 
-    // TODO: change event listeners to respond to if music if on/off
     public void setMusic(boolean music) {
         configData.setMusic(music);
         ConfigManager.saveConfigData(configData);
         System.out.println("Updated music setting: " + music);
     }
 
-    // TODO: set event listeners to respond to if sound effects are on/off
     public boolean isSoundEffect() {
         return configData.isSoundEffect();
     }
@@ -291,7 +292,7 @@ public class MainFrame extends JFrame {
         System.out.println("Updated AI play setting: " + aiPlay);
     }
 
-    // For rendering two play panels (nesting fieldPanes) unto the one game panel (TODO: implement
+    // For rendering two play panels (nesting fieldPanes) unto the one game panel (TODO: implement)
     public boolean isExtendedMode() {
         return configData.isExtendedMode();
     }
@@ -314,20 +315,24 @@ public class MainFrame extends JFrame {
 
     // Method to play sound with an option to loop, returns the clip for stopping
     public Clip playSound(String soundFile, boolean loop) {
+        Clip clip = null;
+
         try {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(soundFile).getAbsoluteFile());
-            Clip clip = AudioSystem.getClip();
+            clip = AudioSystem.getClip();
             clip.open(audioInputStream);
             if (loop) {
-                clip.loop(Clip.LOOP_CONTINUOUSLY);
-            } else {
+                if (isMusic()) {
+                    clip.loop(Clip.LOOP_CONTINUOUSLY);
+                }
+            } else if (isSoundEffect()) {
                 clip.start();
             }
-            return clip;
-        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
-            ex.printStackTrace();
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
         }
-        return null;
+
+        return clip;
     }
 
     //stop sound helper function

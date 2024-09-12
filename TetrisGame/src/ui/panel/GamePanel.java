@@ -17,7 +17,7 @@ public class GamePanel extends JPanel {
     private FieldPane fieldPane;
     private MainFrame mainFrame;
     private JButton startButton;
-    private JButton stopButton;
+
     private JButton pauseButton;
     private JLabel levelLabel;
     private JLabel pauseLabel;
@@ -61,7 +61,6 @@ public class GamePanel extends JPanel {
 
         JPanel buttonPanel = new JPanel();
         startButton = new JButton("Start");
-        stopButton = new JButton("Stop");
         pauseButton = new JButton("Pause");
 
         startButton.addActionListener(e -> {
@@ -71,11 +70,11 @@ public class GamePanel extends JPanel {
             }
             requestFocusInWindow();
         });
-        stopButton.addActionListener(e -> stopGame());
+
         pauseButton.addActionListener(e -> pauseGame());
 
         buttonPanel.add(startButton);
-        buttonPanel.add(stopButton);
+
         buttonPanel.add(pauseButton);
 
         add(buttonPanel, BorderLayout.NORTH);

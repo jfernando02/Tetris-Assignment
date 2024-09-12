@@ -119,7 +119,7 @@ public class Game {
         numBlocks++;
     }
 
-    // Finalize the shape and place it on the board
+    // Finalize the shape and place it on the board (for slight landing buffer)
     private void finalizeShape() {
         activeShape.placeOnBoard();
         mainFrame.playSound("src/resources.sounds/BlockPlacement.wav", false);
@@ -128,8 +128,6 @@ public class Game {
             this.playing = false;
             mainFrame.playSound("src/resources.sounds/GameOver.wav", false);
             gameOverPanel();
-            //block start button
-
         }
     }
 

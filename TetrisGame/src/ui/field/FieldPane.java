@@ -10,6 +10,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
+// This Class is responsible for rendering the game field (where the tetris blocks are displayed)
+// For extended mode, two threads will each render a FieldPane unto a PlayPanel both nested in a GamePanel
 public class FieldPane extends JPanel {
     private Board<TetrisCell> board;
     private int cellSize;
@@ -20,6 +22,7 @@ public class FieldPane extends JPanel {
         setPreferredSize(new Dimension(board.getWidth() * cellSize, board.getHeight() * cellSize));
     }
 
+    // This method is called by the system to render the game field
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -47,6 +50,7 @@ public class FieldPane extends JPanel {
         }
     }
 
+    // To refresh the game field with the updated state
     public void updateBoard(Board<TetrisCell> board) {
         this.board = board;
         repaint();

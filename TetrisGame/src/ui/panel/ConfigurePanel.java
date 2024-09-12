@@ -1,5 +1,3 @@
-// Panel for the configuration screen
-// TODO (Idea): hover effect over the settings to explain what they do
 package ui.panel;
 
 import ui.UIGenerator;
@@ -35,7 +33,10 @@ public class ConfigurePanel extends JDialog {
         // Title label
         JLabel titleLabel = new JLabel("Configuration", JLabel.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
-        add(titleLabel, BorderLayout.NORTH);
+        JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        titlePanel.setOpaque(false);
+        titlePanel.add(titleLabel);
+        backgroundLabel.add(titlePanel, BorderLayout.NORTH);
 
         // White box panel for configuration settings
         JPanel configBox = new JPanel(new GridBagLayout());
@@ -48,71 +49,101 @@ public class ConfigurePanel extends JDialog {
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
+        try {
+            // Reset Config Button
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+            gbc.gridwidth = 1;
+            gbc.anchor = GridBagConstraints.EAST;
+            //custom button for reset
+            JButton resetButton = UIGenerator.createCustomButton("Reset Config", 20, 20);
+            resetButton.addActionListener(e -> {
+                mainFrame.resetConfigData();
+                JOptionPane.showMessageDialog(this, "Configuration has been reset to default.", "Reset Settings", JOptionPane.INFORMATION_MESSAGE);
+                // refresh the Configuration Panel
+                mainFrame.showConfigurePanel();
+                dispose(); // Delete old configuration panel
+            });
+            configBox.add(resetButton, gbc);
 
-        // Field Width
-        addSlider(configBox, gbc, 0, 0, "Field Width (No of cells):",
-                5, 15, mainFrame.getFieldWidth(), e -> {
-                    int newValue = ((JSlider) e.getSource()).getValue();
-                    mainFrame.setFieldWidth(newValue);
-                    mainFrame.refreshBoard(); //added for grid expansion of field pane (width)
-                    //reset game
-                    mainFrame.resetGameConfig();
-                });
+            // Field Width
+            addSlider(configBox, gbc, 0, 1, "Field Width (No of cells):",
+                    5, 15, mainFrame.getFieldWidth(), e -> {
+                        int newValue = ((JSlider) e.getSource()).getValue();
+                        mainFrame.setFieldWidth(newValue);
+                        mainFrame.refreshBoard(); //added for grid expansion of field pane (width)
+                        mainFrame.resetGameConfig();
+                    });
 
-        // Field Height
-        addSlider(configBox, gbc, 0, 1, "Field Height (No of cells):",
-                15, 30, mainFrame.getFieldHeight(), e -> {
-                    int newValue = ((JSlider) e.getSource()).getValue();
-                    mainFrame.setFieldHeight(newValue);
-                    mainFrame.refreshBoard(); //added for grid expansion of field pane (height)
-                    //reset game
-                    mainFrame.resetGameConfig();
-                });
+            // Field Height
+            addSlider(configBox, gbc, 0, 2, "Field Height (No of cells):",
+                    15, 30, mainFrame.getFieldHeight(), e -> {
+                        int newValue = ((JSlider) e.getSource()).getValue();
+                        mainFrame.setFieldHeight(newValue);
+                        mainFrame.refreshBoard(); //added for grid expansion of field pane (height)
+                        mainFrame.resetGameConfig();
+                    });
 
-        // Game Level
-        addSlider(configBox, gbc, 0, 2, "Game Level:",
-                1, 10, mainFrame.getStartLevel(), e -> {
-                    int newValue = ((JSlider) e.getSource()).getValue();
-                    mainFrame.setStartLevel(newValue);
-                });
+            // Game Level
+            addSlider(configBox, gbc, 0, 3, "Game Level:",
+                    1, 10, mainFrame.getStartLevel(), e -> {
+                        int newValue = ((JSlider) e.getSource()).getValue();
+                        mainFrame.setStartLevel(newValue);
+                    });
 
-        // Music Checkbox
-        addCheckBox(configBox, gbc, 0, 3, "Music:",
-                mainFrame.isMusic(), e -> mainFrame.setMusic(((JCheckBox) e.getSource()).isSelected()));
+            // Music Checkbox
+            addCheckBox(configBox, gbc, 0, 4, "Music:",
+                    mainFrame.isMusic(), e -> {
+                        mainFrame.setMusic(((JCheckBox) e.getSource()).isSelected());
+                    });
 
-        // Sound Effect Checkbox
-        addCheckBox(configBox, gbc, 0, 4, "Sound Effect:",
-                mainFrame.isSoundEffect(), e -> mainFrame.setSoundEffect(((JCheckBox) e.getSource()).isSelected()));
+            // Sound Effect Checkbox
+            addCheckBox(configBox, gbc, 0, 5, "Sound Effect:",
+                    mainFrame.isSoundEffect(), e -> {
+                        mainFrame.setSoundEffect(((JCheckBox) e.getSource()).isSelected());
+                    });
 
-        // AI Play Checkbox
-        addCheckBox(configBox, gbc, 0, 5, "AI Play:",
-                mainFrame.isAiPlay(), e -> mainFrame.setAiPlay(((JCheckBox) e.getSource()).isSelected()));
+            // AI Play Checkbox
+            addCheckBox(configBox, gbc, 0, 6, "AI Play:",
+                    mainFrame.isAiPlay(), e -> {
+                        mainFrame.setAiPlay(((JCheckBox) e.getSource()).isSelected());
+                    });
 
-        // Extended Mode Checkbox
-        addCheckBox(configBox, gbc, 0, 6, "Extended Mode:",
-                mainFrame.isExtendedMode(), e -> mainFrame.setExtendedMode(((JCheckBox) e.getSource()).isSelected()));
+            // Extended Mode Checkbox
+            addCheckBox(configBox, gbc, 0, 7, "Extended Mode:",
+                    mainFrame.isExtendedMode(), e -> {
+                        mainFrame.setExtendedMode(((JCheckBox) e.getSource()).isSelected());
+                    });
 
-        // Back Button
-        gbc.gridx = 0;
-        gbc.gridy = 9;
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
-        JButton backButton = UIGenerator.createCustomButton("Back", 700, 20);
-        //centre the button
-        //back closes the dialog
-        backButton.addActionListener(e -> {
-            mainFrame.playSound("src/resources.sounds/MenuKeyPresses.wav", false);
-            dispose();
-        });
-        configBox.add(backButton, gbc);
 
-        add(configBox, BorderLayout.CENTER);
+            // Back Button
+            gbc.gridx = 0;
+            gbc.gridy = 8;
+            gbc.gridwidth = 2;
+            gbc.anchor = GridBagConstraints.CENTER;
+            JButton backButton = UIGenerator.createCustomButton("Back", 700, 20);
+            //centre the button
+            //back closes the dialog
+            backButton.addActionListener(e -> {
+                mainFrame.playSound("src/resources.sounds/MenuKeyPresses.wav", false);
+                dispose();
+            });
+            configBox.add(backButton, gbc);
+
+            backgroundLabel.add(configBox, BorderLayout.CENTER);
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error initializing configuration panel: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
-    //helper method to create checkboxes
+    // Helper method to create sliders
     public static void addSlider(JPanel panel, GridBagConstraints gbc,
                                  int gridx, int gridy, String labelText, int min,
                                  int max, int value, ChangeListener changeListener) {
+        if (min > max) {
+            throw new IllegalArgumentException("Invalid range properties: min should be less than or equal to max");
+        }
 
         gbc.gridx = gridx;
         gbc.gridy = gridy;
@@ -163,6 +194,4 @@ public class ConfigurePanel extends JDialog {
         checkBox.addActionListener(e -> valueLabel.setText(checkBox.isSelected() ? "On" : "Off"));
         panel.add(valueLabel, gbc);
     }
-
 }
-

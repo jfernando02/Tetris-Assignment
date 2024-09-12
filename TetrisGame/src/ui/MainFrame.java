@@ -1,6 +1,7 @@
-// Main application window for the game (Holds Splash Screen and the Main Panel
-// Uses the UIGenerator class to generate the UI components via the panels
 package ui;
+
+import config.ConfigData;
+import config.ConfigManager;
 
 import java.awt.*;
 import java.util.concurrent.Executors;
@@ -38,13 +39,7 @@ public class MainFrame extends JFrame {
     private ScheduledExecutorService gameLogicExecutor;
     private volatile long period; //will need two periods for multiplayer, each handling different speeds according to level
     // Configuration settings
-    private int fieldWidth;
-    private int fieldHeight;
-    private int startLevel = 1;
-    private boolean music;
-    private boolean soundEffect;
-    private boolean aiPlay; // ghost piece
-    private boolean extendedMode; // extended mode
+    private ConfigData configData;
 
     // For scores (and HighScorePanel)
     private int currentScore; // for the current gameplay score which is dynamically updated
@@ -55,18 +50,13 @@ public class MainFrame extends JFrame {
         this.title = title;
         this.mainWidth = mainWidth;
         this.mainHeight = mainHeight;
-        this.fieldWidth = 10; // for FieldPane (default width)
-        this.fieldHeight = 20; // for FieldPane (default height)
+        // Loads the configuration data (Stefan: Milestone 2 update)
+        this.configData = ConfigManager.getConfigData();
         //initialise to maintain states for rendering the field and grid
         this.board = new Board(this);
         this.game = new Game(this, board);
         this.renderExecutor = Executors.newSingleThreadScheduledExecutor();
         this.gameLogicExecutor = Executors.newSingleThreadScheduledExecutor();
-        //this.level = 1; // default level setting
-        this.music = true; // default music setting
-        this.soundEffect = true; // default sound effect setting
-        this.aiPlay = false; // default ghost piece setting
-        this.extendedMode = false; // default extended mode setting
         this.gamePanel = new GamePanel(this, game);
 
         setTitle(this.title);
@@ -133,7 +123,7 @@ public class MainFrame extends JFrame {
     public void startGame() {
         System.out.println("MainFrame said: New Game Started");
 
-        game.setStartLevel(startLevel);
+        game.setStartLevel(configData.getStartLevel());
         runGamePeriod();
     }
 
@@ -150,7 +140,7 @@ public class MainFrame extends JFrame {
         renderExecutor = Executors.newSingleThreadScheduledExecutor();
         gameLogicExecutor = Executors.newSingleThreadScheduledExecutor();
         game.start();
-        //period now handled by game.getPeriod() (Stefan)
+        //Thread period now handled by game.getPeriod() (Stefan)
         this.period = game.getPeriod(); //starting period
         updateGamePeriod();
     }
@@ -228,32 +218,35 @@ public class MainFrame extends JFrame {
 
     //all getters and setters for private variables
     public int getFieldWidth() {
-        return fieldWidth;
+        return configData.getFieldWidth();
     }
 
     public int getFieldHeight() {
-        return fieldHeight;
+        return configData.getFieldHeight();
     }
 
     public void setFieldWidth(int fieldWidth) {
-        this.fieldWidth = fieldWidth;
+        configData.setFieldWidth(fieldWidth);
+        ConfigManager.saveConfigData(configData);
         System.out.println("Updated game field width: " + fieldWidth);
     }
 
-
     public void setFieldHeight(int fieldHeight) {
-        this.fieldHeight = fieldHeight;
+        configData.setFieldHeight(fieldHeight);
+        ConfigManager.saveConfigData(configData);
         System.out.println("Updated game field height: " + fieldHeight);
     }
 
     // for GamePanel
     public int getStartLevel() {
-        return this.startLevel;
+        System.out.println("MainFrame says: Getting start level: " + configData.getStartLevel());
+        return configData.getStartLevel();
     }
 
     //This level is the STARTING LEVEL set by the configuration panel BEFORE a game starts.
     public void setStartLevel(int level) {
-        this.startLevel = level;
+        configData.setStartLevel(level);
+        ConfigManager.saveConfigData(configData);
         game.setStartLevel(level);
         //set period of executor
         this.period = game.getPeriod();
@@ -266,45 +259,48 @@ public class MainFrame extends JFrame {
     }
 
     public boolean isMusic() {
-        return music;
+        return configData.isMusic();
     }
 
     // TODO: change event listeners to respond to if music if on/off
     public void setMusic(boolean music) {
-        this.music = music;
+        configData.setMusic(music);
+        ConfigManager.saveConfigData(configData);
         System.out.println("Updated music setting: " + music);
     }
 
     // TODO: set event listeners to respond to if sound effects are on/off
     public boolean isSoundEffect() {
-        return soundEffect;
+        return configData.isSoundEffect();
     }
 
     public void setSoundEffect(boolean soundEffect) {
-        this.soundEffect = soundEffect;
+        configData.setSoundEffect(soundEffect);
+        ConfigManager.saveConfigData(configData);
         System.out.println("Updated sound effect setting: " + soundEffect);
     }
 
     public boolean isAiPlay() {
-        return aiPlay;
+        return configData.isAiPlay();
     }
 
     // For ghost piece (TODO: validate AI method (Joseph's idea: https://github.com/nuno-faria/tetris-ai)
     public void setAiPlay(boolean aiPlay) {
-        this.aiPlay = aiPlay;
+        configData.setAiPlay(aiPlay);
+        ConfigManager.saveConfigData(configData);
         System.out.println("Updated AI play setting: " + aiPlay);
     }
 
     // For rendering two play panels (nesting fieldPanes) unto the one game panel (TODO: implement
     public boolean isExtendedMode() {
-        return extendedMode;
+        return configData.isExtendedMode();
     }
 
     public void setExtendedMode(boolean extendedMode) {
-        this.extendedMode = extendedMode;
+        configData.setExtendedMode(extendedMode);
+        ConfigManager.saveConfigData(configData);
         System.out.println("Updated extended mode setting: " + extendedMode);
     }
-
 
     //Method to get the game to manage it
     public Object getGame() {
@@ -316,7 +312,7 @@ public class MainFrame extends JFrame {
         return gamePanel;
     }
 
-    // Method to play sound with an option to loop, returns the clip for stoppping
+    // Method to play sound with an option to loop, returns the clip for stopping
     public Clip playSound(String soundFile, boolean loop) {
         try {
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(soundFile).getAbsoluteFile());
@@ -342,4 +338,13 @@ public class MainFrame extends JFrame {
         }
     }
 
+    // For config data (Stefan: Milestone 2)
+    public ConfigData getConfigData() {
+        return configData;
+    }
+
+    public void resetConfigData() {
+        ConfigManager.resetConfigData();
+        this.configData = ConfigManager.getConfigData();
+    }
 }

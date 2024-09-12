@@ -346,5 +346,7 @@ public class MainFrame extends JFrame {
     public void resetConfigData() {
         ConfigManager.resetConfigData();
         this.configData = ConfigManager.getConfigData();
+        // Refreshes the board dimensions after a reset
+        refreshBoard();
     }
 }

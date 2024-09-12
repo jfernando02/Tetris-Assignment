@@ -56,4 +56,11 @@ public class ConfigManager {
         configData = new ConfigData();
         saveConfigData(configData);
     }
+
+    public static void resetFieldPaneConfig() {
+        //set field width and height to their default values
+        configData.setFieldWidth(10);
+        configData.setFieldHeight(20);
+        saveConfigData(configData);
+    }
 }

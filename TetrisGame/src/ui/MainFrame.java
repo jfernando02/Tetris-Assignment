@@ -354,4 +354,38 @@ public class MainFrame extends JFrame {
         // Refreshes the board dimensions after a reset
         refreshBoard();
     }
+
+    public void resetFieldPaneConfig() {
+        ConfigManager.resetFieldPaneConfig();
+        this.configData = ConfigManager.getConfigData();
+        // Refreshes the board dimensions after a reset
+        refreshBoard();
+    }
+
+    //turn on/off sound effect
+    public void toggleSound() {
+        if (isSoundEffect()) {
+            setSoundEffect(false);
+            gamePanel.updateMessageLabel("Sound Off");
+        } else {
+            setSoundEffect(true);
+            gamePanel.updateMessageLabel("Sound On");
+        }
+    }
+
+    public void toggleMusic() {
+        if (isMusic()) {
+            setMusic(false);
+            //stop the playing sound
+            game.getPlayingMusic().stop();
+            gamePanel.updateMessageLabel("Music Off");
+        } else {
+            setMusic(true);
+            //play the music
+            if(!game.isPaused()) {
+                game.getPlayingMusic().loop(Clip.LOOP_CONTINUOUSLY);
+            }
+            gamePanel.updateMessageLabel("Music On");
+        }
+    }
 }

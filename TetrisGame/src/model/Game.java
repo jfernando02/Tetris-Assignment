@@ -179,10 +179,13 @@ public class Game {
     // Check for line clear (TODO: refactor for board.clearCompleteLines() to return the number of lines cleared (for scoring logic))
     private void checkForLineClear() {
         // Logic to check and clear full lines on the board
-        this.linesCleared+= board.clearCompleteLines();
-
-        //update level will also update the period for the MainFrame
-        updateLevel();
+        int clearedLines = board.clearCompleteLines();
+        if (clearedLines>0) {
+            System.out.println("Game Object says: " + clearedLines + " lines cleared");
+            linesCleared += clearedLines;
+            updateScoreObject(clearedLines);
+            updateLevel();
+        }
     }
 
     private void updateLevel() {
@@ -318,6 +321,8 @@ public class Game {
             dialog.dispose();
             //go to main panel
             mainFrame.showMainPanel();
+            //reset field pane configuration to default (requirement)
+            mainFrame.resetFieldPaneConfig();
         } else {
             //else refocus on
             mainFrame.getGamePanel().requestFocusInWindow();
@@ -371,7 +376,13 @@ public class Game {
                 break;
             case KeyEvent.VK_S:
                 System.out.println("S key pressed"); //stop
-                stop();
+                //toggle sound effect off
+                mainFrame.toggleSound();
+                break;
+            case KeyEvent.VK_M:
+                System.out.println("M key pressed"); //mute
+                //toggle music off
+                mainFrame.toggleMusic();
                 break;
         }
         //mainFrame.repaintBoard();
@@ -433,4 +444,15 @@ public class Game {
         return gameRunning;
     }
 
+    public Score getScore() {
+        return score;
+    }
+
+    public Clip getPlayingMusic() {
+        return gameMusic;
+    }
+
+    public boolean isPaused() {
+        return paused;
+    }
 }

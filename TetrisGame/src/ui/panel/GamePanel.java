@@ -17,10 +17,9 @@ public class GamePanel extends JPanel {
     private FieldPane fieldPane;
     private MainFrame mainFrame;
     private JButton startButton;
-
     private JButton pauseButton;
     private JLabel levelLabel;
-    private JLabel pauseLabel;
+    private JLabel messageLabel;
     private Clip gameMusic;
 
     public GamePanel(MainFrame mainFrame, Game game) {
@@ -41,21 +40,32 @@ public class GamePanel extends JPanel {
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.CENTER;
 
-        // Add pause label
-        pauseLabel = new JLabel("Game Paused");
-        pauseLabel.setHorizontalAlignment(JLabel.CENTER);
-        pauseLabel.setForeground(Color.RED);
-        pauseLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        pauseLabel.setVisible(false);
-        gbc.gridy = 0;
-        centerPanel.add(pauseLabel, gbc);
-
         // Add field pane
         fieldPane = new FieldPane(game.getBoard(), 15);
         fieldPane.setBorder(BorderFactory.createLineBorder(Color.BLUE));
         fieldPane.setPreferredSize(new Dimension(mainFrame.getFieldWidth() * 15, mainFrame.getFieldHeight() * 15));
         gbc.gridy = 1;
         centerPanel.add(fieldPane, gbc);
+
+        // Create a layered pane to hold the fieldPane and messageLabel
+        JLayeredPane layeredPane = new JLayeredPane();
+        layeredPane.setPreferredSize(new Dimension(mainFrame.getFieldWidth() * 15, mainFrame.getFieldHeight() * 15));
+        fieldPane.setBounds(0, 0, mainFrame.getFieldWidth() * 15, mainFrame.getFieldHeight() * 15);
+        layeredPane.add(fieldPane, JLayeredPane.DEFAULT_LAYER);
+
+        // Add message label
+        messageLabel = new JLabel("");
+        messageLabel.setHorizontalAlignment(JLabel.CENTER);
+        messageLabel.setVerticalAlignment(JLabel.TOP);
+        //set it slightly higher
+        messageLabel.setForeground(Color.WHITE);
+        messageLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        messageLabel.setBounds(0, 0, mainFrame.getFieldWidth() * 15, mainFrame.getFieldHeight() * 15);
+        messageLabel.setVisible(false);
+        layeredPane.add(messageLabel, JLayeredPane.PALETTE_LAYER);
+
+        gbc.gridy = 1;
+        centerPanel.add(layeredPane, gbc);
 
         add(centerPanel, BorderLayout.CENTER);
 
@@ -74,7 +84,6 @@ public class GamePanel extends JPanel {
         pauseButton.addActionListener(e -> pauseGame());
 
         buttonPanel.add(startButton);
-
         buttonPanel.add(pauseButton);
 
         add(buttonPanel, BorderLayout.NORTH);
@@ -103,7 +112,7 @@ public class GamePanel extends JPanel {
     private void startGame() {
         mainFrame.playSound("src/resources.sounds/MenuKeyPresses.wav", false);
         mainFrame.startGame();
-        System.out.println("GamePanel says:Game started");
+        System.out.println("GamePanel says: Game started");
         requestFocusInWindow();
     }
 
@@ -128,6 +137,27 @@ public class GamePanel extends JPanel {
     }
 
     public void setPaused(boolean paused) {
-        pauseLabel.setVisible(paused);
+        updateMessageLabel(paused ? "Game Paused" : "");
+    }
+
+    public void updateMessageLabel(String message) {
+        messageLabel.setText(message);
+        messageLabel.setVisible(!message.isEmpty());
+        //if message label "Game Paused", don't hide it after 2 seconds
+        if (message.equals("Game Paused") || message.equals("Game Over") || message.equals("")) {
+            messageLabel.setVisible(true);
+        } else {
+            if (!message.isEmpty()) {
+                Timer timer = new Timer(2000, e -> {
+                    messageLabel.setVisible(false);
+                    if (game.isPaused()) {
+                        messageLabel.setText("Game Paused");
+                        messageLabel.setVisible(true);
+                    }
+                });
+                timer.setRepeats(false);
+                timer.start();
+            }
+        }
     }
 }

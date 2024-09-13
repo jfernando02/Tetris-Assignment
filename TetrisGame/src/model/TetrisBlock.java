@@ -18,6 +18,7 @@ public class TetrisBlock {
         this.hasLanded = false;
     }
 
+
     public TetrisBlock spawnBlock() {
         this.shape = TetrisShape.getRandomShape();
         this.currentRotation = 0;
@@ -236,6 +237,11 @@ public class TetrisBlock {
 
     //returns the shape of the block
     public int[][] getShape() {
-        return shape.getCoordinates(currentRotation);
+        return shape.getCoordinates(0);
     }
+
+    public void setBoard(Board<TetrisCell> board) {
+        this.board = board;
+    }
+
 }

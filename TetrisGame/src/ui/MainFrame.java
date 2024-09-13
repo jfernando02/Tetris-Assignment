@@ -34,6 +34,8 @@ public class MainFrame extends JFrame {
     private Game game;
     private Board board;
     private ui.panel.GamePanel gamePanel;
+    private TetrisBlock[] nextPieces;
+
 
     //to manage gameplay state (not executed extra threads)
     private ScheduledExecutorService renderExecutor;
@@ -54,16 +56,31 @@ public class MainFrame extends JFrame {
         // Loads the configuration data (Stefan: Milestone 2 update)
         this.configData = ConfigManager.getConfigData();
         //initialise to maintain states for rendering the field and grid
+        this.nextPieces = new TetrisBlock[1000];
+        //generate 1000 random blocks
+        for (int i = 0; i < 100; i++) {
+            TetrisBlock block = new TetrisBlock(null);
+            block.spawnBlock();
+            nextPieces[i] = block;
+        }
+
         this.board = new Board(this);
         this.game = new Game(this, board);
         this.renderExecutor = Executors.newSingleThreadScheduledExecutor();
         this.gameLogicExecutor = Executors.newSingleThreadScheduledExecutor();
-        this.gamePanel = new GamePanel(this, game);
+        this.gamePanel = game.getGamePanel();
+
 
         setTitle(this.title);
         setSize(this.mainWidth, this.mainHeight);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+    }
+
+    //get the next piece
+    public TetrisBlock getNextBlock(int index) {
+        int idx = index;// % 1000;
+        return nextPieces[idx];
     }
 
     // --------------------- METHODS FOR SHOWING PANELS --------------------- START

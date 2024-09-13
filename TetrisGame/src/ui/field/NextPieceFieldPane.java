@@ -17,7 +17,6 @@ public class NextPieceFieldPane extends JPanel {
     //get the colour
     ArrayList<TetrisCell> cells;
 
-
     public NextPieceFieldPane(TetrisBlock nextPiece, int cellSize) {
         this.nextPiece = nextPiece;
         this.cellSize = cellSize;

@@ -14,13 +14,13 @@ public class Game {
     private Board board;
     private TetrisBlock activeShape;
     private TetrisBlock nextShape;
+    private int nextShapeIndex;
     GamePanel gamePanel;
     private Clip gameMusic;
 
     private boolean playing;
     private boolean paused = false;
 
-    // TODO: Some info for the PlayPanel (milestone 2)
     private Player player1;
 
     private int period; //period to set the thread timer
@@ -33,12 +33,19 @@ public class Game {
         this.board = board;
         board.setGame(this); //assign the board to the game
         this.player1 = new Player("Player1", mainFrame.getStartLevel(), false);
+        this.nextShapeIndex=0;
         this.activeShape = null;
         this.nextShape = spawn();
 
         this.period = 200 - (player1.getInitialLevel()*periodDecr); //starting period, each level will decrease this by 10 (can be changed)
-        gamePanel = (GamePanel) mainFrame.getGamePanel();
+        gamePanel = new GamePanel(mainFrame, this);
         gameRunning = false;
+        //update nextShape via gamPanel
+        gamePanel.updatePlayPanel();
+    }
+
+    public GamePanel getGamePanel() {
+        return gamePanel;
     }
 
     //method which holds the logic for starting a new game
@@ -69,11 +76,13 @@ public class Game {
     public void play() {
         if (playing) {
             if (this.activeShape == null) {
-                activeShape = nextShape;
-                // Spawn a new block
+                // make a copy of nextShape
+                activeShape = mainFrame.getNextBlock(nextShapeIndex);
                 nextShape = spawn();
                 //run active shape
                 activeShape.run();
+                gamePanel = (GamePanel) mainFrame.getGamePanel();
+                gamePanel.updatePlayPanel();
             } else {
                 if (activeShape.hasLanded() && shouldSettle() && activeShape.bottomCollision()) {
                     finalizeShape();
@@ -85,17 +94,19 @@ public class Game {
         }
     }
 
+    // Spawn new block on the board at the spawn location (in board)
+    public TetrisBlock spawn() {
+        nextShapeIndex++;
+        TetrisBlock newBlock = mainFrame.getNextBlock(nextShapeIndex-1);
+        newBlock.setBoard(board);
+        return newBlock;
+    }
+
     // For safety, not sure if we need it
     private boolean shouldSettle() {
         return System.currentTimeMillis() - activeShape.getLandTime() >= TetrisBlock.getBufferTime();
     }
 
-    // Spawn new block on the board at the spawn location (in board)
-    public TetrisBlock spawn() {
-        TetrisBlock newBlock = new TetrisBlock(this.board);
-        this.nextShape = newBlock.spawnBlock();
-        return newBlock;
-    }
 
     // Finalize the shape and place it on the board (for slight landing buffer)
     private void finalizeShape() {
@@ -353,7 +364,6 @@ public class Game {
                 mainFrame.toggleMusic();
                 break;
         }
-        //mainFrame.repaintBoard();
     }
 
     public Board<TetrisCell> getBoard() {

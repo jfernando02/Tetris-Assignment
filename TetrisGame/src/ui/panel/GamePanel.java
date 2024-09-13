@@ -24,8 +24,6 @@ public class GamePanel extends JPanel {
         this.mainFrame = mainFrame;
         this.game = game;
         playPanel = new PlayPanel(mainFrame, game);
-        // Spawn a next piece awaiting start
-
 
         setLayout(new BorderLayout());
         setSize(mainFrame.getWidth(), mainFrame.getHeight());

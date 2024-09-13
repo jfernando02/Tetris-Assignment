@@ -1,6 +1,5 @@
 package ui.panel;
 
-import model.Score;
 import ui.MainFrame;
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +15,7 @@ public class HighScorePanel extends JPanel {
 
     public HighScorePanel(MainFrame mainFrame) {
         // Load the image using a relative path or as a resource
-        URL imageUrl = getClass().getResource("/resources.images/highscore.jpg"); // Adjust path as needed
+        URL imageUrl = getClass().getResource("/resources/images/highscore.jpg"); // Adjust path as needed
         if (imageUrl == null) {
             System.err.println("Image not found: highscore.jpg");
         } else {
@@ -36,7 +35,7 @@ public class HighScorePanel extends JPanel {
         backButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainFrame.playSound("src/resources.sounds/MenuKeyPresses.wav", false);
+                mainFrame.playSound("src/resources/sounds/MenuKeyPresses.wav", false);
                 mainFrame.showMainPanel(); // Call method to show MainPanel
             }
         });

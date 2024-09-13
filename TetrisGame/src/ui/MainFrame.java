@@ -256,11 +256,6 @@ public class MainFrame extends JFrame {
         System.out.println("MainFrame says: Updated game level: " + level + " with period: " + period);
     }
 
-    //set current level of a game to the GamePanel
-    public void setCurrentLevel(int level) {
-        gamePanel.updateLevelLabel(level);
-    }
-
     public boolean isMusic() {
         return configData.isMusic();
     }

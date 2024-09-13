@@ -25,7 +25,7 @@ public class ConfigurePanel extends JDialog {
         getRootPane().setWindowDecorationStyle(JRootPane.NONE);
 
         // Set background image using JLabel as the content pane
-        JLabel backgroundLabel = new JLabel(new ImageIcon("src/resources.images/configBackground.png"));
+        JLabel backgroundLabel = new JLabel(new ImageIcon("src/resources/images/configBackground.png"));
         setContentPane(backgroundLabel);
         backgroundLabel.setLayout(new BorderLayout());
         Color whiteBackground = Color.WHITE; // Define white background color
@@ -125,7 +125,7 @@ public class ConfigurePanel extends JDialog {
             //centre the button
             //back closes the dialog
             backButton.addActionListener(e -> {
-                mainFrame.playSound("src/resources.sounds/MenuKeyPresses.wav", false);
+                mainFrame.playSound("src/resources/sounds/MenuKeyPresses.wav", false);
                 dispose();
             });
             configBox.add(backButton, gbc);

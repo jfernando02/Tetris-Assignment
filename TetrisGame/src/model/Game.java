@@ -51,7 +51,7 @@ public class Game {
             this.score = new Score();
             this.level = mainFrame.getStartLevel(); //starting level
             this.period = 200 - (level*periodDecr);
-            this.gameMusic = mainFrame.playSound("src/resources.sounds/InGameMusic.wav", true);
+            this.gameMusic = mainFrame.playSound("src/resources/sounds/InGameMusic.wav", true);
             System.out.println("Game object says: New game Started at level " + level);
         }
     }
@@ -63,30 +63,6 @@ public class Game {
             System.out.println("Game Object said: Game is already running");
             //exit if the game is already running
             return;
-        } else if (isGameOver()) {
-            //new panel asking if they want to play a new game
-            JDialog dialog = new JDialog();
-            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            dialog.setTitle("New Game Panel");
-            dialog.setSize(200, 200);
-            dialog.setVisible(false);
-            //centre the dialog
-            dialog.setLocationRelativeTo(null);
-
-            //ask if they want to play a new game
-            int result = JOptionPane.showConfirmDialog(dialog,
-                    "Do you want to play a new game?", "New Game", JOptionPane.YES_NO_OPTION);
-
-            if (result == JOptionPane.YES_OPTION) {
-                System.out.println("Game Object said: starting new game");
-                newGame();
-                start();
-            } else {
-                System.out.println("Game Object said: going to main menu");
-                resetGame();
-                dialog.dispose();
-                mainFrame.showMainPanel();
-            }
         } else {
             newGame();
         }
@@ -123,11 +99,11 @@ public class Game {
     // Finalize the shape and place it on the board (for slight landing buffer)
     private void finalizeShape() {
         activeShape.placeOnBoard();
-        mainFrame.playSound("src/resources.sounds/BlockPlacement.wav", false);
+        mainFrame.playSound("src/resources/sounds/BlockPlacement.wav", false);
         checkForLineClear();
         if (isGameOver()) {
             this.playing = false;
-            mainFrame.playSound("src/resources.sounds/GameOver.wav", false);
+            mainFrame.playSound("src/resources/sounds/GameOver.wav", false);
             gameOverPanel();
         }
     }
@@ -157,6 +133,7 @@ public class Game {
             mainFrame.showMainPanel();
         } else {
             System.out.println("Game Object said: staying in game");
+            gamePanel.setStartButtonText("New Game");
             //refocus on game panel
             mainFrame.getGamePanel().requestFocusInWindow();
             dialog.dispose();
@@ -201,8 +178,8 @@ public class Game {
             mainFrame.updateGamePeriod(); //finally works
         }
         this.level = newLevel;
-        //update mainframe level for testing, remove if working
-        mainFrame.setCurrentLevel(this.level);
+        //TODO: PLACEHOLDER FOR PLAYER DETAILS
+        // --player info--
     }
 
     // Pauses the game if it's playing, resumes if it's paused
@@ -212,7 +189,7 @@ public class Game {
             playing = true;
             paused = false;
             // Resume music
-            this.gameMusic = mainFrame.playSound("src/resources.sounds/InGameMusic.wav", true);
+            this.gameMusic = mainFrame.playSound("src/resources/sounds/InGameMusic.wav", true);
 
             gamePanel.setPaused(false);
             return;
@@ -279,7 +256,7 @@ public class Game {
 
     // Resumes a paused game
     public void resumeGame() {
-        this.gameMusic = mainFrame.playSound("src/resources.sounds/InGameMusic.wav", true);
+        this.gameMusic = mainFrame.playSound("src/resources/sounds/InGameMusic.wav", true);
         System.out.println("Game Object says: Game resumed");
         playing = true;
         paused = false;
@@ -372,7 +349,9 @@ public class Game {
         switch (keyCode) {
             case KeyEvent.VK_P:
                 System.out.println("P key pressed");
-                mainFrame.pauseGame();
+                //if paused, set GamePanel pause button to resume
+                gamePanel = (GamePanel) mainFrame.getGamePanel();
+                gamePanel.pauseGame();
                 break;
             case KeyEvent.VK_S:
                 System.out.println("S key pressed"); //stop

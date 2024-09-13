@@ -28,9 +28,9 @@ public class MainPanel extends JPanel {
         add(layeredPane, BorderLayout.CENTER);
 
         // Loads the original background image
-        backGroundImage = Toolkit.getDefaultToolkit().getImage("src/resources.images/background2.jpg");
+        backGroundImage = Toolkit.getDefaultToolkit().getImage("src/resources/images/background2.jpg");
         // Load custom logo image
-        menuLogo = new ImageIcon("src/resources.images/MenuLogo.PNG").getImage();
+        menuLogo = new ImageIcon("src/resources/images/MenuLogo.PNG").getImage();
 
         // Background image label to hold background image
         backgroundLabel = new JLabel();
@@ -78,7 +78,7 @@ public class MainPanel extends JPanel {
         highScoresButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainFrame.playSound("src/resources.sounds/MenuKeyPresses.wav", false);
+                mainFrame.playSound("src/resources/sounds/MenuKeyPresses.wav", false);
                 mainFrame.showHighScorePanel(); // Navigate to HighScorePanel
             }
 
@@ -88,7 +88,7 @@ public class MainPanel extends JPanel {
         playButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainFrame.playSound("src/resources.sounds/MenuKeyPresses.wav", false);
+                mainFrame.playSound("src/resources/sounds/MenuKeyPresses.wav", false);
                 mainFrame.showGamePanel();
                 //focus on mainPanel
                 mainFrame.getGamePanel().requestFocusInWindow();
@@ -99,7 +99,7 @@ public class MainPanel extends JPanel {
         configButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainFrame.playSound("src/resources.sounds/MenuKeyPresses.wav", false);
+                mainFrame.playSound("src/resources/sounds/MenuKeyPresses.wav", false);
                 mainFrame.showConfigurePanel();
             }
         });
@@ -108,7 +108,7 @@ public class MainPanel extends JPanel {
         exitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainFrame.playSound("src/resources.sounds/MenuKeyPresses.wav", false);
+                mainFrame.playSound("src/resources/sounds/MenuKeyPresses.wav", false);
                 System.exit(0);
             }
         });

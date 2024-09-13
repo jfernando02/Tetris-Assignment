@@ -37,9 +37,10 @@ public class UIGenerator {
                 height = 30;
             }
             setPreferredSize(new Dimension(width, height)); // Set preferred size
-            setFont(new Font("Arial", Font.BOLD, 12)); // Set font style
-            originalBackgroundColor = Color.WHITE;
-            hoverBackgroundColor = new Color(220, 220, 220);
+            setFont(new Font("Arial", Font.BOLD, 15)); // Set font style
+
+            originalBackgroundColor = new Color(214, 255, 206, 226);
+            hoverBackgroundColor = new Color(220, 220, 220, 255);
 
             addMouseListener(new MouseAdapter() {
                 @Override

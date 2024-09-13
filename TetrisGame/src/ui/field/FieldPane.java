@@ -7,6 +7,8 @@ import model.Board;
 import model.TetrisCell;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 
@@ -16,10 +18,14 @@ public class FieldPane extends JPanel {
     private Board<TetrisCell> board;
     private int cellSize;
 
+
     public FieldPane(Board<TetrisCell> board, int cellSize) {
         this.board = board;
         this.cellSize = cellSize;
-        setPreferredSize(new Dimension(board.getWidth() * cellSize, board.getHeight() * cellSize));
+        setPreferredSize(new Dimension(board.getWidth() * cellSize + 2, board.getHeight() * cellSize + 2));
+
+        Border border = BorderFactory.createLineBorder(Color.RED, 2);
+        setBorder(border);
     }
 
     // This method is called by the system to render the game field

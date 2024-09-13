@@ -1,9 +1,6 @@
 package ui.panel;
 
-import model.Board;
-import model.Game;
-import model.Player;
-import model.TetrisCell;
+import model.*;
 import ui.MainFrame;
 import ui.UIGenerator;
 
@@ -26,6 +23,9 @@ public class GamePanel extends JPanel {
     public GamePanel(MainFrame mainFrame, Game game) {
         this.mainFrame = mainFrame;
         this.game = game;
+        playPanel = new PlayPanel(mainFrame, game);
+        // Spawn a next piece awaiting start
+
 
         setLayout(new BorderLayout());
         setSize(mainFrame.getWidth(), mainFrame.getHeight());
@@ -52,7 +52,6 @@ public class GamePanel extends JPanel {
 
 
         // Create and add PlayPanel to the center
-        playPanel = new PlayPanel(mainFrame, game, new Player("Player1", false));
         playPanel.setOpaque(false); // Make PlayPanel transparent
         JPanel centerPanel = new JPanel(new GridBagLayout());
         centerPanel.setOpaque(false); // Make centerPanel transparent
@@ -150,4 +149,10 @@ public class GamePanel extends JPanel {
     public void updateMessageLabel(String soundOff) {
         playPanel.updateMessageLabel(soundOff);
     }
+
+    public void updatePlayPanel() {
+        playPanel.updatePanel();
+        requestFocusInWindow();
+    }
+
 }

@@ -18,18 +18,20 @@ public class TetrisBlock {
         this.hasLanded = false;
     }
 
-    public TetrisBlock spawnBlock(int id) {
+    public TetrisBlock spawnBlock() {
         this.shape = TetrisShape.getRandomShape();
         this.currentRotation = 0;
-        int[][] cells = shape.getCoordinates(this.currentRotation);
+        return this;
+    }
 
+    public void run() {
+        int[][] cells = shape.getCoordinates(this.currentRotation);
         for (int i = 0; i < 4; i++) {
             int cellX = cells[0][i] + this.board.getSpawnX();
             int cellY = cells[1][i] + this.board.getSpawnY();
             TetrisCell cell = new TetrisCell(cellX, cellY, shape.getColor(), this.board);
             this.cells.add(cell);
         }
-        return this;
     }
 
     public boolean leftCollision() {
@@ -225,5 +227,15 @@ public class TetrisBlock {
             }
         }
         return false;
+    }
+
+    //returns the cells of the block
+    public ArrayList<TetrisCell> getCells() {
+        return cells;
+    }
+
+    //returns the shape of the block
+    public int[][] getShape() {
+        return shape.getCoordinates(currentRotation);
     }
 }

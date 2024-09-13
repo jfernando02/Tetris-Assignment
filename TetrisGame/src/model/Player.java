@@ -3,24 +3,54 @@ package model;
 public class Player {
     private String name;
     private int score;
+    private int initialLevel;
     private int level;
     private int linesCleared;
     private boolean isAI;
 
-    public Player(String name, boolean isAI) {
+    public Player(String name, int initialLevel, boolean isAI) {
         this.name = name;
         this.isAI = isAI;
+        //initial level read from CONFIG
+        this.initialLevel = initialLevel;
+        this.level = initialLevel;
         this.score = 0;
-        this.level = 1;
         this.linesCleared = 0;
     }
 
+    public void updateScore(int clearedLines){
+        linesCleared += clearedLines;
+        updateLevel();
+        if (clearedLines == 1) {
+            score+= 100;
+        } else if (clearedLines == 2) {
+            score+= 300;
+        } else if (clearedLines == 3) {
+            score+= 600;
+        } else if (clearedLines == 4) {
+            score+= 1000;
+        }
+        System.out.println("Player says: Score: " + score);
+        System.out.println("Player says: Level: " + level);
+
+    }
+
+    public void updateLevel(){
+        //for every 10 lines cleared increase level by 1
+        level = linesCleared / 10 + initialLevel;
+    }
+
+    // Getters and Setters
     public String getName() {
         return name;
     }
 
     public int getScore() {
         return score;
+    }
+
+    public int getInitialLevel() {
+        return initialLevel;
     }
 
     public int getLevel() {
@@ -35,27 +65,8 @@ public class Player {
         return isAI;
     }
 
-    public void setScore(int score) {
-        this.score = score;
-    }
 
     public void setLevel(int level) {
         this.level = level;
-    }
-
-    public void setLinesCleared(int linesCleared) {
-        this.linesCleared = linesCleared;
-    }
-
-    public void incrementScore(int increment) {
-        score += increment;
-    }
-
-    public void incrementLevel() {
-        level++;
-    }
-
-    public void incrementLinesCleared() {
-        linesCleared++;
     }
 }

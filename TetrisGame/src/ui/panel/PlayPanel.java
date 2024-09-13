@@ -3,9 +3,9 @@ package ui.panel;
 import model.Board;
 import model.Game;
 import model.Player;
-import model.Score;
 import ui.MainFrame;
 import ui.field.FieldPane;
+import ui.field.NextPieceFieldPane;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,19 +13,27 @@ import java.awt.*;
 public class PlayPanel extends JPanel {
     Game game;
     FieldPane fieldPane;
+    NextPieceFieldPane nextPieceFieldPane;
     MainFrame mainFrame;
     Board board;
-    Score score;
+    int score;
     Player player;
     JLabel messageLabel;
 
-    public PlayPanel(MainFrame mainFrame, Game game, Player player) {
+    private JLabel playerLabel;
+    private JLabel initialLevelLabel;
+    private JLabel levelLabel;
+    private JLabel scoreLabel;
+    private JLabel linesClearedLabel;
+
+    public PlayPanel(MainFrame mainFrame, Game game) {
         this.mainFrame = mainFrame;
         this.game = game;
         this.board = game.getBoard();
         this.score = game.getScore();
         this.fieldPane = new FieldPane(board, 15);
-        this.player = player;
+        this.nextPieceFieldPane = new NextPieceFieldPane(game.getNextPiece(), 15);
+        this.player = game.getPlayer();
 
         // Set a black border around the panel
         setLayout(new BorderLayout());
@@ -39,31 +47,49 @@ public class PlayPanel extends JPanel {
         gbc.gridy = 0;
         gbc.anchor = GridBagConstraints.CENTER;
 
-        // Add player info to the left side (TODO: currently these are dummy values)
-        JPanel playerInfoPanel = new JPanel();
-        playerInfoPanel.setLayout(new BoxLayout(playerInfoPanel, BoxLayout.Y_AXIS));
+        // Add player info to the left side
+        JPanel playerInfoPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints infoGbc = new GridBagConstraints();
+        infoGbc.gridx = 0;
+        infoGbc.gridy = 0;
+        infoGbc.anchor = GridBagConstraints.CENTER;
+        infoGbc.insets = new Insets(5, 5, 5, 5); // Add some padding
 
         // Center the text in the labels and increase font size
         int size = (mainFrame.getFieldWidth() * 15) / 10;
         Font labelFont = new Font("Arial", Font.BOLD, size);
-        JLabel playerLabel = new JLabel("Player: " + (player.isAI() ? "AI" : "Human"), JLabel.CENTER);
+        playerLabel = new JLabel("Type: " + (player.isAI() ? "AI" : "Human"), JLabel.CENTER);
         playerLabel.setFont(labelFont);
-        JLabel levelLabel = new JLabel("Level: " + player.getLevel(), JLabel.CENTER);
+        initialLevelLabel = new JLabel("Initial Level: " + player.getInitialLevel(), JLabel.CENTER);
+        initialLevelLabel.setFont(labelFont);
+        levelLabel = new JLabel("Current Level: " + player.getLevel(), JLabel.CENTER);
         levelLabel.setFont(labelFont);
-        JLabel scoreLabel = new JLabel("Score: " + player.getScore(), JLabel.CENTER);
+        scoreLabel = new JLabel("Current Score: " + player.getScore(), JLabel.CENTER);
         scoreLabel.setFont(labelFont);
-        JLabel linesClearedLabel = new JLabel("Lines Cleared: " + player.getLinesCleared(), JLabel.CENTER);
+        linesClearedLabel = new JLabel("Lines Erased: " + player.getLinesCleared(), JLabel.CENTER);
         linesClearedLabel.setFont(labelFont);
 
         JLabel nextPieceLabel = new JLabel("Next Piece: ", JLabel.CENTER);
         nextPieceLabel.setFont(labelFont);
 
+        // Render next piece
+        nextPieceFieldPane.renderNextPiece(game.getNextPiece());
 
-        playerInfoPanel.add(playerLabel);
-        playerInfoPanel.add(levelLabel);
-        playerInfoPanel.add(scoreLabel);
-        playerInfoPanel.add(linesClearedLabel);
-        playerInfoPanel.add(nextPieceLabel);
+        // Add components to playerInfoPanel using GridBagLayout
+        infoGbc.gridy = 0;
+        playerInfoPanel.add(playerLabel, infoGbc);
+        infoGbc.gridy++;
+        playerInfoPanel.add(initialLevelLabel, infoGbc);
+        infoGbc.gridy++;
+        playerInfoPanel.add(levelLabel, infoGbc);
+        infoGbc.gridy++;
+        playerInfoPanel.add(scoreLabel, infoGbc);
+        infoGbc.gridy++;
+        playerInfoPanel.add(linesClearedLabel, infoGbc);
+        infoGbc.gridy++;
+        playerInfoPanel.add(nextPieceLabel, infoGbc);
+        infoGbc.gridy++;
+        playerInfoPanel.add(nextPieceFieldPane, infoGbc);
 
         // Set preferred size and make the panel transparent
         playerInfoPanel.setPreferredSize(new Dimension(mainFrame.getFieldWidth() * 15, mainFrame.getFieldHeight() * 15));
@@ -107,7 +133,7 @@ public class PlayPanel extends JPanel {
     public void updateMessageLabel(String message) {
         messageLabel.setText(message);
         messageLabel.setVisible(!message.isEmpty());
-        //if message label "Game Paused", don't hide it after 2 seconds
+        // If message label "Game Paused", don't hide it after 2 seconds
         if (message.equals("Game Paused") || message.equals("Game Over") || message.equals("")) {
             messageLabel.setVisible(true);
         } else {
@@ -123,5 +149,27 @@ public class PlayPanel extends JPanel {
                 timer.start();
             }
         }
+    }
+
+    // Update next piece field
+    public void updateNextPieceField() {
+        nextPieceFieldPane.renderNextPiece(game.getNextPiece());
+    }
+
+    // Update player info labels
+    public void updatePlayerInfo() {
+        player = game.getPlayer();
+        playerLabel.setText("Type: " + (player.isAI() ? "AI" : "Human"));
+        initialLevelLabel.setText("Initial Level: " + player.getInitialLevel());
+        levelLabel.setText("Current Level: " + player.getLevel());
+        scoreLabel.setText("Current Score: " + player.getScore());
+        linesClearedLabel.setText("Lines Erased: " + player.getLinesCleared());
+    }
+    public void updatePanel() {
+        updateNextPieceField();
+        updatePlayerInfo();
+        // Repaint the panel to update the labels
+        revalidate();
+        repaint();
     }
 }

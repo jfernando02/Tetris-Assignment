@@ -34,6 +34,21 @@ public class TetrisCell {
         g2d.draw(new Rectangle2D.Float(drawX, drawY, cellSize, cellSize));
     }
 
+    //method to render the cell in the next piece field
+    public void renderNextPiece(Graphics g, int cellSize, int[][] initialShape) {
+        Graphics2D g2d = (Graphics2D) g;
+        for (int i = 0; i < initialShape[0].length; i++) {
+            float drawX = initialShape[0][i] * cellSize;
+            float drawY = initialShape[1][i] * cellSize;
+            g2d.setColor(Color.decode(color));
+            g2d.fill(new Rectangle2D.Float(drawX, drawY, cellSize, cellSize));
+
+            // Always draw a grey grid around the cell
+            g2d.setColor(Color.GRAY);
+            g2d.draw(new Rectangle2D.Float(drawX, drawY, cellSize, cellSize));
+        }
+    }
+
     // Set the cell on the board
     public void setOnBoard() {
         this.board.setCell(this.x, this.y, this);
@@ -66,4 +81,5 @@ public class TetrisCell {
     public boolean isActive() {
         return isActive;
     }
+
 }

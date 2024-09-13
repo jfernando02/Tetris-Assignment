@@ -7,6 +7,7 @@ import java.awt.*;
 import java.util.concurrent.Executors;
 
 import model.Score;
+import model.TetrisBlock;
 import ui.panel.*;
 import model.Board;
 import model.Game;

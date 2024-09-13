@@ -13,6 +13,7 @@ public class Game {
     private MainFrame mainFrame;
     private Board board;
     private TetrisBlock activeShape;
+    private TetrisBlock nextShape;
     GamePanel gamePanel;
     private Clip gameMusic;
 
@@ -20,10 +21,7 @@ public class Game {
     private boolean paused = false;
 
     // TODO: Some info for the PlayPanel (milestone 2)
-    private Score score;
-    private int level;
-    private int linesCleared;
-    private int numBlocks = 0; //number of blocks spawned
+    private Player player1;
 
     private int period; //period to set the thread timer
     // decreases thread period by 15 every level up
@@ -34,10 +32,11 @@ public class Game {
         this.mainFrame = mainFrame;
         this.board = board;
         board.setGame(this); //assign the board to the game
+        this.player1 = new Player("Player1", mainFrame.getStartLevel(), false);
         this.activeShape = null;
-        this.level = mainFrame.getStartLevel();
-        this.linesCleared = 0;
-        this.period = 200 - (level*periodDecr); //starting period, each level will decrease this by 10 (can be changed)
+        this.nextShape = spawn();
+
+        this.period = 200 - (player1.getInitialLevel()*periodDecr); //starting period, each level will decrease this by 10 (can be changed)
         gamePanel = (GamePanel) mainFrame.getGamePanel();
         gameRunning = false;
     }
@@ -48,11 +47,9 @@ public class Game {
             this.gameRunning = true;
             this.playing = true;
             this.paused = false;
-            this.score = new Score();
-            this.level = mainFrame.getStartLevel(); //starting level
-            this.period = 200 - (level*periodDecr);
+            this.period = 200 - (player1.getInitialLevel()*periodDecr);
             this.gameMusic = mainFrame.playSound("src/resources/sounds/InGameMusic.wav", true);
-            System.out.println("Game object says: New game Started at level " + level);
+            System.out.println("Game object says: New game Started at level " + player1.getInitialLevel());
         }
     }
 
@@ -72,7 +69,11 @@ public class Game {
     public void play() {
         if (playing) {
             if (this.activeShape == null) {
-                spawn();
+                activeShape = nextShape;
+                // Spawn a new block
+                nextShape = spawn();
+                //run active shape
+                activeShape.run();
             } else {
                 if (activeShape.hasLanded() && shouldSettle() && activeShape.bottomCollision()) {
                     finalizeShape();
@@ -90,10 +91,10 @@ public class Game {
     }
 
     // Spawn new block on the board at the spawn location (in board)
-    public void spawn() {
+    public TetrisBlock spawn() {
         TetrisBlock newBlock = new TetrisBlock(this.board);
-        this.activeShape = newBlock.spawnBlock(numBlocks);
-        numBlocks++;
+        this.nextShape = newBlock.spawnBlock();
+        return newBlock;
     }
 
     // Finalize the shape and place it on the board (for slight landing buffer)
@@ -101,6 +102,9 @@ public class Game {
         activeShape.placeOnBoard();
         mainFrame.playSound("src/resources/sounds/BlockPlacement.wav", false);
         checkForLineClear();
+        //update PlayPanel
+        gamePanel = (GamePanel) mainFrame.getGamePanel();
+        gamePanel.updatePlayPanel();
         if (isGameOver()) {
             this.playing = false;
             mainFrame.playSound("src/resources/sounds/GameOver.wav", false);
@@ -153,34 +157,19 @@ public class Game {
         return false;
     }
 
-    // Check for line clear (TODO: refactor for board.clearCompleteLines() to return the number of lines cleared (for scoring logic))
+    // Check for line clear
     private void checkForLineClear() {
         // Logic to check and clear full lines on the board
         int clearedLines = board.clearCompleteLines();
         if (clearedLines>0) {
             System.out.println("Game Object says: " + clearedLines + " lines cleared");
-            linesCleared += clearedLines;
-            updateScoreObject(clearedLines);
-            updateLevel();
-        }
-    }
-
-    private void updateLevel() {
-        //testing levelling up every 2 cleared lines
-        int newLevel = linesCleared / 2 + mainFrame.getStartLevel(); // want start level
-        int difference = newLevel - this.level;
-        if (difference > 0) {
-
-            //update period
-            this.period -= (difference*periodDecr);
-            System.out.println("Game Object says: Level up! New level: " + newLevel + " Period: " + period);
+            player1.updateScore(clearedLines);
+            //update MainFrame period in case of level up
+            this.period = 200 - (player1.getInitialLevel()*periodDecr);
             mainFrame.setPeriod(period);
-            mainFrame.updateGamePeriod(); //finally works
         }
-        this.level = newLevel;
-        //TODO: PLACEHOLDER FOR PLAYER DETAILS
-        // --player info--
     }
+
 
     // Pauses the game if it's playing, resumes if it's paused
     public void pause() {
@@ -367,16 +356,6 @@ public class Game {
         //mainFrame.repaintBoard();
     }
 
-    //TODO: socket needs to be implemented for HighScore Panel
-    public Score getScoreObject(){
-        return score;
-    }
-
-    //TODO: Score needs to updated when game over (or potentially for saving a game)
-    public void updateScoreObject(int clearedLines){
-        score.updateScore(clearedLines, this.level);
-    }
-
     public Board<TetrisCell> getBoard() {
         return board;
     }
@@ -386,7 +365,7 @@ public class Game {
     }
 
     public int getLevel() {
-        return level;
+        return player1.getLevel();
     }
 
     public void resetGame() {
@@ -395,13 +374,8 @@ public class Game {
         this.activeShape = null;
         this.playing = false;
         this.paused = false;
-        this.score = new Score();
-        // TODO: integrate to scoring logic start
-        this.numBlocks = 0;
-        this.linesCleared = 0;
-        // TODO: integrate to scoring logic end
-        this.level = mainFrame.getStartLevel();
-        this.period = 200 - (level*periodDecr);
+        this.player1 = new Player("Player1", mainFrame.getStartLevel(), false);
+        this.period = 200 - (player1.getInitialLevel()*periodDecr);
         mainFrame.repaintBoard(); //don't delete or a new game won't render its new state on the fieldPanel in the GamePanel
     }
 
@@ -412,10 +386,10 @@ public class Game {
 
     public void setStartLevel(int level) {
         resetGame();
-        this.level = level;
-        this.period = 200 - (level*periodDecr);
+        player1.setLevel(level);
+        this.period = 200 - (player1.getInitialLevel()*periodDecr);
         mainFrame.setPeriod(period);
-        System.out.println("Game Object says: Level set to " + level);
+        System.out.println("Game Object says: Level set to " + player1.getInitialLevel());
     }
 
     // For if the game is running (even if paused) so the start button doesn't reset the game
@@ -423,8 +397,8 @@ public class Game {
         return gameRunning;
     }
 
-    public Score getScore() {
-        return score;
+    public int getScore() {
+        return player1.getScore();
     }
 
     public Clip getPlayingMusic() {
@@ -433,5 +407,13 @@ public class Game {
 
     public boolean isPaused() {
         return paused;
+    }
+
+    public TetrisBlock getNextPiece() {
+        return nextShape;
+    }
+
+    public Player getPlayer() {
+        return player1;
     }
 }

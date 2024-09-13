@@ -96,8 +96,6 @@ public class GamePanel extends JPanel {
                 game.update(e.getKeyCode());
             }
         });
-
-
     }
 
     private void startGame() {
@@ -153,4 +151,8 @@ public class GamePanel extends JPanel {
         requestFocusInWindow();
     }
 
+    public void renderNextPiece(TetrisBlock nextShape) {
+        playPanel.updateNextPieceField(nextShape);
+        requestFocusInWindow();
+    }
 }

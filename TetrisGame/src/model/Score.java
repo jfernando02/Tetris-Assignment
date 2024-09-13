@@ -9,7 +9,6 @@ public class Score {
         this.name = name;
     }
 
-
     // Getters and Setters
     public int getScore() {
         return score;

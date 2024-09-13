@@ -57,14 +57,15 @@ public class MainFrame extends JFrame {
         this.configData = ConfigManager.getConfigData();
         //initialise to maintain states for rendering the field and grid
         this.nextPieces = new TetrisBlock[1000];
+
+
+        this.board = new Board(this);
         //generate 1000 random blocks
-        for (int i = 0; i < 100; i++) {
-            TetrisBlock block = new TetrisBlock(null);
+        for (int i = 0; i < 1000; i++) {
+            TetrisBlock block = new TetrisBlock(this.board);
             block.spawnBlock();
             nextPieces[i] = block;
         }
-
-        this.board = new Board(this);
         this.game = new Game(this, board);
         this.renderExecutor = Executors.newSingleThreadScheduledExecutor();
         this.gameLogicExecutor = Executors.newSingleThreadScheduledExecutor();
@@ -79,8 +80,12 @@ public class MainFrame extends JFrame {
 
     //get the next piece
     public TetrisBlock getNextBlock(int index) {
-        int idx = index;// % 1000;
-        return nextPieces[idx];
+        int idx = index % 1000;
+        //copies the block to avoid reference issues for multiplayer
+        TetrisBlock block = nextPieces[idx].copy();
+        //update board in case of a configuration change
+        block.setBoard(this.board);
+        return block;
     }
 
     // --------------------- METHODS FOR SHOWING PANELS --------------------- START

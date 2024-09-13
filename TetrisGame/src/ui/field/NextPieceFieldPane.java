@@ -14,14 +14,11 @@ import java.util.ArrayList;
 public class NextPieceFieldPane extends JPanel {
     int cellSize;
     TetrisBlock nextPiece;
-    //get the colour
-    ArrayList<TetrisCell> cells;
 
     public NextPieceFieldPane(TetrisBlock nextPiece, int cellSize) {
         this.nextPiece = nextPiece;
         this.cellSize = cellSize;
-        // get colour of just one cell
-        this.cells = nextPiece.getCells();
+
         //make a board with 4x4 cells
         setPreferredSize(new Dimension(4 * cellSize, 4 * cellSize ));
         //set the size as absolute of the setPreferredSize
@@ -49,15 +46,12 @@ public class NextPieceFieldPane extends JPanel {
         }
 
         // renderField the next piece
-        for (TetrisCell cell : cells) {
-            cell.renderNextPiece(g, cellSize, nextPiece.getShape());
-        }
+        nextPiece.render(g, cellSize);
     }
 
     // render the next piece
     public void renderNextPiece(TetrisBlock nextPiece) {
         this.nextPiece = nextPiece;
-        this.cells = nextPiece.getCells();
         repaint();
     }
 }

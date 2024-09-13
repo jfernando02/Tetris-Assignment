@@ -21,17 +21,29 @@ public class TetrisBlock {
 
     public TetrisBlock spawnBlock() {
         this.shape = TetrisShape.getRandomShape();
+        //add cells to the block
+        for (int i = 0; i < 4; i++) {
+            TetrisCell cell = new TetrisCell(0, 0, shape.getColor(), null);
+            this.cells.add(cell);
+        }
         this.currentRotation = 0;
         return this;
+    }
+
+    public void setBoard(Board<TetrisCell> board) {
+        this.board = board;
     }
 
     public void run() {
         int[][] cells = shape.getCoordinates(this.currentRotation);
         for (int i = 0; i < 4; i++) {
+            this.cells.get(i).setBoard(this.board);
             int cellX = cells[0][i] + this.board.getSpawnX();
             int cellY = cells[1][i] + this.board.getSpawnY();
-            TetrisCell cell = new TetrisCell(cellX, cellY, shape.getColor(), this.board);
-            this.cells.add(cell);
+            this.cells.get(i).setX(cellX);
+            this.cells.get(i).setY(cellY);
+            //reset interpolation
+            this.cells.get(i).resetInterpolation();
         }
     }
 
@@ -240,8 +252,23 @@ public class TetrisBlock {
         return shape.getCoordinates(0);
     }
 
-    public void setBoard(Board<TetrisCell> board) {
-        this.board = board;
+
+    public void render(Graphics g, int cellSize) {
+        for (TetrisCell cell : this.cells) {
+            cell.renderNextPiece(g, cellSize, shape.getCoordinates(0));
+        }
     }
 
+    public TetrisBlock copy() {
+        TetrisBlock copy = new TetrisBlock(board);
+        copy.shape = this.shape;
+        copy.currentRotation = this.currentRotation;
+        copy.hasLanded = this.hasLanded;
+        copy.landTime = this.landTime;
+        for (TetrisCell cell : this.cells) {
+            TetrisCell newCell = new TetrisCell(cell.getX(), cell.getY(), cell.color, null);
+            copy.cells.add(newCell);
+        }
+        return copy;
+    }
 }

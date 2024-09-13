@@ -3,6 +3,7 @@ package ui.panel;
 import model.Board;
 import model.Game;
 import model.Player;
+import model.TetrisBlock;
 import ui.MainFrame;
 import ui.field.FieldPane;
 import ui.field.NextPieceFieldPane;
@@ -152,8 +153,10 @@ public class PlayPanel extends JPanel {
     }
 
     // Update next piece field
-    public void updateNextPieceField() {
-        nextPieceFieldPane.renderNextPiece(game.getNextPiece());
+    public void updateNextPieceField(TetrisBlock nextPiece) {
+        nextPieceFieldPane.renderNextPiece(nextPiece);
+        revalidate();
+        repaint();
     }
 
     // Update player info labels
@@ -166,7 +169,7 @@ public class PlayPanel extends JPanel {
         linesClearedLabel.setText("Lines Erased: " + player.getLinesCleared());
     }
     public void updatePanel() {
-        updateNextPieceField();
+        updateNextPieceField(game.getNextPiece());
         updatePlayerInfo();
         // Repaint the panel to update the labels
         revalidate();

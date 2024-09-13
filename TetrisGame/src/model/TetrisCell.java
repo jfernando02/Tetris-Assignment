@@ -5,7 +5,6 @@ import java.awt.geom.Rectangle2D;
 
 // Class for each individual cell in the Tetris grid
 public class TetrisCell {
-    int idShape; // ID of the Tetris piece to which the cell belongs
     int x; // X coordinate of the cell relative to the board
     int y; // Y coordinate of the cell relative to the board
     private float interpolatedY;
@@ -19,7 +18,9 @@ public class TetrisCell {
         this.color = color;
         this.board = board;
         isActive = true;
-        setOnBoard();
+        if (board != null) {
+            setOnBoard();
+        }
         this.interpolatedY = y;
     }
     public void render(Graphics g, int cellSize) {
@@ -54,6 +55,10 @@ public class TetrisCell {
         this.board.setCell(this.x, this.y, this);
     }
 
+    public void setBoard(Board<TetrisCell> board) {
+        this.board = board;
+    }
+
     public int getX() { return x; }
 
     // Set for x movement
@@ -65,7 +70,9 @@ public class TetrisCell {
     public void setY(int newY) { this.y = newY; }
 
     // Cell destroy (sets cell to null)
-    public void destroy() { this.board.destroyCell(this.x, this.y); }
+    public void destroy() {
+        this.board.destroyCell(this.x, this.y);
+    }
 
     // Method to smoothly update interpolatedY towards y
     public void updateInterpolatedY() {
@@ -76,10 +83,6 @@ public class TetrisCell {
     // Method to reset interpolatedY to the current y position
     public void resetInterpolation() {
         this.interpolatedY = this.y;
-    }
-
-    public boolean isActive() {
-        return isActive;
     }
 
 }

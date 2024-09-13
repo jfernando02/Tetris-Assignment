@@ -35,7 +35,7 @@ public class Game {
         this.player1 = new Player("Player1", mainFrame.getStartLevel(), false);
         this.nextShapeIndex=0;
         this.activeShape = null;
-        this.nextShape = spawn();
+        spawn();
 
         this.period = 200 - (player1.getInitialLevel()*periodDecr); //starting period, each level will decrease this by 10 (can be changed)
         gamePanel = new GamePanel(mainFrame, this);
@@ -76,13 +76,11 @@ public class Game {
     public void play() {
         if (playing) {
             if (this.activeShape == null) {
-                // make a copy of nextShape
-                activeShape = mainFrame.getNextBlock(nextShapeIndex);
-                nextShape = spawn();
-                //run active shape
-                activeShape.run();
+                spawn();
                 gamePanel = (GamePanel) mainFrame.getGamePanel();
                 gamePanel.updatePlayPanel();
+                activeShape.run();
+
             } else {
                 if (activeShape.hasLanded() && shouldSettle() && activeShape.bottomCollision()) {
                     finalizeShape();
@@ -95,11 +93,10 @@ public class Game {
     }
 
     // Spawn new block on the board at the spawn location (in board)
-    public TetrisBlock spawn() {
+    public void spawn() {
+        activeShape = nextShape;
+        nextShape = mainFrame.getNextBlock(nextShapeIndex+1);
         nextShapeIndex++;
-        TetrisBlock newBlock = mainFrame.getNextBlock(nextShapeIndex-1);
-        newBlock.setBoard(board);
-        return newBlock;
     }
 
     // For safety, not sure if we need it

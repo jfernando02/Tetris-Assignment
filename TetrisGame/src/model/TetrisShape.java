@@ -56,7 +56,7 @@ public enum TetrisShape {
                 case 0 -> new int[][]{{1, 1, 2, 3}, {0, 1, 0, 0}};
                 case 1 -> new int[][]{{0, 1, 1, 1}, {0, 0, 1, 2}};
                 case 2 -> new int[][]{{0, 1, 2, 2}, {1, 1, 1, 0}};
-                case 3 -> new int[][]{{1, 1, 1, 0}, {0, 1, 2, 2}};
+                case 3 -> new int[][]{{0, 0, 0, 1}, {0, 1, 2, 2}};
                 default -> new int[][]{{0, 0, 1, 2}, {1, 2, 1, 1}};
             };
             case J -> switch (rotation) { // Colour: Blue

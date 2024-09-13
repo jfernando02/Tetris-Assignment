@@ -199,14 +199,12 @@ public class MainFrame extends JFrame {
         }, 0, period, TimeUnit.MILLISECONDS);
     }
 
-
     // Modify the stopGame method
     public void stopGame() {
         //stop the playing sound
         game.stop();
         System.out.println("MainFrame said: Game Stopped");
     }
-
 
     public void pauseGame() {
         game.pause();

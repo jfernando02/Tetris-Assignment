@@ -1,7 +1,6 @@
 // Our entry point to the application which will handle the game loop and other game related logic
 
-import model.Game;
-import ui.MainFrame;
+import controller.MainFrame;
 
 import javax.swing.*;
 

@@ -1,7 +1,7 @@
 package ui.panel;
 
 import ui.UIGenerator;
-import ui.MainFrame;
+import controller.MainFrame;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
@@ -68,51 +68,51 @@ public class ConfigurePanel extends JDialog {
 
             // Field Width
             addSlider(configBox, gbc, 0, 1, "Field Width (No of cells):",
-                    5, 15, mainFrame.getFieldWidth(), e -> {
+                    5, 15, mainFrame.getConfigData().getFieldWidth(), e -> {
                         int newValue = ((JSlider) e.getSource()).getValue();
-                        mainFrame.setFieldWidth(newValue);
+                        mainFrame.getConfigData().setFieldWidth(newValue);
                         mainFrame.refreshBoard(); //added for grid expansion of field pane (width)
                         mainFrame.resetGameConfig();
                     });
 
             // Field Height
             addSlider(configBox, gbc, 0, 2, "Field Height (No of cells):",
-                    15, 30, mainFrame.getFieldHeight(), e -> {
+                    15, 30, mainFrame.getConfigData().getFieldHeight(), e -> {
                         int newValue = ((JSlider) e.getSource()).getValue();
-                        mainFrame.setFieldHeight(newValue);
+                        mainFrame.getConfigData().setFieldHeight(newValue);
                         mainFrame.refreshBoard(); //added for grid expansion of field pane (height)
                         mainFrame.resetGameConfig();
                     });
 
             // Game Level
             addSlider(configBox, gbc, 0, 3, "Game Level:",
-                    1, 10, mainFrame.getStartLevel(), e -> {
+                    1, 10, mainFrame.getConfigData().getStartLevel(), e -> {
                         int newValue = ((JSlider) e.getSource()).getValue();
-                        mainFrame.setStartLevel(newValue);
+                        mainFrame.getConfigData().setStartLevel(newValue);
                     });
 
             // Music Checkbox
             addCheckBox(configBox, gbc, 0, 4, "Music:",
-                    mainFrame.isMusic(), e -> {
+                    mainFrame.getConfigData().isMusic(), e -> {
                         mainFrame.setMusic(((JCheckBox) e.getSource()).isSelected());
                     });
 
             // Sound Effect Checkbox
             addCheckBox(configBox, gbc, 0, 5, "Sound Effect:",
-                    mainFrame.isSoundEffect(), e -> {
+                    mainFrame.getConfigData().isMusic(), e -> {
                         mainFrame.setSoundEffect(((JCheckBox) e.getSource()).isSelected());
                     });
 
             // AI Play Checkbox
             addCheckBox(configBox, gbc, 0, 6, "AI Play:",
-                    mainFrame.isAiPlay(), e -> {
-                        mainFrame.setAiPlay(((JCheckBox) e.getSource()).isSelected());
+                    mainFrame.getConfigData().isAiPlay(), e -> {
+                        mainFrame.getConfigData().setAiPlay(((JCheckBox) e.getSource()).isSelected());
                     });
 
             // Extended Mode Checkbox
             addCheckBox(configBox, gbc, 0, 7, "Extended Mode:",
-                    mainFrame.isExtendedMode(), e -> {
-                        mainFrame.setExtendedMode(((JCheckBox) e.getSource()).isSelected());
+                    mainFrame.getConfigData().isExtendedMode(), e -> {
+                        mainFrame.getConfigData().setExtendedMode(((JCheckBox) e.getSource()).isSelected());
                     });
 
 

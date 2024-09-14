@@ -1,6 +1,6 @@
 package ui.panel;
 
-import ui.MainFrame;
+import controller.MainFrame;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;

@@ -1,7 +1,7 @@
 // Game.java
 package model;
 
-import ui.MainFrame;
+import controller.MainFrame;
 import ui.panel.GamePanel;
 
 import javax.sound.sampled.*;
@@ -32,7 +32,7 @@ public class Game {
         this.mainFrame = mainFrame;
         this.board = board;
         board.setGame(this); //assign the board to the game
-        this.player1 = new Player("Player1", mainFrame.getStartLevel(), false);
+        this.player1 = new Player("Player1", mainFrame.getConfigData().getStartLevel(), false);
         this.nextShapeIndex=0;
         this.activeShape = null;
         spawn();
@@ -174,7 +174,7 @@ public class Game {
             player1.updateScore(clearedLines);
             //update MainFrame period in case of level up
             this.period = 200 - (player1.getInitialLevel()*periodDecr);
-            mainFrame.setPeriod(period);
+            mainFrame.getGameLogic().setPeriod(period);
         }
     }
 
@@ -381,7 +381,7 @@ public class Game {
         this.activeShape = null;
         this.playing = false;
         this.paused = false;
-        this.player1 = new Player("Player1", mainFrame.getStartLevel(), false);
+        this.player1 = new Player("Player1", mainFrame.getConfigData().getStartLevel(), false);
         this.period = 200 - (player1.getInitialLevel()*periodDecr);
         mainFrame.repaintBoard(); //don't delete or a new game won't render its new state on the fieldPanel in the GamePanel
     }
@@ -395,7 +395,7 @@ public class Game {
         resetGame();
         player1.setLevel(level);
         this.period = 200 - (player1.getInitialLevel()*periodDecr);
-        mainFrame.setPeriod(period);
+        mainFrame.getGameLogic().setPeriod(period);
         System.out.println("Game Object says: Level set to " + player1.getInitialLevel());
     }
 

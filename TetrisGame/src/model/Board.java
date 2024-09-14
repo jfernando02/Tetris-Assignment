@@ -1,5 +1,5 @@
 package model;
-import ui.MainFrame;
+import controller.MainFrame;
 
 public class Board<T> {
     private T[][] board;
@@ -11,15 +11,15 @@ public class Board<T> {
     Game game;
     int linesCleared = 0;
 
-    @SuppressWarnings("unchecked")
+
     public Board(MainFrame mainFrame) {
-        this.width = mainFrame.getFieldWidth();
-        this.height = mainFrame.getFieldHeight();
+        this.mainFrame = mainFrame;
+        this.width = mainFrame.getConfigData().getFieldWidth();
+        this.height = mainFrame.getConfigData().getFieldHeight();
         this.board = (T[][]) new Object[width][height];
         //get spawn from Game
         this.spawnX = (this.width /2-2);
         this.spawnY = 0;
-        this.mainFrame = mainFrame;
     }
 
     public void setGame(Game game) {
@@ -27,9 +27,9 @@ public class Board<T> {
     }
 
     // for expanding width and height of the board
-    public void refreshBoard(MainFrame mainFr) {
-        this.width = mainFr.getFieldWidth();
-        this.height = mainFr.getFieldHeight();
+    public void refreshBoard() {
+        this.width = mainFrame.getConfigData().getFieldWidth();
+        this.height = mainFrame.getConfigData().getFieldHeight();
         this.board = (T[][]) new Object[width][height];
         this.spawnX = (this.width /2-2);
         this.spawnY = 0;

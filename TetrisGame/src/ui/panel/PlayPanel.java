@@ -4,7 +4,7 @@ import model.Board;
 import model.Game;
 import model.Player;
 import model.TetrisBlock;
-import ui.MainFrame;
+import controller.MainFrame;
 import ui.field.FieldPane;
 import ui.field.NextPieceFieldPane;
 
@@ -57,7 +57,7 @@ public class PlayPanel extends JPanel {
         infoGbc.insets = new Insets(5, 5, 5, 5); // Add some padding
 
         // Center the text in the labels and increase font size
-        int size = (mainFrame.getFieldWidth() * 15) / 10;
+        int size = (mainFrame.getConfigData().getFieldWidth() * 15) / 10;
         Font labelFont = new Font("Arial", Font.BOLD, size);
         playerLabel = new JLabel("Type: " + (player.isAI() ? "AI" : "Human"), JLabel.CENTER);
         playerLabel.setFont(labelFont);
@@ -93,7 +93,7 @@ public class PlayPanel extends JPanel {
         playerInfoPanel.add(nextPieceFieldPane, infoGbc);
 
         // Set preferred size and make the panel transparent
-        playerInfoPanel.setPreferredSize(new Dimension(mainFrame.getFieldWidth() * 15, mainFrame.getFieldHeight() * 15));
+        playerInfoPanel.setPreferredSize(new Dimension(mainFrame.getConfigData().getFieldWidth() * 15, mainFrame.getConfigData().getFieldHeight() * 15));
         playerInfoPanel.setOpaque(true);
 
         // Add a blue border around the player info section
@@ -108,8 +108,8 @@ public class PlayPanel extends JPanel {
 
         // Create a layered pane to hold the fieldPane and messageLabel
         JLayeredPane layeredPane = new JLayeredPane();
-        layeredPane.setPreferredSize(new Dimension(mainFrame.getFieldWidth() * 15, mainFrame.getFieldHeight() * 15));
-        fieldPane.setBounds(0, 0, mainFrame.getFieldWidth() * 15, mainFrame.getFieldHeight() * 15);
+        layeredPane.setPreferredSize(new Dimension(mainFrame.getConfigData().getFieldWidth() * 15, mainFrame.getConfigData().getFieldHeight() * 15));
+        fieldPane.setBounds(0, 0, mainFrame.getConfigData().getFieldWidth() * 15, mainFrame.getConfigData().getFieldHeight() * 15);
         fieldPane.setOpaque(true); // Make fieldPane transparent
         layeredPane.add(fieldPane, JLayeredPane.DEFAULT_LAYER);
 
@@ -119,7 +119,7 @@ public class PlayPanel extends JPanel {
         messageLabel.setVerticalAlignment(JLabel.TOP);
         messageLabel.setForeground(Color.WHITE);
         messageLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        messageLabel.setBounds(0, 0, mainFrame.getFieldWidth() * 15, 30); // Adjust y-coordinate to position above the grid
+        messageLabel.setBounds(0, 0, mainFrame.getConfigData().getFieldWidth() * 15, 30); // Adjust y-coordinate to position above the grid
         messageLabel.setVisible(false);
         layeredPane.add(messageLabel, JLayeredPane.PALETTE_LAYER);
 

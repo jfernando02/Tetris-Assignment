@@ -1,7 +1,7 @@
 // Main panel with menus and options to other parts of the program: think check high-scores, start game, etc.
 package ui.panel;
 
-import ui.MainFrame;
+import controller.MainFrame;
 import ui.UIGenerator;
 
 import javax.swing.*;

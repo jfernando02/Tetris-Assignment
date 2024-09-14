@@ -1,7 +1,7 @@
 package ui.panel;
 
 import model.*;
-import ui.MainFrame;
+import controller.*;
 import ui.UIGenerator;
 
 import javax.sound.sampled.Clip;

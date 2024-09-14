@@ -1,8 +1,6 @@
 package view.panel;
 
 import controller.MainFrame;
-import model.Board;
-import model.TetrisCell;
 import model.games.Game;
 import view.UIGenerator;
 
@@ -70,6 +68,7 @@ public class GamePanelMulti extends GamePanel {
         gbc.anchor = GridBagConstraints.CENTER;
         centerPanel.add(playPanel, gbc);
         gbc.gridx = 1;
+        gbc.insets = new Insets(0, 20, 0, 0); // Add space between the panels
         centerPanel.add(playPanelTwo, gbc);
         background.setLayout(new BorderLayout());
         background.add(centerPanel, BorderLayout.CENTER);
@@ -117,6 +116,7 @@ public class GamePanelMulti extends GamePanel {
         });
 
     }
+
     // Method to update both games based on the pressed keys
     private void updateGames() {
         for (int keyCode : pressedKeys) {
@@ -161,7 +161,6 @@ public class GamePanelMulti extends GamePanel {
         playPanel.fieldPane.updateBoard(gameOne.getBoard());
         playPanelTwo.fieldPane.updateBoard(gameTwo.getBoard());
     }
-
 
     @Override
     public void setPaused(boolean paused) {

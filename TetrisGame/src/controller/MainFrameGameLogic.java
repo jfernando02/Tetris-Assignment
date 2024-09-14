@@ -1,5 +1,7 @@
 package controller;
 
+import model.games.Game;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -10,19 +12,21 @@ public class MainFrameGameLogic {
     private ScheduledExecutorService renderExecutor;
     private ScheduledExecutorService gameLogicExecutor;
     private volatile long period;
+    private Game game;
 
-    public MainFrameGameLogic(MainFrame mainFrame) {
+    public MainFrameGameLogic(MainFrame mainFrame, Game game) {
         this.mainFrame = mainFrame;
+        this.game = game;
     }
 
     // Starts game threads
     public void startGame() {
-        if (mainFrame.getGameOne().isGameRunning() && !mainFrame.getGameOne().isGameOver()) {
+        if (game.isGameRunning() && !game.isGameOver()) {
             System.out.println("Game is already running");
             return;
         }
         System.out.println("MainFrame said: New Game Started");
-        mainFrame.getGameOne().setStartLevel(mainFrame.getConfigData().getStartLevel());
+        game.setStartLevel(mainFrame.getConfigData().getStartLevel());
         runGamePeriod();
     }
 
@@ -36,7 +40,7 @@ public class MainFrameGameLogic {
         }
         renderExecutor = Executors.newSingleThreadScheduledExecutor();
         gameLogicExecutor = Executors.newSingleThreadScheduledExecutor();
-        mainFrame.getGameOne().start();
+        game.start();
         this.period = mainFrame.getGameOne().getPeriod();
         updateGamePeriod();
     }
@@ -49,32 +53,29 @@ public class MainFrameGameLogic {
         }
         gameLogicExecutor = Executors.newSingleThreadScheduledExecutor();
         renderExecutor.scheduleAtFixedRate(() -> {
-            if (mainFrame.getGameOne().isPlaying()) {
+            if (game.isPlaying()) {
                 SwingUtilities.invokeLater(() -> {
                     mainFrame.getGamePanel().repaint();
                 });
             }
         }, 0, period / 10, TimeUnit.MILLISECONDS);
         gameLogicExecutor.scheduleAtFixedRate(() -> {
-            if (mainFrame.getGameOne().isPlaying()) {
-                mainFrame.getGameOne().play();
+            if (game.isPlaying()) {
+                game.play();
             }
         }, 0, period, TimeUnit.MILLISECONDS);
     }
 
     // Also stop second game if extended mode is enabled (only needs to be called once)
     public void stopGame() {
-        mainFrame.getGameOne().stop();
+        game.stop();
         // if extended mode is enabled, also stops second game
         System.out.println("MainFrame said: Game Stopped");
     }
 
     // Also pause second game if extended mode is enabled (only needs to be called once)
     public void pauseGame() {
-        mainFrame.getGameOne().pause();
-        if (mainFrame.getConfigData().isExtendedMode()) {
-            mainFrame.getGameTwo().pause();
-        }
+        game.pause();
         mainFrame.getGamePanel().requestFocusInWindow();
     }
 

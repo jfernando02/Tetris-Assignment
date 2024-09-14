@@ -5,5 +5,5 @@
   "music": true,
   "soundEffect": true,
   "aiPlay": false,
-  "extendedMode": false
+  "extendedMode": true
 }

@@ -48,9 +48,6 @@ public class MainFrame extends JFrame {
         this.mainHeight = mainHeight;
         this.configData = ConfigManager.getConfigData();
         this.panels = new MainFramePanels(this);
-        // First player threads
-        this.gameLogicOne = new MainFrameGameLogic(this);
-        this.gameLogicTwo = new MainFrameGameLogic(this);
 
         setTitle(this.title);
         setSize(this.mainWidth, this.mainHeight);
@@ -79,6 +76,7 @@ public class MainFrame extends JFrame {
         batchSpawnBlocks();
         gamePanel = new GamePanel(this);
         this.gameOne = new Game(this, gamePanel);
+        this.gameLogicOne = new MainFrameGameLogic(this, gameOne);
         gamePanel.setGame(gameOne, null);
     }
 
@@ -87,7 +85,9 @@ public class MainFrame extends JFrame {
         batchSpawnBlocks();
         this.gamePanel = new GamePanelMulti(this);
         this.gameOne = new GameOne(this, gamePanel);
+        this.gameLogicOne = new MainFrameGameLogic(this, gameOne);
         this.gameTwo = new GameTwo(this, gamePanel);
+        this.gameLogicTwo = new MainFrameGameLogic(this, gameTwo);
         this.gamePanel.setGame(gameOne, gameTwo);
     }
 
@@ -134,6 +134,10 @@ public class MainFrame extends JFrame {
     public void pauseGame() {
         // gameLogicOne will also pause gameTwo if extended mode is enabled
         gameLogicOne.pauseGame();
+        //game logic two pause
+        if (gameLogicTwo != null) {
+            gameLogicTwo.pauseGame();
+        }
     }
 
     public Game getGameOne() {

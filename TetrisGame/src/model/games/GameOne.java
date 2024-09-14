@@ -56,7 +56,7 @@ public class GameOne extends Game {
             case KeyEvent.VK_P:
                 System.out.println("P key pressed");
                 //if paused, set GamePanel pause button to resume
-                gamePanel.pauseGame();
+                //mainFrame.pauseGame();
                 break;
             case KeyEvent.VK_S:
                 System.out.println("S key pressed"); //stop

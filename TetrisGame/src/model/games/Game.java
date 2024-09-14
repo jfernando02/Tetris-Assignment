@@ -20,9 +20,9 @@ public class Game {
     private TetrisBlock nextShape;
     private int nextShapeIndex;
     protected GamePanel gamePanel;
-    private Clip gameMusic;
-    boolean playing;
-    private boolean paused = false;
+    protected Clip gameMusic;
+    protected boolean playing;
+    protected boolean paused = false;
     protected Player player;
 
     protected int period; //period to set the thread timer
@@ -259,9 +259,9 @@ public class Game {
         mainFrame.stopSound(gameMusic);
         if (playing) {
             System.out.println("Game paused");
-            playing = false;
-            paused = true;
+            mainFrame.pauseGame(); // pauses both games if multiplayer
             gamePanel.setPaused(true);
+
         }
         //new JDIalog for game over to ask if they're sure if they want to quit
         JDialog dialog = new JDialog();
@@ -284,11 +284,7 @@ public class Game {
             //reset field pane configuration to default (requirement)
             mainFrame.resetFieldPaneConfig();
         } else {
-            //else refocus on
-            mainFrame.getGamePanel().requestFocusInWindow();
-            if(!wasPaused && gameRunning){
-                resumeGame();
-            }
+            mainFrame.pauseGame();
             dialog.dispose();
         }
     }
@@ -332,7 +328,7 @@ public class Game {
             case KeyEvent.VK_P:
                 System.out.println("P key pressed");
                 //if paused, set GamePanel pause button to resume
-                gamePanel.pauseGame();
+                mainFrame.pauseGame();
                 break;
             case KeyEvent.VK_S:
                 System.out.println("S key pressed"); //stop

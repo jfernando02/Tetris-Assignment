@@ -82,4 +82,8 @@ public class MainFrameGameLogic {
     public void setPeriod(long period) {
         this.period = period;
     }
+
+    public Game getGame() {
+        return game;
+    }
 }

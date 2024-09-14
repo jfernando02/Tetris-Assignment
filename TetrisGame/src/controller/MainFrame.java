@@ -129,6 +129,10 @@ public class MainFrame extends JFrame {
     public void stopGame() {
         // gameLogicOne will also stop gameTwo if extended mode is enabled
         gameLogicOne.stopGame();
+        if (gameLogicTwo != null) {
+            gameLogicTwo.stopGame();
+        }
+
     }
 
     public void pauseGame() {

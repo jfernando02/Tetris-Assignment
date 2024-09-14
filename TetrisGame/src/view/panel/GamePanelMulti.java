@@ -96,7 +96,7 @@ public class GamePanelMulti extends GamePanel {
         backButton.setOpaque(false); // Make backButton transparent
         backButton.addActionListener(e -> {
             mainFrame.playSound("src/resources/sounds/MenuKeyPresses.wav", false);
-            stopGame();
+            mainFrame.stopGame();
         });
         background.add(backButton, BorderLayout.SOUTH);
 

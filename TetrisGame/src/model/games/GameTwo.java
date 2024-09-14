@@ -45,5 +45,9 @@ public class GameTwo extends Game {
         System.out.println("Game Object says: Level set to " + player.getLevel());
     }
 
-    // update() is the same for GameTwo as Game
+    @Override
+    public void stop() {
+        // Does nothing, as we're making the parent
+        // method do all the LABOUR
+    }
 }

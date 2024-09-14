@@ -34,11 +34,7 @@ public class Player {
         System.out.println("Player says: Level: " + level);
 
     }
-
-    public void updateLevel(){
-        //for every 10 lines cleared increase level by 1
-        level = linesCleared / 10 + initialLevel;
-    }
+    public void updateLevel(){ level = linesCleared / 10 + initialLevel; } // 10 lines per level
 
     // Getters and Setters
     public String getName() {

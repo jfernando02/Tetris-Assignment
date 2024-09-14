@@ -20,11 +20,7 @@ public class MainFramePanels {
 
     // Show the game panel
     public void showGamePanel() {
-        mainFrame.setGame(new Game(mainFrame, mainFrame.getBoard()));
-        mainFrame.setGamePanel(new GamePanel(mainFrame, mainFrame.getGame()));
-        mainFrame.getGamePanel().repaint();
-        mainFrame.getGamePanel().setFocusable(true);
-        mainFrame.getGamePanel().requestFocusInWindow();
+        mainFrame.initSoloGame();
         mainFrame.setContentPane(mainFrame.getGamePanel());
     }
 

@@ -4,7 +4,6 @@ import model.*;
 import controller.*;
 import view.UIGenerator;
 
-import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
@@ -17,13 +16,16 @@ public class GamePanel extends JPanel {
     private MainFrame mainFrame;
     private JButton startButton;
     private JButton pauseButton;
-    private Clip gameMusic;
     private PlayPanel playPanel;
 
-    public GamePanel(MainFrame mainFrame, Game game) {
+    public GamePanel(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
+    }
+
+    public void setGame(Game game) {
         this.game = game;
-        playPanel = new PlayPanel(mainFrame, game);
+        playPanel = new PlayPanel(mainFrame);
+        playPanel.setGame(game);
 
         setLayout(new BorderLayout());
         setSize(mainFrame.getWidth(), mainFrame.getHeight());
@@ -47,7 +49,6 @@ public class GamePanel extends JPanel {
             }
         });
         add(background);
-
 
         // Create and add PlayPanel to the center
         playPanel.setOpaque(false); // Make PlayPanel transparent
@@ -151,8 +152,4 @@ public class GamePanel extends JPanel {
         requestFocusInWindow();
     }
 
-    public void renderNextPiece(TetrisBlock nextShape) {
-        playPanel.updateNextPieceField(nextShape);
-        requestFocusInWindow();
-    }
 }

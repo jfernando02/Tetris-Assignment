@@ -10,8 +10,9 @@ public class Board<T> {
     private MainFrame mainFrame;
     Game game;
 
-    public Board(MainFrame mainFrame) {
+    public Board(MainFrame mainFrame, Game game) {
         this.mainFrame = mainFrame;
+        this.game = game;
         this.width = mainFrame.getConfigData().getFieldWidth();
         this.height = mainFrame.getConfigData().getFieldHeight();
         this.board = (T[][]) new Object[width][height];
@@ -20,9 +21,6 @@ public class Board<T> {
         this.spawnY = 0;
     }
 
-    public void setGame(Game game) {
-        this.game = game;
-    }
 
     // for expanding width and height of the board
     public void refreshBoard() {

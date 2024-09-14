@@ -43,17 +43,6 @@ public class MainFrame extends JFrame {
         this.mainWidth = mainWidth;
         this.mainHeight = mainHeight;
         this.configData = ConfigManager.getConfigData();
-        this.nextPieces = new TetrisBlock[1000];
-        this.board = new Board(this);
-        for (int i = 0; i < 100; i++) {
-            TetrisBlock block = new TetrisBlock(this.board);
-            block.spawnBlock();
-            nextPieces[i] = block;
-        }
-        this.game = new Game(this, board);
-        this.renderExecutor = Executors.newSingleThreadScheduledExecutor();
-        this.gameLogicExecutor = Executors.newSingleThreadScheduledExecutor();
-        this.gamePanel = game.getGamePanel();
         this.panels = new MainFramePanels(this);
         this.gameLogic = new MainFrameGameLogic(this);
 
@@ -63,28 +52,44 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
     }
 
+    // Each player draws from the same pool of 1000 pieces (nextPieces)
     public TetrisBlock getNextBlock(int index) {
-        int idx = index % 100;
+        int idx = index % 1000; // Wrap around to the beginning of the array
         TetrisBlock block = nextPieces[idx].copy();
         block.setBoard(this.board);
         return block;
     }
 
-    public void showSplashScreen() {
-        panels.showSplashScreen();
+    // Makes 1000 blocks and stores them in nextPieces
+    public void batchSpawnBlocks() {
+        this.nextPieces = new TetrisBlock[1000];
+        for (int i = 0; i < 1000; i++) {
+            TetrisBlock block = new TetrisBlock();
+            block.spawnBlock();
+            nextPieces[i] = block;
+        }
     }
 
-    public void showGamePanel() {
-        panels.showGamePanel();
+
+    public void initSoloGame() {
+        batchSpawnBlocks();
+        this.game = new Game(this);
+        this.renderExecutor = Executors.newSingleThreadScheduledExecutor();
+        this.gameLogicExecutor = Executors.newSingleThreadScheduledExecutor();
+        this.gamePanel = game.getGamePanel();
+    }
+
+    public void showGamePanel() { panels.showGamePanel(); }
+
+    public void showSplashScreen() {
+        panels.showSplashScreen();
     }
 
     public void showMainPanel() {
         panels.showMainPanel();
     }
 
-    public void showConfigurePanel() {
-        panels.showConfigurePanel();
-    }
+    public void showConfigurePanel() { panels.showConfigurePanel(); }
 
     public void showHighScorePanel() {
         panels.showHighScorePanel();
@@ -95,6 +100,8 @@ public class MainFrame extends JFrame {
     }
 
     public void updateGamePeriod() {
+        //set period
+        gameLogic.setPeriod(game.getPeriod());
         gameLogic.updateGamePeriod();
     }
 
@@ -104,10 +111,6 @@ public class MainFrame extends JFrame {
 
     public void pauseGame() {
         gameLogic.pauseGame();
-    }
-
-    public void resetGameConfig() {
-        gameLogic.resetGameConfig();
     }
 
     public Game getGame() {
@@ -179,8 +182,6 @@ public class MainFrame extends JFrame {
     public void resetFieldPaneConfig() {
         ConfigManager.resetFieldPaneConfig();
         this.configData = ConfigManager.getConfigData();
-        // Refreshes the board dimensions after a reset
-        refreshBoard();
     }
 
     // Important for rendering the current board state in the field pane, used by GAME PANEL
@@ -234,12 +235,5 @@ public class MainFrame extends JFrame {
     public void resetConfigData() {
         ConfigManager.resetConfigData();
         this.configData = ConfigManager.getConfigData();
-        // Refreshes the board dimensions after a reset
-        refreshBoard();
     }
-
-    public void refreshBoard() {
-        this.board.refreshBoard();
-    }
-
 }

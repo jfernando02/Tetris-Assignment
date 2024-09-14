@@ -76,14 +76,6 @@ public class MainFrameGameLogic {
         mainFrame.getGamePanel().requestFocusInWindow();
     }
 
-    public void resetGameConfig() {
-        mainFrame.setBoard(new Board(mainFrame));
-        mainFrame.setGame(new Game(mainFrame, mainFrame.getBoard()));
-        if (mainFrame.getGamePanel() != null) {
-            mainFrame.getGamePanel().requestFocusInWindow();
-        }
-    }
-
     public void setPeriod(long period) {
         this.period = period;
     }

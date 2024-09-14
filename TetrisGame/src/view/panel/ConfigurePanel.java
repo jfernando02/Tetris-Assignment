@@ -71,8 +71,6 @@ public class ConfigurePanel extends JDialog {
                     5, 15, mainFrame.getConfigData().getFieldWidth(), e -> {
                         int newValue = ((JSlider) e.getSource()).getValue();
                         mainFrame.getConfigData().setFieldWidth(newValue);
-                        mainFrame.refreshBoard(); //added for grid expansion of field pane (width)
-                        mainFrame.resetGameConfig();
                     });
 
             // Field Height
@@ -80,8 +78,6 @@ public class ConfigurePanel extends JDialog {
                     15, 30, mainFrame.getConfigData().getFieldHeight(), e -> {
                         int newValue = ((JSlider) e.getSource()).getValue();
                         mainFrame.getConfigData().setFieldHeight(newValue);
-                        mainFrame.refreshBoard(); //added for grid expansion of field pane (height)
-                        mainFrame.resetGameConfig();
                     });
 
             // Game Level
@@ -133,7 +129,7 @@ public class ConfigurePanel extends JDialog {
             backgroundLabel.add(configBox, BorderLayout.CENTER);
         } catch (Exception e) {
             e.printStackTrace();
-            JOptionPane.showMessageDialog(this, "Error initializing configuration panel: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error initialising configuration panel: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 

@@ -26,9 +26,13 @@ public class PlayPanel extends JPanel {
     private JLabel levelLabel;
     private JLabel scoreLabel;
     private JLabel linesClearedLabel;
+    private JLabel periodLabel;
 
-    public PlayPanel(MainFrame mainFrame, Game game) {
+    public PlayPanel(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
+    }
+
+    public void setGame(Game game) {
         this.game = game;
         this.board = game.getBoard();
         this.score = game.getScore();
@@ -69,6 +73,9 @@ public class PlayPanel extends JPanel {
         scoreLabel.setFont(labelFont);
         linesClearedLabel = new JLabel("Lines Erased: " + player.getLinesCleared(), JLabel.CENTER);
         linesClearedLabel.setFont(labelFont);
+        //label for thread period
+        periodLabel = new JLabel("Period: " + game.getPeriod(), JLabel.CENTER);
+        periodLabel.setFont(labelFont);
 
         JLabel nextPieceLabel = new JLabel("Next Piece: ", JLabel.CENTER);
         nextPieceLabel.setFont(labelFont);
@@ -87,13 +94,16 @@ public class PlayPanel extends JPanel {
         playerInfoPanel.add(scoreLabel, infoGbc);
         infoGbc.gridy++;
         playerInfoPanel.add(linesClearedLabel, infoGbc);
+        // add the period as info too
+        infoGbc.gridy++;
+        playerInfoPanel.add(periodLabel, infoGbc);
         infoGbc.gridy++;
         playerInfoPanel.add(nextPieceLabel, infoGbc);
         infoGbc.gridy++;
         playerInfoPanel.add(nextPieceFieldPane, infoGbc);
 
         // Set preferred size and make the panel transparent
-        playerInfoPanel.setPreferredSize(new Dimension(mainFrame.getConfigData().getFieldWidth() * 15, mainFrame.getConfigData().getFieldHeight() * 15));
+        playerInfoPanel.setPreferredSize(new Dimension(mainFrame.getConfigData().getFieldWidth() * 15+4, mainFrame.getConfigData().getFieldHeight() * 15));
         playerInfoPanel.setOpaque(true);
 
         // Add a blue border around the player info section
@@ -167,6 +177,7 @@ public class PlayPanel extends JPanel {
         levelLabel.setText("Current Level: " + player.getLevel());
         scoreLabel.setText("Current Score: " + player.getScore());
         linesClearedLabel.setText("Lines Erased: " + player.getLinesCleared());
+        periodLabel.setText("Period: " + game.getPeriod());
     }
     public void updatePanel() {
         updateNextPieceField(game.getNextPiece());

@@ -13,14 +13,12 @@ public class TetrisBlock {
     private long landTime; // Time when the block landed
     private static final long BUFFER_TIME = 500; // Buffer time in milliseconds
 
-    public TetrisBlock(Board<TetrisCell> board) {
-        this.board = board;
+    public TetrisBlock() {
+        this.shape = TetrisShape.getRandomShape();
         this.hasLanded = false;
     }
 
-
     public TetrisBlock spawnBlock() {
-        this.shape = TetrisShape.getRandomShape();
         //add cells to the block
         for (int i = 0; i < 4; i++) {
             TetrisCell cell = new TetrisCell(0, 0, shape.getColor(), null);
@@ -34,9 +32,11 @@ public class TetrisBlock {
         this.board = board;
     }
 
-    public void run() {
+    public void run(Board<TetrisCell> board) {
+        this.board = board;
         int[][] cells = shape.getCoordinates(this.currentRotation);
         for (int i = 0; i < 4; i++) {
+            // place each cell on the board
             this.cells.get(i).setBoard(this.board);
             int cellX = cells[0][i] + this.board.getSpawnX();
             int cellY = cells[1][i] + this.board.getSpawnY();
@@ -259,8 +259,9 @@ public class TetrisBlock {
         }
     }
 
+    // Deep copy of the tetris block
     public TetrisBlock copy() {
-        TetrisBlock copy = new TetrisBlock(board);
+        TetrisBlock copy = new TetrisBlock();
         copy.shape = this.shape;
         copy.currentRotation = this.currentRotation;
         copy.hasLanded = this.hasLanded;

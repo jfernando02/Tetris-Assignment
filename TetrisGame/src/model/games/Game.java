@@ -328,7 +328,7 @@ public class Game {
             case KeyEvent.VK_P:
                 System.out.println("P key pressed");
                 //if paused, set GamePanel pause button to resume
-                mainFrame.pauseGame();
+                gamePanel.pauseGame();
                 break;
             case KeyEvent.VK_S:
                 System.out.println("S key pressed"); //stop

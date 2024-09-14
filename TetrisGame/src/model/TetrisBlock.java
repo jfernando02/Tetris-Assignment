@@ -30,6 +30,11 @@ public class TetrisBlock {
 
     public void setBoard(Board<TetrisCell> board) {
         this.board = board;
+        //set all cells on board
+        for (TetrisCell cell : this.cells) {
+            cell.setBoard(board);
+
+        }
     }
 
     public void run(Board<TetrisCell> board) {
@@ -259,17 +264,11 @@ public class TetrisBlock {
         }
     }
 
-    // Deep copy of the tetris block
-    public TetrisBlock copy() {
-        TetrisBlock copy = new TetrisBlock();
-        copy.shape = this.shape;
-        copy.currentRotation = this.currentRotation;
-        copy.hasLanded = this.hasLanded;
-        copy.landTime = this.landTime;
-        for (TetrisCell cell : this.cells) {
-            TetrisCell newCell = new TetrisCell(cell.getX(), cell.getY(), cell.color, null);
-            copy.cells.add(newCell);
-        }
-        return copy;
+    // For spawning batches of blocks
+    public static TetrisBlock prototype(TetrisShape shape) {
+        TetrisBlock block = new TetrisBlock();
+        block.shape = shape;
+        return block;
     }
+
 }

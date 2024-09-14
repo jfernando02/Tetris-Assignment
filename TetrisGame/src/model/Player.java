@@ -8,9 +8,8 @@ public class Player {
     private int linesCleared;
     private boolean isAI;
 
-    public Player(String name, int initialLevel, boolean isAI) {
+    public Player(String name, int initialLevel) {
         this.name = name;
-        this.isAI = isAI;
         //initial level read from CONFIG
         this.initialLevel = initialLevel;
         this.level = initialLevel;
@@ -61,8 +60,16 @@ public class Player {
         return isAI;
     }
 
+    public void setAI() {
+        isAI = true;
+        this.name = "AI";
+    }
 
     public void setLevel(int level) {
         this.level = level;
+    }
+
+    public void setName(String s) {
+        name = s;
     }
 }

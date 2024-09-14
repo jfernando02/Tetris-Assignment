@@ -1,5 +1,6 @@
 package model;
 import controller.MainFrame;
+import model.games.Game;
 
 public class Board<T> {
     private T[][] board;

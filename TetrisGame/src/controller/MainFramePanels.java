@@ -18,7 +18,7 @@ public class MainFramePanels {
         mainFrame.repaint();
     }
 
-    // Show the game panel
+    // Show the single or multiplayer game panel
     public void showGamePanel() {
         if (mainFrame.getConfigData().isExtendedMode()) {
             mainFrame.initMultiplayerGame();

@@ -1,7 +1,11 @@
 // Game.java
-package model;
+package model.games;
 
 import controller.MainFrame;
+import model.Board;
+import model.Player;
+import model.TetrisBlock;
+import model.TetrisCell;
 import view.panel.GamePanel;
 
 import javax.sound.sampled.*;
@@ -10,38 +14,34 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class Game {
-    private MainFrame mainFrame;
-    private Board board;
-    private TetrisBlock activeShape;
+    protected MainFrame mainFrame;
+    protected Board board;
+    protected TetrisBlock activeShape;
     private TetrisBlock nextShape;
     private int nextShapeIndex;
-    GamePanel gamePanel;
+    protected GamePanel gamePanel;
     private Clip gameMusic;
-    private boolean playing;
+    boolean playing;
     private boolean paused = false;
-    private Player player1;
+    protected Player player;
 
-    private int period; //period to set the thread timer
+    protected int period; //period to set the thread timer
     // decreases thread period by 15 every level up
-    private int periodDecr = 15;
+    protected int periodDecr = 15;
     private boolean gameRunning;
 
     public Game(MainFrame mainFrame, GamePanel gamePanel) {
         this.mainFrame = mainFrame;
         this.gamePanel = gamePanel;
         this.board = new Board(mainFrame, this);
-        this.player1 = new Player("Player1", mainFrame.getConfigData().getStartLevel(), false);
+        this.player = new Player("Player1", mainFrame.getConfigData().getStartLevel());
         this.nextShapeIndex=0;
         this.activeShape = null;
         gameRunning = false;
         spawn();
-        this.period = 200 - (player1.getLevel()*periodDecr); //starting period, each level will decrease this by 10 (can be changed)
-
+        this.period = 200 - (player.getLevel()*periodDecr); //starting period, each level will decrease this by 10 (can be changed)
     }
 
-    public GamePanel getGamePanel() {
-        return gamePanel;
-    }
 
     //method which holds the logic for starting a new game
     public void newGame() {
@@ -49,9 +49,9 @@ public class Game {
             this.gameRunning = true;
             this.playing = true;
             this.paused = false;
-            this.period = 200 - (player1.getLevel()*periodDecr);
+            this.period = 200 - (player.getLevel()*periodDecr);
             this.gameMusic = mainFrame.playSound("src/resources/sounds/InGameMusic.wav", true);
-            System.out.println("Game object says: New game Started at level " + player1.getLevel());
+            System.out.println("Game object says: New game Started at level " + player.getLevel());
         }
     }
 
@@ -70,7 +70,6 @@ public class Game {
         if (playing) {
             if (this.activeShape == null) {
                 spawn();
-                //gamePanel = (GamePanel) mainFrame.getGamePanel();
                 gamePanel.updatePlayPanel();
                 activeShape.run(this.board);
 
@@ -89,6 +88,7 @@ public class Game {
     public void spawn() {
         activeShape = nextShape;
         nextShape = mainFrame.getNextBlock(nextShapeIndex+1);
+        nextShape.setBoard(board);
         nextShapeIndex++;
     }
 
@@ -110,14 +110,14 @@ public class Game {
     }
 
     // Check for line clear
-    private void checkForLineClear() {
+    protected void checkForLineClear() {
         // Logic to check and clear full lines on the board
         int clearedLines = board.clearCompleteLines();
         if (clearedLines>0) {
             System.out.println("Game Object says: " + clearedLines + " lines cleared");
-            player1.updateScore(clearedLines);
+            player.updateScore(clearedLines);
             //update MainFrame period in case of level up
-            this.period = 200 - (player1.getLevel()*periodDecr);
+            this.period = 200 - (player.getLevel()*periodDecr);
             System.out.println("Game Object says: Period set to " + period);
             mainFrame.updateGamePeriod();
             //update PlayPanel
@@ -172,7 +172,6 @@ public class Game {
 
     // Pauses the game if it's playing, resumes if it's paused
     public void pause() {
-        gamePanel = (GamePanel) mainFrame.getGamePanel();
         if (paused && !playing) {
             playing = true;
             paused = false;
@@ -249,7 +248,6 @@ public class Game {
         playing = true;
         paused = false;
 
-        gamePanel = (GamePanel) mainFrame.getGamePanel();
         gamePanel.setPaused(false);
         gamePanel.requestFocusInWindow();
     }
@@ -257,15 +255,12 @@ public class Game {
 
     //Stops the game and offers the user an option to return to the main menu
     public void stop() {
-
         boolean wasPaused = paused;
         mainFrame.stopSound(gameMusic);
-
         if (playing) {
             System.out.println("Game paused");
             playing = false;
             paused = true;
-            GamePanel gamePanel = (GamePanel) mainFrame.getGamePanel();
             gamePanel.setPaused(true);
         }
         //new JDIalog for game over to ask if they're sure if they want to quit
@@ -317,7 +312,6 @@ public class Game {
                     System.out.println("Down key pressed");
                     activeShape.softDrop();
                     activeShape.softDrop(); //TODO: review down speed logic
-                    mainFrame.repaintBoard();
                     break;
                 case KeyEvent.VK_UP:
                     System.out.println("Up key pressed");
@@ -329,16 +323,15 @@ public class Game {
                     break;
                 case KeyEvent.VK_SPACE:
                     System.out.println("Space key pressed"); // hard drop
-                    activeShape.hardDrop();
+                    activeShape.softDrop();
+                    activeShape.softDrop(); //TODO: review down speed logic
                     break;
             }
-            mainFrame.repaintBoard();
         }
         switch (keyCode) {
             case KeyEvent.VK_P:
                 System.out.println("P key pressed");
                 //if paused, set GamePanel pause button to resume
-                gamePanel = (GamePanel) mainFrame.getGamePanel();
                 gamePanel.pauseGame();
                 break;
             case KeyEvent.VK_S:
@@ -368,8 +361,8 @@ public class Game {
         this.activeShape = null;
         this.playing = false;
         this.paused = false;
-        this.player1 = new Player("Player1", mainFrame.getConfigData().getStartLevel(), false);
-        this.period = 200 - (player1.getLevel()*periodDecr);
+        this.player = new Player("Player1", mainFrame.getConfigData().getStartLevel());
+        this.period = 200 - (player.getLevel()*periodDecr);
         mainFrame.repaintBoard(); //don't delete or a new game won't render its new state on the fieldPanel in the GamePanel
     }
 
@@ -380,10 +373,10 @@ public class Game {
 
     public void setStartLevel(int level) {
         resetGame();
-        player1.setLevel(level);
-        this.period = 200 - (player1.getLevel()*periodDecr);
+        player.setLevel(level);
+        this.period = 200 - (player.getLevel()*periodDecr);
         mainFrame.getGameLogicOne().setPeriod(period);
-        System.out.println("Game Object says: Level set to " + player1.getLevel());
+        System.out.println("Game Object says: Level set to " + player.getLevel());
     }
 
     // For if the game is running (even if paused) so the start button doesn't reset the game
@@ -392,7 +385,7 @@ public class Game {
     }
 
     public int getScore() {
-        return player1.getScore();
+        return player.getScore();
     }
 
     public Clip getPlayingMusic() {
@@ -408,6 +401,6 @@ public class Game {
     }
 
     public Player getPlayer() {
-        return player1;
+        return player;
     }
 }

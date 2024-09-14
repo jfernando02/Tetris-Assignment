@@ -1,7 +1,7 @@
 package view.panel;
 
 import model.Board;
-import model.Game;
+import model.games.Game;
 import model.Player;
 import model.TetrisBlock;
 import controller.MainFrame;

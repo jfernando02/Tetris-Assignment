@@ -85,4 +85,15 @@ public enum TetrisShape {
         };
     }
 
+    public TetrisShape copy() {
+        return switch (this) {
+            case I -> I;
+            case O -> O;
+            case T -> T;
+            case S -> S;
+            case Z -> Z;
+            case L -> L;
+            case J -> J;
+        };
+    }
 }

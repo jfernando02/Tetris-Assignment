@@ -1,9 +1,5 @@
 package controller;
 
-
-import model.Board;
-import model.Game;
-
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -21,12 +17,12 @@ public class MainFrameGameLogic {
 
     // Starts game threads
     public void startGame() {
-        if (mainFrame.getGame().isGameRunning() && !mainFrame.getGame().isGameOver()) {
+        if (mainFrame.getGameOne().isGameRunning() && !mainFrame.getGameOne().isGameOver()) {
             System.out.println("Game is already running");
             return;
         }
         System.out.println("MainFrame said: New Game Started");
-        mainFrame.getGame().setStartLevel(mainFrame.getConfigData().getStartLevel());
+        mainFrame.getGameOne().setStartLevel(mainFrame.getConfigData().getStartLevel());
         runGamePeriod();
     }
 
@@ -40,8 +36,8 @@ public class MainFrameGameLogic {
         }
         renderExecutor = Executors.newSingleThreadScheduledExecutor();
         gameLogicExecutor = Executors.newSingleThreadScheduledExecutor();
-        mainFrame.getGame().start();
-        this.period = mainFrame.getGame().getPeriod();
+        mainFrame.getGameOne().start();
+        this.period = mainFrame.getGameOne().getPeriod();
         updateGamePeriod();
     }
 
@@ -53,26 +49,26 @@ public class MainFrameGameLogic {
         }
         gameLogicExecutor = Executors.newSingleThreadScheduledExecutor();
         renderExecutor.scheduleAtFixedRate(() -> {
-            if (mainFrame.getGame().isPlaying()) {
+            if (mainFrame.getGameOne().isPlaying()) {
                 SwingUtilities.invokeLater(() -> {
                     mainFrame.getGamePanel().repaint();
                 });
             }
         }, 0, period / 10, TimeUnit.MILLISECONDS);
         gameLogicExecutor.scheduleAtFixedRate(() -> {
-            if (mainFrame.getGame().isPlaying()) {
-                mainFrame.getGame().play();
+            if (mainFrame.getGameOne().isPlaying()) {
+                mainFrame.getGameOne().play();
             }
         }, 0, period, TimeUnit.MILLISECONDS);
     }
 
     public void stopGame() {
-        mainFrame.getGame().stop();
+        mainFrame.getGameOne().stop();
         System.out.println("MainFrame said: Game Stopped");
     }
 
     public void pauseGame() {
-        mainFrame.getGame().pause();
+        mainFrame.getGameOne().pause();
         mainFrame.getGamePanel().requestFocusInWindow();
     }
 

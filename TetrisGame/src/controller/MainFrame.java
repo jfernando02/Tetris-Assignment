@@ -2,7 +2,6 @@ package controller;
 
 import config.ConfigData;
 import config.ConfigManager;
-import model.Board;
 import model.Game;
 import model.TetrisBlock;
 import model.Score;
@@ -18,25 +17,26 @@ import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 
 public class MainFrame extends JFrame {
     private String title;
     private int mainWidth;
     private int mainHeight;
-    private Game game;
-    private Board board;
+
     private GamePanel gamePanel;
     private TetrisBlock[] nextPieces;
-    private ScheduledExecutorService renderExecutor;
-    private ScheduledExecutorService gameLogicExecutor;
+
     private ConfigData configData;
     private ArrayList<Score> scores = new ArrayList<>();
 
     private MainFramePanels panels;
-    private MainFrameGameLogic gameLogic;
+
+    private MainFrameGameLogic gameLogicOne;
+    private Game gameOne;
+
+    private MainFrameGameLogic gameLogicTwo; // For extended mode
+    private Game gameTwo; // For extended mode
 
     public MainFrame(String title, int mainWidth, int mainHeight) {
         this.title = title;
@@ -44,7 +44,7 @@ public class MainFrame extends JFrame {
         this.mainHeight = mainHeight;
         this.configData = ConfigManager.getConfigData();
         this.panels = new MainFramePanels(this);
-        this.gameLogic = new MainFrameGameLogic(this);
+        this.gameLogicOne = new MainFrameGameLogic(this);
 
         setTitle(this.title);
         setSize(this.mainWidth, this.mainHeight);
@@ -56,7 +56,6 @@ public class MainFrame extends JFrame {
     public TetrisBlock getNextBlock(int index) {
         int idx = index % 1000; // Wrap around to the beginning of the array
         TetrisBlock block = nextPieces[idx].copy();
-        block.setBoard(this.board);
         return block;
     }
 
@@ -70,13 +69,19 @@ public class MainFrame extends JFrame {
         }
     }
 
-
     public void initSoloGame() {
         batchSpawnBlocks();
-        this.game = new Game(this);
-        this.renderExecutor = Executors.newSingleThreadScheduledExecutor();
-        this.gameLogicExecutor = Executors.newSingleThreadScheduledExecutor();
-        this.gamePanel = game.getGamePanel();
+        gamePanel = new GamePanel(this);
+        this.gameOne = new Game(this, gamePanel);
+        gamePanel.setGame(gameOne);
+    }
+
+    public void initMultiplayerGame() {
+        batchSpawnBlocks();
+        gamePanel = new GamePanel(this);
+        this.gameOne = new Game(this, gamePanel);
+        this.gameTwo = new Game(this, gamePanel);
+
     }
 
     public void showGamePanel() { panels.showGamePanel(); }
@@ -96,38 +101,31 @@ public class MainFrame extends JFrame {
     }
 
     public void startGame() {
-        gameLogic.startGame();
+        gameLogicOne.startGame();
     }
 
     public void updateGamePeriod() {
         //set period
-        gameLogic.setPeriod(game.getPeriod());
-        gameLogic.updateGamePeriod();
+        gameLogicOne.setPeriod(gameOne.getPeriod());
+        gameLogicOne.updateGamePeriod();
     }
 
     public void stopGame() {
-        gameLogic.stopGame();
+        gameLogicOne.stopGame();
     }
 
     public void pauseGame() {
-        gameLogic.pauseGame();
+        gameLogicOne.pauseGame();
     }
 
-    public Game getGame() {
-        return game;
+    public Game getGameOne() {
+        return gameOne;
     }
 
-    public void setGame(Game game) {
-        this.game = game;
+    public void setGameOne(Game gameOne) {
+        this.gameOne = gameOne;
     }
 
-    public Board getBoard() {
-        return board;
-    }
-
-    public void setBoard(Board board) {
-        this.board = board;
-    }
 
     public GamePanel getGamePanel() {
         return gamePanel;
@@ -145,8 +143,8 @@ public class MainFrame extends JFrame {
         return panels;
     }
 
-    public MainFrameGameLogic getGameLogic() {
-        return gameLogic;
+    public MainFrameGameLogic getGameLogicOne() {
+        return gameLogicOne;
     }
 
     // Method to play sound with an option to loop, returns the clip for stopping
@@ -187,7 +185,7 @@ public class MainFrame extends JFrame {
     // Important for rendering the current board state in the field pane, used by GAME PANEL
     public void repaintBoard() {
         if (gamePanel != null) {
-            gamePanel.updateField(game.getBoard());
+            gamePanel.updateField(gameOne.getBoard());
         } else {
             System.err.println("Error: gamePanel is null");
         }
@@ -214,13 +212,13 @@ public class MainFrame extends JFrame {
         if (getConfigData().isMusic()) {
             configData.setMusic(false);
             //stop the playing sound
-            game.getPlayingMusic().stop();
+            gameOne.getPlayingMusic().stop();
             gamePanel.updateMessageLabel("Music Off");
         } else {
             setMusic(true);
             //play the music
-            if(!game.isPaused()) {
-                game.getPlayingMusic().loop(Clip.LOOP_CONTINUOUSLY);
+            if(!gameOne.isPaused()) {
+                gameOne.getPlayingMusic().loop(Clip.LOOP_CONTINUOUSLY);
             }
             gamePanel.updateMessageLabel("Music On");
         }

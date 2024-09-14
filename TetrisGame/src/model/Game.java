@@ -26,8 +26,9 @@ public class Game {
     private int periodDecr = 15;
     private boolean gameRunning;
 
-    public Game(MainFrame mainFrame) {
+    public Game(MainFrame mainFrame, GamePanel gamePanel) {
         this.mainFrame = mainFrame;
+        this.gamePanel = gamePanel;
         this.board = new Board(mainFrame, this);
         this.player1 = new Player("Player1", mainFrame.getConfigData().getStartLevel(), false);
         this.nextShapeIndex=0;
@@ -35,8 +36,7 @@ public class Game {
         gameRunning = false;
         spawn();
         this.period = 200 - (player1.getLevel()*periodDecr); //starting period, each level will decrease this by 10 (can be changed)
-        gamePanel = new GamePanel(mainFrame);
-        gamePanel.setGame(this);
+
     }
 
     public GamePanel getGamePanel() {
@@ -382,7 +382,7 @@ public class Game {
         resetGame();
         player1.setLevel(level);
         this.period = 200 - (player1.getLevel()*periodDecr);
-        mainFrame.getGameLogic().setPeriod(period);
+        mainFrame.getGameLogicOne().setPeriod(period);
         System.out.println("Game Object says: Level set to " + player1.getLevel());
     }
 

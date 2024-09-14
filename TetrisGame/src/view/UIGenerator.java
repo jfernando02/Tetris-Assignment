@@ -5,7 +5,7 @@
 * assist other classes. These classes typically contain static methods and are not meant to be instantiated.
 * They encapsulate common operations or reusable code that can be used across different parts of an application.
 * */
-package ui;
+package view;
 
 import javax.swing.*;
 import java.awt.*;

@@ -1,13 +1,8 @@
-package ui.field;
-import model.Board;
+package view.field;
 import model.TetrisBlock;
-import model.TetrisCell;
-import model.TetrisShape;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
-import java.util.ArrayList;
 
 
 // FieldPane for the next piece field

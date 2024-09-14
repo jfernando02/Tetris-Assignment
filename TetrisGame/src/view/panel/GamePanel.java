@@ -1,8 +1,8 @@
-package ui.panel;
+package view.panel;
 
 import model.*;
 import controller.*;
-import ui.UIGenerator;
+import view.UIGenerator;
 
 import javax.sound.sampled.Clip;
 import javax.swing.*;

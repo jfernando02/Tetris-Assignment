@@ -1,4 +1,4 @@
-package ui.panel;
+package view.panel;
 
 import controller.MainFrame;
 import javax.swing.*;

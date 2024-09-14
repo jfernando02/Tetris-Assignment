@@ -1,6 +1,6 @@
-package ui.panel;
+package view.panel;
 
-import ui.UIGenerator;
+import view.UIGenerator;
 import controller.MainFrame;
 
 import javax.swing.*;

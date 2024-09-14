@@ -2,7 +2,7 @@
 package model;
 
 import controller.MainFrame;
-import ui.panel.GamePanel;
+import view.panel.GamePanel;
 
 import javax.sound.sampled.*;
 import javax.swing.*;
@@ -369,10 +369,6 @@ public class Game {
 
     public boolean isPlaying() {
         return playing;
-    }
-
-    public int getLevel() {
-        return player1.getLevel();
     }
 
     public void resetGame() {

@@ -1,14 +1,13 @@
 // FieldPane renders the game field where the Tetris blocks are displayed. It uses the Board class to get the current state of the game field and renders it accordingly. The cellSize parameter determines the size
 // of each cell in the game field.
 // FieldPane.java
-package ui.field;
+package view.field;
 
 import model.Board;
 import model.TetrisCell;
 
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.border.CompoundBorder;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 

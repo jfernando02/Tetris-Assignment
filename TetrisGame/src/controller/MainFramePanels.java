@@ -1,7 +1,7 @@
 package controller;
 
-import model.Game;
-import ui.panel.*;
+import model.*;
+import view.panel.*;
 
 public class MainFramePanels {
     private MainFrame mainFrame;
@@ -18,17 +18,14 @@ public class MainFramePanels {
         mainFrame.repaint();
     }
 
+    // Show the game panel
     public void showGamePanel() {
-        if (mainFrame.getGame() == null) {
-            mainFrame.setGame(new Game(mainFrame, mainFrame.getBoard()));
-        }
+        mainFrame.setGame(new Game(mainFrame, mainFrame.getBoard()));
         mainFrame.setGamePanel(new GamePanel(mainFrame, mainFrame.getGame()));
         mainFrame.getGamePanel().repaint();
         mainFrame.getGamePanel().setFocusable(true);
         mainFrame.getGamePanel().requestFocusInWindow();
         mainFrame.setContentPane(mainFrame.getGamePanel());
-        mainFrame.revalidate();
-        mainFrame.repaint();
     }
 
     public void showMainPanel() {

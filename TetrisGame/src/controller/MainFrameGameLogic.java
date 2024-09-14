@@ -19,6 +19,7 @@ public class MainFrameGameLogic {
         this.mainFrame = mainFrame;
     }
 
+    // Starts game threads
     public void startGame() {
         if (mainFrame.getGame().isGameRunning() && !mainFrame.getGame().isGameOver()) {
             System.out.println("Game is already running");
@@ -29,6 +30,7 @@ public class MainFrameGameLogic {
         runGamePeriod();
     }
 
+    // Runs game period
     private void runGamePeriod() {
         if (renderExecutor != null && !renderExecutor.isShutdown()) {
             renderExecutor.shutdownNow();
@@ -43,6 +45,7 @@ public class MainFrameGameLogic {
         updateGamePeriod();
     }
 
+    // Updates game period until game is over
     public void updateGamePeriod() {
         System.out.println("MainFrame says: Updating period to " + this.period);
         if (!gameLogicExecutor.isShutdown()) {

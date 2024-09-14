@@ -1,12 +1,12 @@
-package ui.panel;
+package view.panel;
 
 import model.Board;
 import model.Game;
 import model.Player;
 import model.TetrisBlock;
 import controller.MainFrame;
-import ui.field.FieldPane;
-import ui.field.NextPieceFieldPane;
+import view.field.FieldPane;
+import view.field.NextPieceFieldPane;
 
 import javax.swing.*;
 import java.awt.*;

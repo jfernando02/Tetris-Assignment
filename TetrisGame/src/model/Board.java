@@ -9,8 +9,6 @@ public class Board<T> {
     private int spawnY;
     private MainFrame mainFrame;
     Game game;
-    int linesCleared = 0;
-
 
     public Board(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
@@ -123,13 +121,6 @@ public class Board<T> {
                 destroyCell(i, j);
             }
         }
-    }
-
-    public MainFrame getMainFrame() {
-        if (mainFrame != null) {
-            return mainFrame;
-        }
-        return null;
     }
 
 }

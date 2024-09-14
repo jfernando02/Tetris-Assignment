@@ -6,11 +6,7 @@ import model.Board;
 import model.Game;
 import model.TetrisBlock;
 import model.Score;
-import ui.panel.GamePanel;
-import ui.panel.HighScorePanel;
-import ui.panel.MainPanel;
-import ui.panel.SplashPanel;
-import ui.panel.ConfigurePanel;
+import view.panel.GamePanel;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -18,13 +14,13 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
-import java.awt.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+
 
 public class MainFrame extends JFrame {
     private String title;
@@ -36,9 +32,7 @@ public class MainFrame extends JFrame {
     private TetrisBlock[] nextPieces;
     private ScheduledExecutorService renderExecutor;
     private ScheduledExecutorService gameLogicExecutor;
-    private volatile long period;
     private ConfigData configData;
-    private int currentScore;
     private ArrayList<Score> scores = new ArrayList<>();
 
     private MainFramePanels panels;
@@ -51,7 +45,7 @@ public class MainFrame extends JFrame {
         this.configData = ConfigManager.getConfigData();
         this.nextPieces = new TetrisBlock[1000];
         this.board = new Board(this);
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 100; i++) {
             TetrisBlock block = new TetrisBlock(this.board);
             block.spawnBlock();
             nextPieces[i] = block;
@@ -70,7 +64,7 @@ public class MainFrame extends JFrame {
     }
 
     public TetrisBlock getNextBlock(int index) {
-        int idx = index % 1000;
+        int idx = index % 100;
         TetrisBlock block = nextPieces[idx].copy();
         block.setBoard(this.board);
         return block;
@@ -247,4 +241,5 @@ public class MainFrame extends JFrame {
     public void refreshBoard() {
         this.board.refreshBoard();
     }
+
 }

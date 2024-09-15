@@ -28,6 +28,12 @@ public class TetrisBlock {
         return this;
     }
 
+    public TetrisAIBlock convertBlock() {
+        TetrisAIBlock tetrisAIBlock = new TetrisAIBlock();
+        tetrisAIBlock.setShape(this.shape);
+        return tetrisAIBlock;
+    }
+
     public void setBoard(Board<TetrisCell> board) {
         this.board = board;
         //set all cells on board
@@ -35,6 +41,16 @@ public class TetrisBlock {
             cell.setBoard(board);
 
         }
+    }
+
+    public int getColumn(){
+        int minColumn = Integer.MAX_VALUE;
+        for (TetrisCell cell : this.cells) {
+            if (cell.getX() < minColumn) {
+                minColumn = cell.getX();
+            }
+        }
+        return minColumn;
     }
 
     public void run(Board<TetrisCell> board) {
@@ -50,6 +66,10 @@ public class TetrisBlock {
             //reset interpolation
             this.cells.get(i).resetInterpolation();
         }
+    }
+
+    public int getCurrentRotation() {
+        return currentRotation;
     }
 
     public boolean leftCollision() {

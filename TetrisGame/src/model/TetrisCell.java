@@ -23,6 +23,7 @@ public class TetrisCell {
         }
         this.interpolatedY = y;
     }
+
     public void render(Graphics g, int cellSize) {
         Graphics2D g2d = (Graphics2D) g;
         float drawX = x * cellSize;

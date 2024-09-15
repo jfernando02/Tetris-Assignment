@@ -11,6 +11,8 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GamePanel extends JPanel {
     protected Game game;
@@ -90,14 +92,26 @@ public class GamePanel extends JPanel {
         });
         background.add(backButton, BorderLayout.SOUTH);
 
-        addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                String keyText = KeyEvent.getKeyText(e.getKeyCode());
-                System.out.println("Key pressed: " + keyText);
-                gameOne.update(e.getKeyCode());
-            }
-        });
+        if (game.getPlayer().isAI()){
+            java.util.Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    gameOne.update(KeyEvent.VK_UP);
+                }
+            }, 0, 10);
+        }
+
+        else{
+            addKeyListener(new KeyAdapter() {
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    String keyText = KeyEvent.getKeyText(e.getKeyCode());
+                    System.out.println("Key pressed: " + keyText);
+                    gameOne.update(e.getKeyCode());
+                }
+            });
+        }
     }
 
     protected void startGame() {

@@ -23,6 +23,11 @@ public class GameOne extends Game {
     @Override
     //Update handles user keyboard input and updates the game state accordingly
     public void update(int keyCode) {
+        if (player.isAI()) {
+            System.out.println("Game Object says: AI making move");
+            dropPiece();
+        }
+
         if (activeShape==null) {
             return;
         }

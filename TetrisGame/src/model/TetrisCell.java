@@ -24,11 +24,6 @@ public class TetrisCell {
         this.interpolatedY = y;
     }
 
-    public TetrisCell clone(){
-        TetrisCell clone = new TetrisCell(x,y,color,board);
-        return clone;
-    }
-
     public void render(Graphics g, int cellSize) {
         Graphics2D g2d = (Graphics2D) g;
         float drawX = x * cellSize;

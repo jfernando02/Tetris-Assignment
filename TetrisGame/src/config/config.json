@@ -4,6 +4,6 @@
   "startLevel": 4,
   "music": true,
   "soundEffect": true,
-  "aiPlay": false,
-  "extendedMode": true
+  "aiPlay": true,
+  "extendedMode": false
 }

@@ -28,6 +28,12 @@ public class TetrisBlock {
         return this;
     }
 
+    public TetrisAIBlock convertBlock() {
+        TetrisAIBlock tetrisAIBlock = new TetrisAIBlock();
+        tetrisAIBlock.setShape(this.shape);
+        return tetrisAIBlock;
+    }
+
     public void setBoard(Board<TetrisCell> board) {
         this.board = board;
         //set all cells on board
@@ -62,25 +68,8 @@ public class TetrisBlock {
         }
     }
 
-    public Point[] getCellCoordinates() {
-        Point[] cellCoordinates = new Point[this.cells.size()];
-        int index = 0;
-        for (TetrisCell cell : this.cells) {
-            cellCoordinates[index] = new Point(cell.getX(), cell.getY());
-            index++;
-        }
-        return cellCoordinates;
-    }
-
-    public TetrisBlock clone() {
-        TetrisBlock clone = new TetrisBlock();
-        clone.shape = this.shape;
-        clone.currentRotation = this.currentRotation;
-        clone.cells = new ArrayList<>();
-        for (TetrisCell cell : this.cells) {
-            clone.cells.add(cell.clone());
-        }
-        return clone;
+    public int getCurrentRotation() {
+        return currentRotation;
     }
 
     public boolean leftCollision() {

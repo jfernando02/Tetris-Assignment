@@ -1,17 +1,25 @@
 package ai;
-import model.Point;
-import model.TetrisBlock;
+import model.*;
 import model.games.Game;
 
 public class TetrisAI {
+    private Game game;
     private BoardEvaluator evaluator = new BoardEvaluator();
 
-    public Move findBestMove(Game game, TetrisBlock piece) {
+    public TetrisAI(Game game){
+        this.game = game;
+    }
+
+    public BoardEvaluator getEvaluator() {
+        return evaluator;
+    }
+
+    public Move findBestMove(TetrisBlock piece) {
         Move bestMove = null;
         int bestScore = Integer.MIN_VALUE;
         for (int rotation = 0; rotation < 4; rotation++) {
             for (int col = 0; col < game.getBoard().getWidth(); col++) {
-                TetrisBlock simulatedPiece = piece.clone();
+                TetrisAIBlock simulatedPiece = piece.convertBlock();
                 simulatedPiece.pivot(rotation);
                 int[][] simulatedBoard = simulateDrop(game.getBoard().convertBoard(),
                         simulatedPiece, col);
@@ -22,9 +30,10 @@ public class TetrisAI {
                 }
             }
         }
+        System.out.println(bestMove.col + ", " + bestMove.rotation);
         return bestMove;
     }
-    private int[][] simulateDrop(int[][] board, TetrisBlock piece, int col)
+    private int[][] simulateDrop(int[][] board, TetrisAIBlock piece, int col)
     {
 // Simulate dropping the piece in the given column and return the new board
         int[][] simulatedBoard = copyBoard(board);
@@ -32,20 +41,21 @@ public class TetrisAI {
         placePiece(simulatedBoard, piece, col, dropRow);
         return simulatedBoard;
     }
-    private int getDropRow(int[][] board, TetrisBlock piece, int col) {
+    private int getDropRow(int[][] board, TetrisAIBlock piece, int col) {
 // Find the row where the piece would land if dropped in the given column
         int row = 0;
         while (canPlacePiece(board, piece, col, row)) {
             row++;
         }
-        return row - 1; // Return the last valid row
+        return Math.max(row - 1, 0); // Return the last valid row
     }
-    private boolean canPlacePiece(int[][] board, TetrisBlock piece, int col,
+    private boolean canPlacePiece(int[][] board, TetrisAIBlock piece, int col,
                                   int row) {
 // Check if the piece can be placed at the given column and row
-        for (Point p : piece.getCellCoordinates()) {
-            int x = col + p.getX();
-            int y = row + p.getY();
+        int[][] coordinates = piece.getCurrentCoordinates();
+        for (int i = 0; i<coordinates[0].length; i++) {
+            int x = col + coordinates[0][i];
+            int y = row + coordinates[1][i];
             if (x < 0 || x >= board[0].length || y < 0 || y >=
                     board.length || board[y][x] != 0) {
                 return false;
@@ -53,11 +63,12 @@ public class TetrisAI {
         }
         return true;
     }
-    private void placePiece(int[][] board, TetrisBlock piece, int col, int
+    private void placePiece(int[][] board, TetrisAIBlock piece, int col, int
             row) {
-// Place the piece on the board at the given position
-        for (Point p : piece.getCellCoordinates()) {
-            board[row + p.getY()][col + p.getX()] = 1; // 1 represents the piece
+        // Place the piece on the board at the given position
+        int[][] coordinates = piece.getCurrentCoordinates();
+        for (int i = 0; i<coordinates[0].length; i++) {
+            board[row + coordinates[1][i]][col + coordinates[0][i]] = 1; // 1 represents the piece
         }
     }
     private int[][] copyBoard(int[][] board) {

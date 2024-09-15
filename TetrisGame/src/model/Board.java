@@ -18,7 +18,7 @@ public class Board<T> {
         this.height = mainFrame.getConfigData().getFieldHeight();
         this.board = (T[][]) new Object[width][height];
         //get spawn from Game
-        this.spawnX = (this.width /2-2);
+        this.spawnX = (this.width / 2 - 2);
         this.spawnY = 0;
     }
 
@@ -28,7 +28,7 @@ public class Board<T> {
         this.width = mainFrame.getConfigData().getFieldWidth();
         this.height = mainFrame.getConfigData().getFieldHeight();
         this.board = (T[][]) new Object[width][height];
-        this.spawnX = (this.width /2-2);
+        this.spawnX = (this.width / 2 - 2);
         this.spawnY = 0;
     }
 
@@ -116,7 +116,7 @@ public class Board<T> {
     public int[][] convertBoard() {
         int[][] convertedBoard = new int[width][height];
         for (int i = 0; i < height; i++) {
-            for(int j = 0; j < width; j++) {
+            for (int j = 0; j < width; j++) {
                 convertedBoard[j][i] = (board[j][i] == null) ? 0 : 1;
             }
         }
@@ -131,5 +131,4 @@ public class Board<T> {
             }
         }
     }
-
 }

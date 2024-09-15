@@ -113,6 +113,16 @@ public class Board<T> {
         return spawnY;
     }
 
+    public int[][] convertBoard() {
+        int[][] convertedBoard = new int[width][height];
+        for (int i = 0; i < height; i++) {
+            for(int j = 0; j < width; j++) {
+                convertedBoard[j][i] = (board[j][i] == null) ? 0 : 1;
+            }
+        }
+        return convertedBoard;
+    }
+
     //board clear for reset
     public void clearBoard() {
         for (int i = 0; i < width; i++) {

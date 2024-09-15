@@ -37,6 +37,16 @@ public class TetrisBlock {
         }
     }
 
+    public int getColumn(){
+        int minColumn = Integer.MAX_VALUE;
+        for (TetrisCell cell : this.cells) {
+            if (cell.getX() < minColumn) {
+                minColumn = cell.getX();
+            }
+        }
+        return minColumn;
+    }
+
     public void run(Board<TetrisCell> board) {
         this.board = board;
         int[][] cells = shape.getCoordinates(this.currentRotation);
@@ -50,6 +60,27 @@ public class TetrisBlock {
             //reset interpolation
             this.cells.get(i).resetInterpolation();
         }
+    }
+
+    public Point[] getCellCoordinates() {
+        Point[] cellCoordinates = new Point[this.cells.size()];
+        int index = 0;
+        for (TetrisCell cell : this.cells) {
+            cellCoordinates[index] = new Point(cell.getX(), cell.getY());
+            index++;
+        }
+        return cellCoordinates;
+    }
+
+    public TetrisBlock clone() {
+        TetrisBlock clone = new TetrisBlock();
+        clone.shape = this.shape;
+        clone.currentRotation = this.currentRotation;
+        clone.cells = new ArrayList<>();
+        for (TetrisCell cell : this.cells) {
+            clone.cells.add(cell.clone());
+        }
+        return clone;
     }
 
     public boolean leftCollision() {

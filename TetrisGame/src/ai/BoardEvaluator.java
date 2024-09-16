@@ -1,46 +1,94 @@
 package ai;
 
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import static ai.GeneticAlgorithm.getDNA;
-import static ai.GeneticAlgorithm.mutate;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import static ai.GeneticAlgorithm.*;
 
 public class BoardEvaluator {
     private int finalHighScore;
-    private int currentHighScore;
-    int[] constants;
+    Map<String, Double> constants;
+    private String filename = "src/ai/DNA.json";
+    private Double id;
 
-    public int evaluateBoard(int[][] board) {
-        //Get DNA and add a random mutation
-        constants = getDNA("src/ai/DNA.txt");
-        mutate(constants);
-        currentHighScore = constants[0];
-        int heightFactor = constants[1];
-        int linesClearedFactor = constants[2];
-        int holesFactor = constants[3];
-        int bumpinessFactor = constants[4];
-        int heightScore = getHeight(board);
-        int holesScore = getHoles(board);
-        int linesCleared = getClearedLines(board);
-        int bumpinessScore = getBumpiness(board);
-        return (linesClearedFactor * linesCleared) - (heightFactor * heightScore) - (holesFactor * holesScore)
-                - (bumpinessFactor * bumpinessScore);
+    public BoardEvaluator() {
+        //Get Unfit DNA
+        if(countWithFitness(filename)>=50) {
+            selectAndReproduce(filename);
+        }
+        constants = getFirstUnfitDNA(filename);
+        id = constants.get("id");
     }
-    private int getHeight(int[][] board) {
-// Calculate the height of the pile (the highest filled row)
-        int height = 0;
+
+    public double evaluateBoard(int[][] board) {
+        Double heightFactor = constants.get("height");
+        Double relativeHeightFactor = constants.get("relativeHeight");
+        Double maxHeightFactor = constants.get("maxHeight");
+        Double linesClearedFactor = constants.get("linesCleared");
+        Double holesFactor = constants.get("holes");
+        Double bumpinessFactor = constants.get("bumpiness");
+        Double totalHeightScore = (double) getTotalHeight(board);
+        Double relativeHeightScore = (double) getRelativeHeight(board);
+        Double maxHeightScore = (double) getMaxHeight(board);
+        Double holesScore = (double) getHoles(board);
+        Double linesCleared = (double) getClearedLines(board);
+        Double bumpinessScore = (double) getBumpiness(board);
+        return (linesClearedFactor * linesCleared) + (heightFactor * totalHeightScore) + (relativeHeightFactor * relativeHeightScore) +
+        (maxHeightFactor * maxHeightScore) + (holesFactor * holesScore) + (bumpinessFactor * bumpinessScore);
+    }
+    private int getTotalHeight(int[][] board) {
+        // Calculate total height of all columns, and square it
+        int totalHeight = 0;
         for (int x = 0; x < board[0].length; x++) {
+            int columnHeight = 0;
             for (int y = 0; y < board.length; y++) {
                 if (board[y][x] != 0) {
-                    height = Math.max(height, board.length - y);
+                    columnHeight = board.length - y;
                     break;
                 }
             }
+            totalHeight += columnHeight;
         }
-        return height;
+        return totalHeight;
     }
+
+    private int getMaxHeight(int[][] board) {
+        int maxHeight = 0;
+        for (int x = 0; x < board[0].length; x++) {
+            int columnHeight = 0;
+            for (int y = 0; y < board.length; y++) {
+                if (board[y][x] != 0) {
+                    columnHeight = board.length - y;
+                    break;
+                }
+            }
+            maxHeight = Math.max(maxHeight, columnHeight);
+        }
+        return maxHeight;
+    }
+
+    private int getRelativeHeight(int[][] board) {
+        int maxHeight = 0;
+        int minHeight = board.length;
+        for (int x = 0; x < board[0].length; x++) {
+            int columnHeight = 0;
+            for (int y = 0; y < board.length; y++) {
+                if (board[y][x] != 0) {
+                    columnHeight = board.length - y;
+                    break;
+                }
+            }
+            minHeight = Math.min(minHeight, columnHeight);
+            maxHeight = Math.max(maxHeight, columnHeight);
+        }
+        return maxHeight-minHeight;
+    }
+
     private int getHoles(int[][] board) {
 // Calculate the number of holes (empty spaces beneath filled blocks)
         int holes = 0;
@@ -96,18 +144,25 @@ public class BoardEvaluator {
         this.finalHighScore = finalHighScore;
     }
 
-    public void naturalSelection(String filename){
-        if(this.finalHighScore>this.currentHighScore){
-            constants[0] = finalHighScore;
-            try {
-                PrintWriter writer = new PrintWriter(filename, "UTF-8");
-                for(int value : constants) {
-                    writer.println(value);
+    public void setFitness(String filename) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            // Read data from file
+            List<Map<String, Double>> dnas = mapper.readValue(new File(filename),
+                    new TypeReference<>() {
+                    });
+            // Find and update the DNA with matching id
+            for (Map<String, Double> dna : dnas) {
+                if (dna.get("id").equals(id)) {
+                    dna.put("fitness", (double) finalHighScore);
+                    break;
                 }
-                writer.close();
-            } catch (FileNotFoundException | UnsupportedEncodingException e) {
-                e.printStackTrace();
             }
+            // Write the updated data back to the file
+            System.out.println("Fitness set");
+            mapper.writeValue(new File(filename), dnas);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -1,7 +1,6 @@
 // Game.java
 package model.games;
 
-import ai.BoardEvaluator;
 import ai.TetrisAI;
 import controller.MainFrame;
 import model.*;
@@ -11,8 +10,7 @@ import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.TimerTask;
-import java.util.Timer;
+import java.util.ArrayList;
 
 public class Game {
     protected MainFrame mainFrame;
@@ -147,14 +145,13 @@ public class Game {
     }
 
     public void gameOverPanel() {
-        if(player.isAI()) {
-            //Get score and give it to the board game evaluator
-            this.ai.getEvaluator().setFinalHighScore(this.player.getScore());
-            this.ai.getEvaluator().naturalSelection("src/ai/DNA.txt");
-        }
         mainFrame.stopSound(gameMusic);
         this.gameRunning = false;
-        if(training){
+        if(player.isAI() && training) {
+            //Get score and give it to the board game evaluator
+            this.ai.getEvaluator().setFinalHighScore(this.player.getScore());
+            this.ai.getEvaluator().setFitness("src/ai/DNA.json");
+            this.ai = new TetrisAI(this);
             resetGame();
             start();
             return;
@@ -190,12 +187,13 @@ public class Game {
 
     // Determine if game over conditions are met
     public boolean isGameOver() {
-        //if any x in the first 3 lines is occupied
-        for (int y = 0; y < 3; y++) {
-            for (int x = board.getSpawnY(); x < board.getSpawnX() + 4; x++) {
-                if (board.getCell(x, y) != null) {
-                    return true;
-                }
+        // Check if any of the cells of the next shape are already occupied on the board
+        int[][] cells = nextShape.getShape();
+        for (int i = 0; i < cells.length; i++) {
+            int cellX = cells[0][i] + this.board.getSpawnX();
+            int cellY = cells[1][i] + this.board.getSpawnY();
+            if(board.getCell(cellX, cellY)!=null){
+                return true;
             }
         }
         return false;
@@ -380,29 +378,31 @@ public class Game {
     }
 
     public void dropPiece() {
-        // Let the AI decide the best move
-        Move bestMove = ai.findBestMove(activeShape);
         if (activeShape==null){
             System.out.println("No active piece");
+            return;
         }
-        // Rotate the piece
-        else if (bestMove.rotation!=activeShape.getCurrentRotation()) {
+        // Let the AI decide the best move
+        Move bestMove = ai.findBestMove(activeShape);
+        // Rotate the piece right
+        if (bestMove.rotation>activeShape.getCurrentRotation()) {
             activeShape.rotateRight();
-            System.out.println("AI rotated piece");
+        }
+        // Rotate the piece left
+        else if (bestMove.rotation<activeShape.getCurrentRotation()) {
+            activeShape.rotateLeft();
         }
         // Move the piece to the best column
         else if (activeShape.getColumn() < bestMove.col) {
             activeShape.moveRight();
-            System.out.println("AI moved piece to the right");
+
         }
         else if (activeShape.getColumn() > bestMove.col) {
             activeShape.moveLeft();
-            System.out.println("AI moved piece to the left");
         }
         // Drop the piece
         else {
             activeShape.hardDrop();
-            System.out.println("AI dropping piece");
         }
     }
 

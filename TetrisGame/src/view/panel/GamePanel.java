@@ -99,7 +99,7 @@ public class GamePanel extends JPanel {
                 public void run() {
                     gameOne.update(KeyEvent.VK_UP);
                 }
-            }, 0, 10);
+            }, 0, game.getPeriod()*5);
         }
 
         else{

@@ -187,13 +187,12 @@ public class Game {
 
     // Determine if game over conditions are met
     public boolean isGameOver() {
-        // Check if any of the cells of the next shape are already occupied on the board
-        int[][] cells = nextShape.getShape();
-        for (int i = 0; i < cells.length; i++) {
-            int cellX = cells[0][i] + this.board.getSpawnX();
-            int cellY = cells[1][i] + this.board.getSpawnY();
-            if(board.getCell(cellX, cellY)!=null){
-                return true;
+        //if any x in the first 3 lines is occupied
+        for (int y = 0; y < 3; y++) {
+            for (int x = board.getSpawnY(); x < board.getSpawnX() + 4; x++) {
+                if (board.getCell(x, y) != null) {
+                    return true;
+                }
             }
         }
         return false;

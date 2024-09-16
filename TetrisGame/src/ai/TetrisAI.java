@@ -16,23 +16,23 @@ public class TetrisAI {
 
     public Move findBestMove(TetrisBlock piece) {
         Move bestMove = null;
-        int bestScore = Integer.MIN_VALUE;
+        double bestScore = Double.NEGATIVE_INFINITY;
         for (int rotation = 0; rotation < 4; rotation++) {
-            for (int col = 0; col < game.getBoard().getWidth(); col++) {
-                TetrisAIBlock simulatedPiece = piece.convertBlock();
-                simulatedPiece.pivot(rotation);
+            TetrisAIBlock simulatedPiece = piece.convertBlock();
+            simulatedPiece.pivot(rotation);
+            for (int col = 0; col < game.getBoard().getWidth()-simulatedPiece.getWidth(); col++) {
                 int[][] simulatedBoard = simulateDrop(game.getBoard().convertBoard(),
                         simulatedPiece, col);
-                int score = evaluator.evaluateBoard(simulatedBoard);
+                double score = evaluator.evaluateBoard(simulatedBoard);
                 if (score > bestScore) {
                     bestScore = score;
                     bestMove = new Move(col, rotation);
                 }
             }
         }
-        System.out.println(bestMove.col + ", " + bestMove.rotation);
         return bestMove;
     }
+
     private int[][] simulateDrop(int[][] board, TetrisAIBlock piece, int col)
     {
 // Simulate dropping the piece in the given column and return the new board
@@ -47,7 +47,7 @@ public class TetrisAI {
         while (canPlacePiece(board, piece, col, row)) {
             row++;
         }
-        return Math.max(row - 1, 0); // Return the last valid row
+        return row - 1; // Return the last valid row
     }
     private boolean canPlacePiece(int[][] board, TetrisAIBlock piece, int col,
                                   int row) {
@@ -57,7 +57,7 @@ public class TetrisAI {
             int x = col + coordinates[0][i];
             int y = row + coordinates[1][i];
             if (x < 0 || x >= board[0].length || y < 0 || y >=
-                    board.length || board[y][x] != 0) {
+                    board.length || (board[y][x] != 0 && (y!=row + coordinates[1][i] && x != col + coordinates[0][i]))) {
                 return false;
             }
         }

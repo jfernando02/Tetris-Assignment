@@ -29,9 +29,7 @@ public class TetrisBlock {
     }
 
     public TetrisAIBlock convertBlock() {
-        TetrisAIBlock tetrisAIBlock = new TetrisAIBlock();
-        tetrisAIBlock.setShape(this.shape);
-        return tetrisAIBlock;
+        return new TetrisAIBlock(shape, currentRotation);
     }
 
     public void setBoard(Board<TetrisCell> board) {

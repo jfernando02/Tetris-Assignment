@@ -1,16 +1,14 @@
 package model;
 
+import java.util.Arrays;
+
 public class TetrisAIBlock {
     private TetrisShape shape;
     private int[][] currentCoordinates;
 
-    public TetrisAIBlock() {
-        this.shape = TetrisShape.getRandomShape();
-        this.currentCoordinates = shape.getCoordinates(0);
-    }
-
-    public void setShape(TetrisShape shape) {
+    public TetrisAIBlock(TetrisShape shape, int currentRotation) {
         this.shape = shape;
+        this.currentCoordinates = shape.getCoordinates(currentRotation);
     }
 
     public void pivot(int rotation) {
@@ -19,5 +17,13 @@ public class TetrisAIBlock {
 
     public int[][] getCurrentCoordinates() {
         return currentCoordinates;
+    }
+
+    public int getWidth() {
+        int[] xCoordinates = currentCoordinates[0];
+        int min = Arrays.stream(xCoordinates).min().getAsInt();
+        int max = Arrays.stream(xCoordinates).max().getAsInt();
+
+        return max - min + 1;
     }
 }

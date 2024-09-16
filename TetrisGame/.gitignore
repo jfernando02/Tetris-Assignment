@@ -27,3 +27,13 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+/target/classes/ai/BoardEvaluator$1.class
+/target/classes/ai/BoardEvaluator.class
+/target/classes/view/panel/GamePanel$3.class
+/target/classes/ai/GeneticAlgorithm$1.class
+/target/classes/ai/GeneticAlgorithm$2.class
+/target/classes/ai/GeneticAlgorithm$3.class
+/target/classes/ai/GeneticAlgorithm.class
+/target/classes/model/Move.class
+/target/classes/ai/TetrisAI.class
+/target/classes/model/TetrisAIBlock.class

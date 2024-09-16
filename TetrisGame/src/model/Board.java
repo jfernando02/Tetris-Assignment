@@ -1,5 +1,6 @@
 package model;
-import ui.MainFrame;
+import controller.MainFrame;
+import model.games.Game;
 
 public class Board<T> {
     private T[][] board;
@@ -9,27 +10,26 @@ public class Board<T> {
     private int spawnY;
     private MainFrame mainFrame;
     Game game;
-    int linesCleared = 0;
 
-    @SuppressWarnings("unchecked")
-    public Board(MainFrame mainFrame) {
-        this.width = mainFrame.getFieldWidth();
-        this.height = mainFrame.getFieldHeight();
-        this.board = (T[][]) new Object[width][height];
-        this.spawnX = (width / 2)-1;
-        this.spawnY = 0;
+    public Board(MainFrame mainFrame, Game game) {
         this.mainFrame = mainFrame;
+        this.game = game;
+        this.width = mainFrame.getConfigData().getFieldWidth();
+        this.height = mainFrame.getConfigData().getFieldHeight();
+        this.board = (T[][]) new Object[width][height];
+        //get spawn from Game
+        this.spawnX = (this.width / 2 - 2);
+        this.spawnY = 0;
     }
 
-    public void setGame(Game game) {
-        this.game = game;
-    }
 
     // for expanding width and height of the board
-    public void refreshBoard(MainFrame mainFr) {
-        this.width = mainFr.getFieldWidth();
-        this.height = mainFr.getFieldHeight();
+    public void refreshBoard() {
+        this.width = mainFrame.getConfigData().getFieldWidth();
+        this.height = mainFrame.getConfigData().getFieldHeight();
         this.board = (T[][]) new Object[width][height];
+        this.spawnX = (this.width / 2 - 2);
+        this.spawnY = 0;
     }
 
     public void setCell(int x, int y, T cell) {
@@ -56,6 +56,7 @@ public class Board<T> {
         setCell(x, y, (T) cell);
     }
 
+    //Clears the line and shifts the cells above down
     public void clearLines(int y) {
         for (int j = y; j > 0; j--) {
             for (int i = 0; i < width; i++) {
@@ -69,13 +70,15 @@ public class Board<T> {
         }
         //clear line sound
         try {
-            mainFrame.playSound("src/resources.sounds/LineClear.wav", false);
+            mainFrame.playSound("src/resources/sounds/lineClear.wav", false);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void clearCompleteLines() {
+    // Clear all complete lines (accessed by Game) and return the number of lines cleared
+    public int clearCompleteLines() {
+        int clearedLines = 0;
         for (int i = height - 1; i >= 0; i--) {
             boolean rowComplete = true;
             for (int j = 0; j < width; j++) {
@@ -85,11 +88,12 @@ public class Board<T> {
                 }
             }
             if (rowComplete) {
+                clearedLines++;
                 clearLines(i);
                 i++; // Recheck the same row after shifting
             }
-
         }
+        return clearedLines;
     }
 
 
@@ -109,6 +113,16 @@ public class Board<T> {
         return spawnY;
     }
 
+    public int[][] convertBoard() {
+        int[][] convertedBoard = new int[width][height];
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                convertedBoard[j][i] = (board[j][i] == null) ? 0 : 1;
+            }
+        }
+        return convertedBoard;
+    }
+
     //board clear for reset
     public void clearBoard() {
         for (int i = 0; i < width; i++) {
@@ -117,12 +131,4 @@ public class Board<T> {
             }
         }
     }
-
-    public MainFrame getMainFrame() {
-        if (mainFrame != null) {
-            return mainFrame;
-        }
-        return null;
-    }
-
 }

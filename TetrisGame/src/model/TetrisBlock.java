@@ -1,4 +1,3 @@
-// Defines the shape, movement and rotation of the Tetris blocks
 // TetrisBlock.java
 package model;
 
@@ -11,43 +10,69 @@ public class TetrisBlock {
     private Board<TetrisCell> board;
     private boolean hasLanded;
     private ArrayList<TetrisCell> cells = new ArrayList<>();
+    private long landTime; // Time when the block landed
+    private static final long BUFFER_TIME = 500; // Buffer time in milliseconds
 
-    public TetrisBlock(Board<TetrisCell> board) {
-        this.board = board;
+    public TetrisBlock() {
+        this.shape = TetrisShape.getRandomShape();
         this.hasLanded = false;
     }
 
-    public TetrisBlock spawnBlock(int id) {
-        this.shape = TetrisShape.getRandomShape();
-        this.currentRotation = 0;
-        int[][] cells = shape.getCoordinates(this.currentRotation);
-
+    public TetrisBlock spawnBlock() {
+        //add cells to the block
         for (int i = 0; i < 4; i++) {
-            int cellX = cells[0][i] + this.board.getSpawnX();
-            int cellY = cells[1][i] + this.board.getSpawnY();
-            TetrisCell cell = new TetrisCell(cellX, cellY, shape.getColor(), this.board);
+            TetrisCell cell = new TetrisCell(0, 0, shape.getColor(), null);
             this.cells.add(cell);
         }
+        this.currentRotation = 0;
         return this;
     }
 
-    public boolean leftCollision() {
-        System.out.println("Checking left collision");
+    public TetrisAIBlock convertBlock() {
+        return new TetrisAIBlock(shape, currentRotation);
+    }
+
+    public void setBoard(Board<TetrisCell> board) {
+        this.board = board;
+        //set all cells on board
         for (TetrisCell cell : this.cells) {
-            if (cell.getX() == 0) {
-                System.out.println("Left wall detected");
-                return true;
+            cell.setBoard(board);
+
+        }
+    }
+
+    public int getColumn(){
+        int minColumn = Integer.MAX_VALUE;
+        for (TetrisCell cell : this.cells) {
+            if (cell.getX() < minColumn) {
+                minColumn = cell.getX();
             }
-            if (board.getCell(cell.getX() - 1, cell.getY()) != null) {
-                System.out.println("Cell detected");
-                TetrisCell leftCell = board.getCell(cell.getX() - 1, cell.getY());
-                if (!leftCell.isActive) {
-                    System.out.println("Different id detected");
-                    return true;
-                }
-            }
-            //check bottom collision
-            if (bottomCollision()) {
+        }
+        return minColumn;
+    }
+
+    public void run(Board<TetrisCell> board) {
+        this.board = board;
+        int[][] cells = shape.getCoordinates(this.currentRotation);
+        for (int i = 0; i < 4; i++) {
+            // place each cell on the board
+            this.cells.get(i).setBoard(this.board);
+            int cellX = cells[0][i] + this.board.getSpawnX();
+            int cellY = cells[1][i] + this.board.getSpawnY();
+            this.cells.get(i).setX(cellX);
+            this.cells.get(i).setY(cellY);
+            //reset interpolation
+            this.cells.get(i).resetInterpolation();
+        }
+    }
+
+    public int getCurrentRotation() {
+        return currentRotation;
+    }
+
+    public boolean leftCollision() {
+        for (TetrisCell cell : this.cells) {
+            if (cell.getX() == 0 || (board.getCell(cell.getX() - 1, cell.getY()) != null && !board.getCell(cell.getX() - 1, cell.getY()).isActive)) {
                 return true;
             }
         }
@@ -55,24 +80,9 @@ public class TetrisBlock {
     }
 
     public boolean rightCollision() {
-        System.out.println("Checking right collision");
         for (TetrisCell cell : this.cells) {
-            if (cell.getX() == board.getWidth() - 1) {
-                System.out.println("Right wall detected");
+            if (cell.getX() == board.getWidth() - 1 || (board.getCell(cell.getX() + 1, cell.getY()) != null && !board.getCell(cell.getX() + 1, cell.getY()).isActive)) {
                 return true;
-            }
-            if (board.getCell(cell.getX() + 1, cell.getY()) != null) {
-                System.out.println("Cell detected");
-                TetrisCell rightCell = board.getCell(cell.getX() + 1, cell.getY());
-                if (!rightCell.isActive) {
-                    System.out.println("Different id detected");
-                    return true;
-                }
-            }
-            //check bottom collision
-            if (bottomCollision()) {
-                return true;
-
             }
         }
         return false;
@@ -80,18 +90,8 @@ public class TetrisBlock {
 
     public boolean bottomCollision() {
         for (TetrisCell cell : this.cells) {
-            if (cell.getY() == board.getHeight() - 1) {
-                System.out.println("Bottom barrier detected");
+            if (cell.getY() == board.getHeight() - 1 || (board.isOccupied(cell.getX(), cell.getY() + 1) && !this.cells.contains(board.getCell(cell.getX(), cell.getY() + 1)))) {
                 return true;
-            }
-            if (board.isOccupied(cell.getX(), cell.getY() + 1) &&
-                    !this.cells.contains(board.getCell(cell.getX(), cell.getY() + 1))) {
-                TetrisCell bottomCell = board.getCell(cell.getX(), cell.getY() + 1);
-                System.out.println("Cell detected");
-                if (!bottomCell.isActive) {
-                    System.out.println("Different id detected");
-                    return true;
-                }
             }
         }
         return false;
@@ -107,8 +107,6 @@ public class TetrisBlock {
             if (newX >= 0 && newX < board.getWidth() && newY >= 0 && newY < board.getHeight()) {
                 cell.setX(newX);
                 cell.setY(newY);
-            } else {
-                System.out.println("Error: Coordinates out of bounds");
             }
         }
         for (TetrisCell cell : this.cells) {
@@ -116,14 +114,23 @@ public class TetrisBlock {
         }
     }
 
+
     public void softDrop() {
         if (bottomCollision()) {
-            deactivate();
+            if (!hasLanded) {
+                hasLanded = true;
+                landTime = System.currentTimeMillis();
+            } else if (System.currentTimeMillis() - landTime >= BUFFER_TIME && !hasEmptyCellsUnderneath()
+                    && bottomCollision()) {
+                System.out.println("Block has landed via buffered soft drop");
+                deactivate();
+            }
         } else {
             moveCells(0, 1);
             for (TetrisCell cell : this.cells) {
                 cell.updateInterpolatedY();
             }
+            hasLanded = false; // Reset landing status if moved
         }
     }
 
@@ -135,49 +142,43 @@ public class TetrisBlock {
     }
 
     public void moveLeft() {
-        System.out.println("Attempting to move left");
-        if (!leftCollision()) {
-            System.out.println("No collision detected, moving left");
+        if (!leftCollision() && canMove(-1, 0)) {
             moveCells(-1, 0);
             for (TetrisCell cell : this.cells) {
                 cell.resetInterpolation();
             }
-        } else {
-            System.out.println("Left collision detected");
         }
     }
 
     public void moveRight() {
-        System.out.println("Attempting to move right");
-        if (!rightCollision()) {
-            System.out.println("No collision detected, moving right");
+        if (!rightCollision() && canMove(1, 0)) {
             moveCells(1, 0);
             for (TetrisCell cell : this.cells) {
                 cell.resetInterpolation();
             }
-        } else {
-            System.out.println("Right collision detected");
         }
     }
 
     public void rotateLeft() {
-        if (this.currentRotation == 0) {
-            this.currentRotation = 3;
-        } else {
-            this.currentRotation--;
+        if (!hasLanded || System.currentTimeMillis() - landTime >= BUFFER_TIME) {
+            if (this.currentRotation == 0) {
+                this.currentRotation = 3;
+            } else {
+                this.currentRotation--;
+            }
+            pivot(this.currentRotation);
         }
-        System.out.println("Rotating left");
-        pivot(this.currentRotation);
     }
 
     public void rotateRight() {
-        if (this.currentRotation == 3) {
-            this.currentRotation = 0;
-        } else {
-            this.currentRotation++;
+        if (!hasLanded || System.currentTimeMillis() - landTime >= BUFFER_TIME) {
+            if (this.currentRotation == 3) {
+                this.currentRotation = 0;
+            } else {
+                this.currentRotation++;
+            }
+            pivot(this.currentRotation);
         }
-        System.out.println("Rotating right");
-        pivot(this.currentRotation);
     }
 
     public boolean checkValidPivot(int rotation) {
@@ -188,11 +189,7 @@ public class TetrisBlock {
         for (int i = 0; i < 4; i++) {
             int cellX = nextRotation[0][i] + pivotX - 1;
             int cellY = nextRotation[1][i] + pivotY;
-            if (cellX < 0 || cellX >= board.getWidth() || cellY >= board.getHeight()) {
-                return false;
-            }
-            if (board.getCell(cellX, cellY) != null && (!this.cells.contains(board.getCell(cellX, cellY))
-                    || !board.getCell(cellX, cellY).isActive)) {
+            if (cellX < 0 || cellX >= board.getWidth() || cellY >= board.getHeight() || (board.getCell(cellX, cellY) != null && (!this.cells.contains(board.getCell(cellX, cellY)) || !board.getCell(cellX, cellY).isActive))) {
                 return false;
             }
         }
@@ -221,10 +218,12 @@ public class TetrisBlock {
     }
 
     public void deactivate() {
-        for (TetrisCell cell : this.cells) {
-            cell.isActive = false;
+        if (bottomCollision()){
+            for (TetrisCell cell : this.cells) {
+                cell.updateInterpolatedY();
+                cell.isActive = false;
+            }
         }
-        this.hasLanded = true;
     }
 
     public void placeOnBoard() {
@@ -236,21 +235,58 @@ public class TetrisBlock {
     public boolean hasLanded() {
         return this.hasLanded;
     }
+
+    public long getLandTime() {
+        return this.landTime;
+    }
+
+    public static long getBufferTime() {
+        return BUFFER_TIME;
+    }
+
+    private boolean canMove(int moveX, int moveY) {
+        for (TetrisCell cell : this.cells) {
+            int newX = cell.getX() + moveX;
+            int newY = cell.getY() + moveY;
+            if (newX < 0 || newX >= board.getWidth() || newY < 0 || newY >= board.getHeight() || (board.isOccupied(newX, newY) && !this.cells.contains(board.getCell(newX, newY)))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private boolean hasEmptyCellsUnderneath() {
+        for (TetrisCell cell : this.cells) {
+            int belowY = cell.getY() + 1;
+            if (belowY < board.getHeight() && !board.isOccupied(cell.getX(), belowY)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //returns the cells of the block
+    public ArrayList<TetrisCell> getCells() {
+        return cells;
+    }
+
+    //returns the shape of the block
+    public int[][] getShape() {
+        return shape.getCoordinates(0);
+    }
+
+
+    public void render(Graphics g, int cellSize) {
+        for (TetrisCell cell : this.cells) {
+            cell.renderNextPiece(g, cellSize, shape.getCoordinates(0));
+        }
+    }
+
+    // For spawning batches of blocks
+    public static TetrisBlock prototype(TetrisShape shape) {
+        TetrisBlock block = new TetrisBlock();
+        block.shape = shape;
+        return block;
+    }
+
 }
-
-/*
-TODO:(review the following)
-current implementation has Classic Rotation System, check if we want Super Rotation System (SRS):
-Classic Rotation System:
-* Limited Rotation: In older or classic Tetris games, if a Tetrimino
-* is placed next to a wall, rotation might be blocked if any part of
-* the block would move outside the playfield bounds. This means you
-* often cannot rotate a Tetrimino if it's hugging the wall.
-
-Super Rotation System (SRS):
-* Wall Kicks: Modern Tetris games, including those using the SRS, allow for
-* "wall kicks." This means that if a Tetrimino cannot rotate because it's next
-* to a wall, the game will automatically shift the Tetrimino away from the wall
-* to allow the rotation. This makes it possible to rotate Tetriminos even when
-* they are hugging the wall.
- */

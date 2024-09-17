@@ -2,6 +2,9 @@ package model;
 import controller.MainFrame;
 import model.games.Game;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class Board<T> {
     private T[][] board;
     private int width;
@@ -113,11 +116,26 @@ public class Board<T> {
         return spawnY;
     }
 
+    public boolean isActivePieceCell(int x, int y) {
+        if(game.getActiveShape()!=null) {
+            for (TetrisCell cell : game.getActiveShape().getCells()) {
+                if (cell.getX() == x && cell.getY() == y) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public int[][] convertBoard() {
         int[][] convertedBoard = new int[width][height];
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                convertedBoard[j][i] = (board[j][i] == null) ? 0 : 1;
+                if(board[j][i] == null || isActivePieceCell(j, i)) {
+                    convertedBoard[j][i] = 0;
+                } else {
+                    convertedBoard[j][i] = 1;
+                }
             }
         }
         return convertedBoard;

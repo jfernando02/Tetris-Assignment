@@ -37,8 +37,8 @@ public class Game {
         this.player = new Player("Player1", mainFrame.getConfigData().getStartLevel());
         if(mainFrame.getConfigData().isAiPlay()) {
             this.player.setAI();
+            this.ai = new TetrisAI(this);
         }
-        this.ai = new TetrisAI(this);
         this.nextShapeIndex=0;
         this.activeShape = null;
         gameRunning = false;
@@ -377,13 +377,13 @@ public class Game {
     }
 
     public void dropPiece() {
+        // Let the AI decide the best move
+        Move bestMove = ai.findBestMove(activeShape);
         if (activeShape==null){
             System.out.println("No active piece");
         }
-        // Let the AI decide the best move
-        Move bestMove = ai.findBestMove(activeShape);
         // Rotate the piece right
-        if (bestMove.rotation!=activeShape.getCurrentRotation()) {
+        else if (bestMove.rotation!=activeShape.getCurrentRotation()) {
             activeShape.rotateRight();
         }
         // Move the piece to the best column

@@ -34,8 +34,6 @@ public class TetrisAI {
                 }
             }
         }
-        System.out.println("simulated column: "+bestMove.col);
-        System.out.println("simulated rotation: "+bestMove.rotation);
         return bestMove;
     }
 

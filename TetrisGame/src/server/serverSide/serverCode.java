@@ -12,6 +12,8 @@ public class serverCode {
     public static void main(String[] args) {
         System.out.println("Server started.");
         int portNum = 3000;
+        int X = 5; // Example Value
+        int rotationCount = 3; // Example Value
 
         try (ServerSocket serverSocket = new ServerSocket(portNum);
              Socket socket = serverSocket.accept();
@@ -28,7 +30,7 @@ public class serverCode {
                 }
 
                 System.out.println("Client Message: " + jsonMessage); // Message that Server sees
-                out.println("Server Has received the following message: " + jsonMessage); // Message that Client will see
+                out.println("X position = " + X + ", rotationCount = " + rotationCount);
 
             }
         } catch (IOException e) {

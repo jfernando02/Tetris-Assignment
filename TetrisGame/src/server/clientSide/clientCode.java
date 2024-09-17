@@ -1,5 +1,6 @@
 package server.clientSide;
 
+import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -12,8 +13,9 @@ public class clientCode {
     public static void main(String[] args) {
         String serverAddress = "localhost"; // or the server's IP address
         int portNum = 3000;
+        Gson gson = new Gson();
 
-        try (Socket socket = new Socket(serverAddress, portNum);
+        try (Socket socket = new Socket(serverAddress, portNum); // Socket Conection
              BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
              PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()), true);
              BufferedReader userInput = new BufferedReader(new InputStreamReader(System.in))) {
@@ -22,16 +24,31 @@ public class clientCode {
             String message;
             String serverResponse;
 
-            while (true) {
-                System.out.println("Enter message to server: ");
-                message = userInput.readLine();
-                out.println(message);
+            // Testing Connection Messages with Random Values
+            tetrisGameInfo game = new tetrisGameInfo(10, 20, new int[2][2], new int[4][4], new int[4][4]);
 
-                if (Objects.equals(message, "Exit")) {
+            while (true) {
+                System.out.print("Enter a command (update OR exit): ");
+                message = userInput.readLine();
+
+                if (Objects.equals(message, "exit")) { // For Endgame
                     System.out.println("Leaving Server.");
+                    out.println("Exit");
                     break;
                 }
 
+                if (Objects.equals(message, "update")) { // For Updates
+                    // Here you could update game, for example:
+                    game.getCells()[0][0] = 1; // Update some part of the game state
+                    System.out.println("Game state updated.");
+                }
+
+                // Convert the TetrisGameInfo to a JSON string and send it to the server
+                String gameJson = gson.toJson(game);
+                out.println(gameJson);
+                System.out.println("Game data sent to server: " + gameJson);
+
+                // Check that server got the same message that was sent
                 serverResponse = in.readLine();
                 System.out.println("From Server: " + serverResponse);
             }

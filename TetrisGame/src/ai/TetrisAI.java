@@ -2,6 +2,8 @@ package ai;
 import model.*;
 import model.games.Game;
 
+import java.util.Arrays;
+
 public class TetrisAI {
     private Game game;
     private BoardEvaluator evaluator = new BoardEvaluator();
@@ -20,16 +22,20 @@ public class TetrisAI {
         for (int rotation = 0; rotation < 4; rotation++) {
             TetrisAIBlock simulatedPiece = piece.convertBlock();
             simulatedPiece.pivot(rotation);
-            for (int col = 0; col < game.getBoard().getWidth()-simulatedPiece.getWidth(); col++) {
+            for (int col = 0; col < game.getBoard().getWidth(); col++) {
                 int[][] simulatedBoard = simulateDrop(game.getBoard().convertBoard(),
                         simulatedPiece, col);
-                double score = evaluator.evaluateBoard(simulatedBoard);
-                if (score > bestScore) {
-                    bestScore = score;
-                    bestMove = new Move(col, rotation);
+                if(simulatedBoard!=null) {
+                    double score = evaluator.evaluateBoard(simulatedBoard);
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestMove = new Move(col, rotation);
+                    }
                 }
             }
         }
+        System.out.println("simulated column: "+bestMove.col);
+        System.out.println("simulated rotation: "+bestMove.rotation);
         return bestMove;
     }
 
@@ -38,6 +44,9 @@ public class TetrisAI {
 // Simulate dropping the piece in the given column and return the new board
         int[][] simulatedBoard = copyBoard(board);
         int dropRow = getDropRow(simulatedBoard, piece, col);
+        if (dropRow == -1) {
+            return null;
+        }
         placePiece(simulatedBoard, piece, col, dropRow);
         return simulatedBoard;
     }
@@ -54,10 +63,10 @@ public class TetrisAI {
 // Check if the piece can be placed at the given column and row
         int[][] coordinates = piece.getCurrentCoordinates();
         for (int i = 0; i<coordinates[0].length; i++) {
-            int x = col + coordinates[0][i];
-            int y = row + coordinates[1][i];
+            int x = row + coordinates[1][i];
+            int y = col + coordinates[0][i];
             if (x < 0 || x >= board[0].length || y < 0 || y >=
-                    board.length || (board[y][x] != 0 && (y!=row + coordinates[1][i] && x != col + coordinates[0][i]))) {
+                    board.length || board[y][x] != 0) {
                 return false;
             }
         }
@@ -68,9 +77,10 @@ public class TetrisAI {
         // Place the piece on the board at the given position
         int[][] coordinates = piece.getCurrentCoordinates();
         for (int i = 0; i<coordinates[0].length; i++) {
-            board[row + coordinates[1][i]][col + coordinates[0][i]] = 1; // 1 represents the piece
+            board[col + coordinates[0][i]][row + coordinates[1][i]] = 1; // 1 represents the piece
         }
     }
+
     private int[][] copyBoard(int[][] board) {
         int[][] newBoard = new int[board.length][board[0].length];
         for (int y = 0; y < board.length; y++) {

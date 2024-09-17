@@ -18,7 +18,7 @@ public class BoardEvaluator {
 
     public BoardEvaluator() {
         //Get Unfit DNA
-        if(countWithFitness(filename)>=50) {
+        if(countWithFitness(filename)>=52) {
             selectAndReproduce(filename);
         }
         constants = getFirstUnfitDNA(filename);
@@ -42,75 +42,54 @@ public class BoardEvaluator {
         (maxHeightFactor * maxHeightScore) + (holesFactor * holesScore) + (bumpinessFactor * bumpinessScore);
     }
     private int getTotalHeight(int[][] board) {
-        // Calculate total height of all columns, and square it
         int totalHeight = 0;
-        for (int x = 0; x < board[0].length; x++) {
-            int columnHeight = 0;
-            for (int y = 0; y < board.length; y++) {
-                if (board[y][x] != 0) {
-                    columnHeight = board.length - y;
-                    break;
-                }
-            }
-            totalHeight += columnHeight;
+        for (int col =0; col < board.length; col++) {
+            totalHeight += getColumnHeight(board, col);
         }
         return totalHeight;
     }
 
     private int getMaxHeight(int[][] board) {
         int maxHeight = 0;
-        for (int x = 0; x < board[0].length; x++) {
-            int columnHeight = 0;
-            for (int y = 0; y < board.length; y++) {
-                if (board[y][x] != 0) {
-                    columnHeight = board.length - y;
-                    break;
-                }
-            }
-            maxHeight = Math.max(maxHeight, columnHeight);
+        for (int col =0; col < board.length; col++) {
+            maxHeight = Math.max(maxHeight, getColumnHeight(board, col));
         }
         return maxHeight;
     }
 
     private int getRelativeHeight(int[][] board) {
         int maxHeight = 0;
-        int minHeight = board.length;
-        for (int x = 0; x < board[0].length; x++) {
-            int columnHeight = 0;
-            for (int y = 0; y < board.length; y++) {
-                if (board[y][x] != 0) {
-                    columnHeight = board.length - y;
-                    break;
-                }
-            }
-            minHeight = Math.min(minHeight, columnHeight);
-            maxHeight = Math.max(maxHeight, columnHeight);
+        int minHeight = Integer.MAX_VALUE;
+        for (int col =0; col < board.length; col++) {
+            minHeight = Math.min(minHeight, getColumnHeight(board, col));
+            maxHeight = Math.max(maxHeight, getColumnHeight(board, col));
         }
         return maxHeight-minHeight;
     }
 
     private int getHoles(int[][] board) {
-// Calculate the number of holes (empty spaces beneath filled blocks)
+        // Calculate the number of holes (empty spaces beneath filled blocks)
         int holes = 0;
-        for (int x = 0; x < board[0].length; x++) {
+        for (int col = 0; col < board.length; col++) {
             boolean foundBlock = false;
-            for (int y = 0; y < board.length; y++) {
-                if (board[y][x] != 0) {
+            for (int row = 0; row < board[col].length; row++) {
+                if (board[col][row] != 0) {
                     foundBlock = true;
-                } else if (foundBlock && board[y][x] == 0) {
+                } else if (foundBlock && board[col][row] == 0) {
                     holes++;
                 }
             }
         }
         return holes;
     }
+
     private int getClearedLines(int[][] board) {
-// Calculate how many full lines are cleared
+        // Calculate how many full lines are cleared
         int clearedLines = 0;
-        for (int y = 0; y < board.length; y++) {
+        for (int row = 0; row < board[0].length; row++) {
             boolean isLineFull = true;
-            for (int x = 0; x < board[0].length; x++) {
-                if (board[y][x] == 0) {
+            for (int col = 0; col < board.length; col++) {
+                if (board[col][row] == 0) {
                     isLineFull = false;
                     break;
                 }
@@ -121,20 +100,22 @@ public class BoardEvaluator {
         }
         return clearedLines;
     }
+
     private int getBumpiness(int[][] board) {
-// Calculate the bumpiness of the surface
+        // Calculate the bumpiness of the surface
         int bumpiness = 0;
-        for (int x = 0; x < board[0].length - 1; x++) {
-            int colHeight1 = getColumnHeight(board, x);
-            int colHeight2 = getColumnHeight(board, x + 1);
+        for (int col = 0; col < board.length - 1; col++) {
+            int colHeight1 = getColumnHeight(board, col);
+            int colHeight2 = getColumnHeight(board, col + 1);
             bumpiness += Math.abs(colHeight1 - colHeight2);
         }
         return bumpiness;
     }
+
     private int getColumnHeight(int[][] board, int col) {
-        for (int y = 0; y < board.length; y++) {
-            if (board[y][col] != 0) {
-                return board.length - y;
+        for (int row = 0 ; row < board[col].length; row++){
+            if (board[col][row] != 0) {
+                return board[col].length-row;
             }
         }
         return 0;

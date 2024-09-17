@@ -29,7 +29,12 @@ public class TetrisBlock {
     }
 
     public TetrisAIBlock convertBlock() {
-        return new TetrisAIBlock(shape, currentRotation);
+        int[][] coordinates = new int[2][4];
+        for (int i = 0; i < 4; i++) {
+            coordinates[0][i] = this.cells.get(i).getX();
+            coordinates[1][i] = this.cells.get(i).getY();
+        }
+        return new TetrisAIBlock(shape, coordinates, currentRotation);
     }
 
     public void setBoard(Board<TetrisCell> board) {
@@ -48,6 +53,7 @@ public class TetrisBlock {
                 minColumn = cell.getX();
             }
         }
+        System.out.println("real column: "+minColumn);
         return minColumn;
     }
 
@@ -67,6 +73,7 @@ public class TetrisBlock {
     }
 
     public int getCurrentRotation() {
+        System.out.println("real rotation: "+currentRotation);
         return currentRotation;
     }
 

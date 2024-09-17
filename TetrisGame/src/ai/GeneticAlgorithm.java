@@ -8,16 +8,12 @@ import java.util.*;
 
 public class GeneticAlgorithm {
 
-    private static boolean spawn;
-    private static boolean reproduce;
     private static double mutationStep = 0.2;
     private static double mutationRate = 0.05;
-    public GeneticAlgorithm() {
-        spawn = false;
-        reproduce = false;
-    }
 
     public static void main(String[] args) {
+        boolean spawn = true;
+        boolean reproduce = false;
         if(spawn) {
             spawn("src/ai/DNA.json");
         }
@@ -31,15 +27,15 @@ public class GeneticAlgorithm {
         List<Map<String, Double>> population = new ArrayList<>();
         Random r = new Random();
 
-        for (int i = 0; i < 48; i++) {
+        for (int i = 0; i < 52; i++) {
             Map<String, Double> DNA = new HashMap<>();
             DNA.put("id", (double) i);
-            DNA.put("linesCleared", r.nextDouble());
+            DNA.put("linesCleared", r.nextDouble() * 3);
             DNA.put("height", r.nextDouble() * -1);
             DNA.put("relativeHeight", r.nextDouble() * -1);
             DNA.put("maxHeight", r.nextDouble() * -1);
-            DNA.put("holes", r.nextDouble() * -1);
-            DNA.put("bumpiness", r.nextDouble() * -1);
+            DNA.put("holes", r.nextDouble() * -1 * 5);
+            DNA.put("bumpiness", r.nextDouble() * -1 * 2);
             population.add(DNA);
         }
 
@@ -104,36 +100,41 @@ public class GeneticAlgorithm {
             List<Map<String, Double>> dnas = mapper.readValue(new File(filename), new TypeReference<List<Map<String, Double>>>() {});
             // Sort dnas by 'fitness' in descending order
             dnas.sort((dna1, dna2) -> Double.compare(dna2.get("fitness"), dna1.get("fitness")));
-            // Select top 24
-            List<Map<String, Double>> selectedDNAs = dnas.subList(0, Math.min(dnas.size(), 24));
+            // Select top 26
+            List<Map<String, Double>> selectedDNAs = dnas.subList(0, Math.min(dnas.size(), 26));
             // Shuffle the list for random pairing
             Collections.shuffle(selectedDNAs);
+            int id = 0;
+            while(newPopulation.size() < 52) {
+                for (int i = 0; i < selectedDNAs.size(); i += 2) {
+                    Map<String, Double> parent1 = selectedDNAs.get(i);
 
-            for (int i = 0; i < selectedDNAs.size(); i += 2) {
-                Map<String, Double> parent1 = selectedDNAs.get(i);
+                    // Ensure there's a pair for each parent
+                    for (int j = 0; j < 2 && i + j < selectedDNAs.size(); j++) {
+                        Map<String, Double> parent2 = selectedDNAs.get(i + j);
+                        Map<String, Double> child = new HashMap<>();
 
-                // Ensure there's a pair for each parent
-                for (int j = 0; j < 2 && i + j < selectedDNAs.size(); j++) {
-                    Map<String, Double> parent2 = selectedDNAs.get(i + j);
-                    Map<String, Double> child = new HashMap<>();
+                        // Generate child from parents
+                        for (String key : parent1.keySet()) {
+                            double parentValue = r.nextBoolean() ? parent1.get(key) : parent2.get(key);
 
-                    // Generate child from parents
-                    for (String key : parent1.keySet()) {
-                        double parentValue = r.nextBoolean() ? parent1.get(key) : parent2.get(key);
-
-                        // Apply mutation
-                        if (r.nextDouble() < mutationRate) {
-                            double mutation = (r.nextDouble() < 0.5) ? mutationStep : -mutationStep;  // mutation can be positive or negative
-                            parentValue += parentValue * mutation;  // mutate the value by a certain percent
+                            // Apply mutation
+                            if (r.nextDouble() < mutationRate) {
+                                double mutation = (r.nextDouble() < 0.5) ? mutationStep : -mutationStep;  // mutation can be positive or negative
+                                parentValue += parentValue * mutation;  // mutate the value by a certain percent
+                            }
+                            child.put(key, parentValue);
                         }
-                        child.put(key, parentValue);
+
+                        // Remove 'fitness' of child as it has not been evaluated yet
+                        child.remove("fitness");
+                        child.remove("id");
+                        child.put("id", (double) id);
+                        id++;
+
+                        // Add to new population
+                        newPopulation.add(child);
                     }
-
-                    // Remove 'fitness' of child as it has not been evaluated yet
-                    child.remove("fitness");
-
-                    // Add to new population
-                    newPopulation.add(child);
                 }
             }
 

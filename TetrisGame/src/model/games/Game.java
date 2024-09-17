@@ -379,17 +379,12 @@ public class Game {
     public void dropPiece() {
         if (activeShape==null){
             System.out.println("No active piece");
-            return;
         }
         // Let the AI decide the best move
         Move bestMove = ai.findBestMove(activeShape);
         // Rotate the piece right
-        if (bestMove.rotation>activeShape.getCurrentRotation()) {
+        if (bestMove.rotation!=activeShape.getCurrentRotation()) {
             activeShape.rotateRight();
-        }
-        // Rotate the piece left
-        else if (bestMove.rotation<activeShape.getCurrentRotation()) {
-            activeShape.rotateLeft();
         }
         // Move the piece to the best column
         else if (activeShape.getColumn() < bestMove.col) {

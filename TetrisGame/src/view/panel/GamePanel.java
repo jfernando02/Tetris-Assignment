@@ -97,7 +97,9 @@ public class GamePanel extends JPanel {
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    gameOne.update(KeyEvent.VK_UP);
+                    if(game.getActiveShape()!=null) {
+                        gameOne.update(KeyEvent.VK_UP);
+                    }
                 }
             }, 0, game.getPeriod());
         }

@@ -11,7 +11,7 @@ import java.util.Objects;
 
 public class clientCode {
     public static void main(String[] args) {
-        String serverAddress = "localhost"; // or the server's IP address
+        String serverAddress = "localhost";
         int portNum = 3000;
         Gson gson = new Gson();
 

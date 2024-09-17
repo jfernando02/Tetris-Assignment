@@ -3,7 +3,6 @@ package server.clientSide;
 import java.util.Arrays;
 
 public class tetrisGameInfo {
-    // Fields
     private int width;
     private int height;
     private int[][] cells;
@@ -19,7 +18,7 @@ public class tetrisGameInfo {
         this.nextShape = nextShape;
     }
 
-    // Getters
+    // Getters & Setters
     public int getWidth() {
         return width;
     }
@@ -40,7 +39,6 @@ public class tetrisGameInfo {
         return nextShape;
     }
 
-    // Setters
     public void setWidth(int width) {
         this.width = width;
     }
@@ -61,7 +59,7 @@ public class tetrisGameInfo {
         this.nextShape = nextShape;
     }
 
-    // toString Method
+    // Sending Messages in JSON string format
     @Override
     public String toString() {
         return "tetrisGameInfo{" +

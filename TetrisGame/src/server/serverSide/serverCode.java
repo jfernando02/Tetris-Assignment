@@ -30,7 +30,7 @@ public class serverCode {
                 }
 
                 System.out.println("Client Message: " + jsonMessage); // Message that Server sees
-                out.println("X position = " + X + ", rotationCount = " + rotationCount);
+                out.println("X position = " + X + ", rotationCount = " + rotationCount); // Example moves for tetrisClient to make in-games
 
             }
         } catch (IOException e) {

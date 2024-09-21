@@ -99,17 +99,19 @@ public class ConfigurePanel extends JDialog {
                         mainFrame.setSoundEffect(((JCheckBox) e.getSource()).isSelected());
                     });
 
-            // AI Play Checkbox
-            addCheckBox(configBox, gbc, 0, 6, "AI Play:",
-                    mainFrame.getConfigData().isAiPlay(), e -> {
-                        mainFrame.getConfigData().setAiPlay(((JCheckBox) e.getSource()).isSelected());
-                    });
+            //add combo box For player one and Player two
+            String[] playerOneTypes = {"Human", "AI", "External"};
+            String[] playerTwoTypes = {"None", "Human", "AI", "External"};
 
-            // Extended Mode Checkbox
-            addCheckBox(configBox, gbc, 0, 7, "Extended Mode:",
-                    mainFrame.getConfigData().isExtendedMode(), e -> {
-                        mainFrame.getConfigData().setExtendedMode(((JCheckBox) e.getSource()).isSelected());
-                    });
+            addComboBox(configBox, gbc, 0, 6, "Player One Type:", playerOneTypes, mainFrame.getConfigData().getPlayerOneType(), e -> {
+                String newValue = (String) ((JComboBox<?>) e.getSource()).getSelectedItem();
+                mainFrame.getConfigData().setPlayerOneType(newValue);
+            });
+
+            addComboBox(configBox, gbc, 0, 7, "Player Two Type:", playerTwoTypes, mainFrame.getConfigData().getPlayerTwoType(), e -> {
+                String newValue = (String) ((JComboBox<?>) e.getSource()).getSelectedItem();
+                mainFrame.getConfigData().setPlayerTwoType(newValue);
+            });
 
 
             // Back Button
@@ -122,6 +124,8 @@ public class ConfigurePanel extends JDialog {
             //back closes the dialog
             backButton.addActionListener(e -> {
                 mainFrame.playSound("src/resources/sounds/MenuKeyPresses.wav", false);
+                //save the configuration
+                mainFrame.saveConfigData();
                 dispose();
             });
             configBox.add(backButton, gbc);
@@ -189,5 +193,23 @@ public class ConfigurePanel extends JDialog {
         valueLabel.setBackground(Color.WHITE);
         checkBox.addActionListener(e -> valueLabel.setText(checkBox.isSelected() ? "On" : "Off"));
         panel.add(valueLabel, gbc);
+    }
+
+    // Helper method to create combo boxes
+    private void addComboBox(JPanel panel, GridBagConstraints gbc, int gridx, int gridy, String label, String[] options, String selected, ActionListener listener) {
+        gbc.gridx = gridx;
+        gbc.gridy = gridy;
+        gbc.gridwidth = 1;
+        gbc.anchor = GridBagConstraints.WEST;
+        JLabel comboBoxLabel = new JLabel(label);
+        panel.add(comboBoxLabel, gbc);
+
+        gbc.gridx = gridx + 1;
+        gbc.gridy = gridy;
+        gbc.gridwidth = 1;
+        JComboBox<String> comboBox = new JComboBox<>(options);
+        comboBox.setSelectedItem(selected);
+        comboBox.addActionListener(listener);
+        panel.add(comboBox, gbc);
     }
 }

@@ -94,7 +94,9 @@ public class MainFrame extends JFrame {
     public void initSoloGame() {
         batchSpawnBlocks();
         gamePanel = new GamePanel(this);
-        if (configData.isAiPlay()) {
+
+
+        if (configData.isPlayerOneType("AI")) {
             this.gameOne = new GameAI(this, gamePanel);
         } else {
             this.gameOne = new Game(this, gamePanel);
@@ -109,10 +111,13 @@ public class MainFrame extends JFrame {
         // Second player threads
         batchSpawnBlocks();
         this.gamePanel = new GamePanelMulti(this);
+
         this.gameOne = new GameOne(this, gamePanel);
         this.gameLogicOne = new MainFrameGameLogic(this, gameOne);
+
         this.gameTwo = new GameTwo(this, gamePanel);
         this.gameLogicTwo = new MainFrameGameLogic(this, gameTwo);
+
         this.gamePanel.setGame(gameOne, gameTwo);
     }
 
@@ -294,6 +299,7 @@ public class MainFrame extends JFrame {
     }
 
 
-
-
+    public void saveConfigData() {
+        ConfigManager.saveConfigData(configData);
+    }
 }

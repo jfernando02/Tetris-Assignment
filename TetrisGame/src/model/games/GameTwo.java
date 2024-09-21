@@ -9,15 +9,7 @@ public class GameTwo extends Game {
 
     public GameTwo(MainFrame mainFrame, GamePanel gamePanel) {
         super(mainFrame, gamePanel);
-
-        // Socket for AI play
-        if (mainFrame.getConfigData().isAiPlay()) {
-            // TODO Implement AI logic here and feed update() keycodes via AI
-            player.setAI();
-        } else {
-            //set player 2 name to player 2
-            player.setName("Player 2");
-        }
+        player.setName("Player 2");
     }
 
     @Override

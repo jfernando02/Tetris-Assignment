@@ -98,7 +98,7 @@ public class GamePanel extends JPanel {
 
     //Multiplayer panel overrides this method
     public void keyListener() {
-        if (mainFrame.getConfigData().isAiPlay()){
+        if (mainFrame.getConfigData().isPlayerOneType("AI")) {
             java.util.Timer timer = new Timer();
             timer.schedule(new TimerTask() {
                 @Override

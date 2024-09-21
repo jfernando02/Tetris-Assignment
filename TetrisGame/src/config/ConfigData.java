@@ -7,8 +7,7 @@ public class ConfigData {
     private int startLevel;
     private boolean music;
     private boolean soundEffect;
-    private boolean aiPlay;
-    private boolean extendedMode;
+
     private String playerOneType;
     private String playerTwoType;
 
@@ -19,8 +18,7 @@ public class ConfigData {
         this.startLevel = 1;
         this.music = true;
         this.soundEffect = true;
-        this.aiPlay = false;
-        this.extendedMode = false;
+
         this.playerOneType = "Human";
         this.playerTwoType = "None";
     }
@@ -41,11 +39,10 @@ public class ConfigData {
     public boolean isSoundEffect() { return soundEffect; }
     public void setSoundEffect(boolean soundEffect) { this.soundEffect = soundEffect; }
 
-    public boolean isAiPlay() { return aiPlay; }
-    public void setAiPlay(boolean aiPlay) { this.aiPlay = aiPlay; }
+    public boolean isExtendedMode() { return !playerTwoType.equals("None");}
 
-    public boolean isExtendedMode() { return extendedMode; }
-    public void setExtendedMode(boolean extendedMode) { this.extendedMode = extendedMode; }
+    public boolean isPlayerOneType(String type) { return playerOneType.equals(type); }
+    public boolean isPlayerTwoType(String type) { return playerTwoType.equals(type); }
 
     public String getPlayerOneType() { return playerOneType; }
     public void setPlayerOneType(String playerOneType) { this.playerOneType = playerOneType; }

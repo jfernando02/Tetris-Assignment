@@ -11,16 +11,7 @@ public class GameOne extends Game {
 
     public GameOne(MainFrame mainFrame, GamePanel gamePanel) {
         super(mainFrame, gamePanel);
-
-        // Socket for AI play
-        if (mainFrame.getConfigData().isAiPlay()) {
-            // TODO Implement AI logic here and feed update() keycodes via AI
-            player.setAI();
-        }
     }
-
-
-
 
     // If second player is a real player:
     @Override

@@ -29,9 +29,9 @@ public class GameAI extends Game {
         this.playing = false;
         this.paused = false;
         this.player = new Player("Player1", mainFrame.getConfigData().getStartLevel());
-        if(mainFrame.getConfigData().isAiPlay()){
-            this.player.setAI();
-        }
+
+        this.player.setAI();
+
         this.period = 200 - (player.getLevel()*periodDecr);
         mainFrame.repaintBoard(); //don't delete or a new game won't render its new state on the fieldPanel in the GamePanel
     }

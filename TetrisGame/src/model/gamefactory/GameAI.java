@@ -1,4 +1,4 @@
-package model.games;
+package model.gamefactory;
 import controller.MainFrame;
 import model.Move;
 import model.Player;
@@ -8,16 +8,15 @@ import ai.TetrisAI;
 import javax.swing.*;
 import java.awt.event.KeyEvent;
 
-
+// Concrete Product of the Factory Method which inherits from the GameDefault base product class
 public class GameAI extends GameDefault {
     private TetrisAI ai;
-    private boolean training = true;
-
-    public GameAI(MainFrame mainFrame, GamePanel gamePanel) {
-        super(mainFrame, gamePanel);
-        // Socket for AI play
-        this.player.setAI();
+    private boolean training = false;
+    //private boolean training = true;
+    public GameAI(MainFrame mainFrame, GamePanel gamePanel, String playerNumber) {
+        super(mainFrame, gamePanel, playerNumber);
         this.ai = new TetrisAI(this);
+        this.player.setPlayerType("AI");
     }
 
     @Override
@@ -27,10 +26,8 @@ public class GameAI extends GameDefault {
         this.activeShape = null;
         this.playing = false;
         this.paused = false;
-        this.player = new Player("Player1", mainFrame.getConfigData().getStartLevel());
-
-        this.player.setAI();
-
+        this.player = new Player(player.getName(), mainFrame.getConfigData().getStartLevel());
+        this.player.setPlayerType("AI");
         this.period = 200 - (player.getLevel()*periodDecr);
         mainFrame.repaintBoard(); //don't delete or a new game won't render its new state on the fieldPanel in the GamePanel
     }
@@ -39,7 +36,7 @@ public class GameAI extends GameDefault {
     public void gameOverPanel() {
         mainFrame.stopSound(gameMusic);
         this.gameRunning = false;
-        if(player.isAI() && training) {
+        if(training) {
             //Get score and give it to the board game evaluator
             this.ai.getEvaluator().setFinalHighScore(this.player.getScore());
             this.ai.getEvaluator().setFitness("src/ai/DNA.json");
@@ -128,7 +125,8 @@ public class GameAI extends GameDefault {
         }
         // Drop the piece
         else {
-            activeShape.hardDrop();
+            //activeShape.hardDrop(); // For training use hardDrop
+            activeShape.softDrop();
         }
     }
 }

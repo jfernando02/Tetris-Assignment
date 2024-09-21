@@ -1,4 +1,4 @@
-package model.games;
+package model.gamefactory;
 
 import controller.MainFrame;
 import view.panel.GamePanel;
@@ -7,8 +7,8 @@ import java.awt.event.KeyEvent;
 
 public class GameTwo extends GameDefault {
 
-    public GameTwo(MainFrame mainFrame, GamePanel gamePanel) {
-        super(mainFrame, gamePanel);
+    public GameTwo(MainFrame mainFrame, GamePanel gamePanel, String playerName) {
+        super(mainFrame, gamePanel, playerName);
         player.setName("Player 2");
     }
     @Override

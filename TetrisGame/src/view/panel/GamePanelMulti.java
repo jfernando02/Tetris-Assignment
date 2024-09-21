@@ -1,7 +1,7 @@
 package view.panel;
 
 import controller.MainFrame;
-import model.games.GameDefault;
+import model.gamefactory.GameDefault;
 import view.UIGenerator;
 
 import javax.swing.*;
@@ -12,8 +12,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class GamePanelMulti extends GamePanel {
     private GameDefault gameOne;
@@ -127,29 +125,38 @@ public class GamePanelMulti extends GamePanel {
 
     public void keyListenerAI() {
         if (mainFrame.getConfigData().isPlayerOneType("AI")) {
-            java.util.Timer timer = new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    if(gameOne.getActiveShape()!=null) {
+            Thread gameOneThread = new Thread(() -> {
+                while (true) {
+                    if (gameOne.getActiveShape() != null) {
                         gameOne.update(KeyEvent.VK_UP);
                     }
+                    try {
+                        Thread.sleep(gameOne.getPeriod());
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        break;
+                    }
                 }
-            }, 0, gameOne.getPeriod());
+            });
+            gameOneThread.start();
         }
 
         if (mainFrame.getConfigData().isPlayerTwoType("AI")) {
-            java.util.Timer timer = new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    if(gameTwo.getActiveShape()!=null) {
+            Thread gameTwoThread = new Thread(() -> {
+                while (true) {
+                    if (gameTwo.getActiveShape() != null) {
                         gameTwo.update(KeyEvent.VK_UP);
                     }
+                    try {
+                        Thread.sleep(gameTwo.getPeriod());
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        break;
+                    }
                 }
-            }, 0, gameTwo.getPeriod());
+            });
+            gameTwoThread.start();
         }
-
     }
 
     // Method to update both games based on the pressed keys

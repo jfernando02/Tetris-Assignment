@@ -3,7 +3,7 @@ package controller;
 import config.ConfigData;
 import config.ConfigManager;
 import model.TetrisShape;
-import model.games.*;
+import model.gamefactory.*;
 import model.TetrisBlock;
 import model.Score;
 import view.panel.GamePanel;
@@ -158,7 +158,7 @@ public class MainFrame extends JFrame {
         // gameLogicOne will also pause gameTwo if extended mode is enabled
         gameLogicOne.pauseGame();
         //game logic two pause
-        if (gameLogicTwo != null) {
+        if (!getConfigData().isPlayerTwoType("None")) {
             gameLogicTwo.pauseGame();
         }
     }

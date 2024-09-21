@@ -1,12 +1,12 @@
 // src/model/games/Game.java
-package model.games;
+package model.gamefactory;
 
 import model.Board;
 import model.Player;
 import model.TetrisBlock;
 import model.TetrisCell;
 import javax.sound.sampled.Clip;
-// Product interface
+// Factory Product Interface
 public interface Game {
     void newGame();
     void start();

@@ -1,5 +1,5 @@
 // Game.java
-package model.games;
+package model.gamefactory;
 
 import controller.MainFrame;
 import model.Board;
@@ -25,17 +25,20 @@ public class GameDefault implements Game {
     protected boolean playing;
     protected boolean paused = false;
     protected Player player;
+    protected String playerName;
 
     protected int period; //period to set the thread timer
     // decreases thread period by 15 every level up
     protected int periodDecr = 15;
     protected boolean gameRunning;
 
-    public GameDefault(MainFrame mainFrame, GamePanel gamePanel) {
+    public GameDefault(MainFrame mainFrame, GamePanel gamePanel, String playerName) {
         this.mainFrame = mainFrame;
         this.gamePanel = gamePanel;
+        this.playerName = playerName;
         this.board = new Board(mainFrame, this);
-        this.player = new Player("Player One", mainFrame.getConfigData().getStartLevel());
+        this.player = new Player(playerName, mainFrame.getConfigData().getStartLevel());
+        this.player.setPlayerType("Human");
         this.nextShapeIndex=0;
         this.activeShape = null;
         gameRunning = false;
@@ -358,7 +361,7 @@ public class GameDefault implements Game {
         this.activeShape = null;
         this.playing = false;
         this.paused = false;
-        this.player = new Player("Player1", mainFrame.getConfigData().getStartLevel());
+        this.player.reset();
         this.period = 200 - (player.getLevel()*periodDecr);
         mainFrame.repaintBoard(); //don't delete or a new game won't render its new state on the fieldPanel in the GamePanel
     }

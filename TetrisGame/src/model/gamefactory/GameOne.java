@@ -1,4 +1,4 @@
-package model.games;
+package model.gamefactory;
 
 import controller.MainFrame;
 import view.panel.GamePanel;
@@ -7,8 +7,8 @@ import java.awt.event.KeyEvent;
 
 public class GameOne extends GameDefault {
 
-    public GameOne(MainFrame mainFrame, GamePanel gamePanel) {
-        super(mainFrame, gamePanel);
+    public GameOne(MainFrame mainFrame, GamePanel gamePanel, String playerName) {
+        super(mainFrame, gamePanel, playerName);
     }
 
     // If second player is a real player:

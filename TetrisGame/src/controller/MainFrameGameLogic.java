@@ -1,6 +1,6 @@
 package controller;
 
-import model.games.GameDefault;
+import model.gamefactory.GameDefault;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

@@ -6,7 +6,7 @@ public class Player {
     private int initialLevel;
     private int level;
     private int linesCleared;
-    private boolean isAI;
+    private String playerType;
 
     public Player(String name, int initialLevel) {
         this.name = name;
@@ -56,14 +56,14 @@ public class Player {
         return linesCleared;
     }
 
-    public boolean isAI() {
-        return isAI;
+   public void setPlayerType(String playerType) {
+        this.playerType = playerType;
     }
 
-    public void setAI() {
-        isAI = true;
-        this.name = "AI";
+    public String getPlayerType() {
+        return playerType;
     }
+
 
     public void setLevel(int level) {
         this.level = level;
@@ -71,5 +71,11 @@ public class Player {
 
     public void setName(String s) {
         name = s;
+    }
+
+    public void reset() {
+        score = 0;
+        level = initialLevel;
+        linesCleared = 0;
     }
 }

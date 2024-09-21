@@ -1,7 +1,7 @@
 package view.panel;
 
 import model.Board;
-import model.games.GameDefault;
+import model.gamefactory.GameDefault;
 import model.Player;
 import model.TetrisBlock;
 import controller.MainFrame;
@@ -63,7 +63,7 @@ public class PlayPanel extends JPanel {
         // Center the text in the labels and increase font size
         int size = (mainFrame.getConfigData().getFieldWidth() * 15) / 10;
         Font labelFont = new Font("Arial", Font.BOLD, size);
-        playerLabel = new JLabel("Type: " + (player.isAI() ? "AI" : "Human"), JLabel.CENTER);
+        playerLabel = new JLabel("Type: " + player.getPlayerType(), JLabel.CENTER);
         playerLabel.setFont(labelFont);
         initialLevelLabel = new JLabel("Initial Level: " + player.getInitialLevel(), JLabel.CENTER);
         initialLevelLabel.setFont(labelFont);
@@ -107,7 +107,7 @@ public class PlayPanel extends JPanel {
         playerInfoPanel.setOpaque(true);
 
         // Add a blue border around the player info section
-        playerInfoPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLUE, 2), "Player Info", 0, 0, labelFont, Color.BLUE));
+        playerInfoPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLUE, 2), player.getName() + " Info", 0, 0, labelFont, Color.BLUE));
 
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -172,7 +172,7 @@ public class PlayPanel extends JPanel {
     // Update player info labels
     public void updatePlayerInfo() {
         player = game.getPlayer();
-        playerLabel.setText("Type: " + (player.isAI() ? "AI" : "Human"));
+        playerLabel.setText("Type: " + player.getPlayerType());
         initialLevelLabel.setText("Initial Level: " + player.getInitialLevel());
         levelLabel.setText("Current Level: " + player.getLevel());
         scoreLabel.setText("Current Score: " + player.getScore());

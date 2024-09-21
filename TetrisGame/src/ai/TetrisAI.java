@@ -1,6 +1,6 @@
 package ai;
 import model.*;
-import model.games.GameDefault;
+import model.gamefactory.GameDefault;
 
 public class TetrisAI {
     private GameDefault game;

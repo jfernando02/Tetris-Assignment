@@ -2,7 +2,7 @@ package view.panel;
 
 import model.*;
 import controller.*;
-import model.games.GameDefault;
+import model.gamefactory.GameDefault;
 import view.UIGenerator;
 
 import javax.swing.*;

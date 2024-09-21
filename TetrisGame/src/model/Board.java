@@ -1,6 +1,6 @@
 package model;
 import controller.MainFrame;
-import model.games.GameDefault;
+import model.gamefactory.GameDefault;
 
 public class Board<T> {
     private T[][] board;

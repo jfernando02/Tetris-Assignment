@@ -195,44 +195,6 @@ public class GameDefault implements Game {
             return;
         }
 
-        // Create a JOptionPane for the pause message without any buttons
-        JOptionPane pane = new JOptionPane(
-                "Game Paused! (Press P to resume)",
-                JOptionPane.INFORMATION_MESSAGE,
-                JOptionPane.DEFAULT_OPTION,
-                null,
-                new Object[]{}
-        );
-
-        // Create a JDialog from the JOptionPane and set it to be non-modal
-        JDialog dialog = pane.createDialog(mainFrame, "Pause Game");
-        dialog.setModal(false);
-
-        // Add a KeyListener to the JDialog to listen for the "P" key press
-        dialog.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent evt) {
-                if (evt.getKeyCode() == KeyEvent.VK_P) {
-                    System.out.println("Game Object says: P key pressed, resuming game...");
-                    resumeGame();
-                    dialog.dispose();  // Close the dialog when P is pressed
-                }
-            }
-        });
-
-        // Make sure the dialog is focusable and requests focus
-        dialog.setFocusable(true);
-        dialog.requestFocusInWindow();
-
-        // Show the dialog
-        dialog.setVisible(true);
-
-        // Use a Timer to close the dialog after 1 second
-        new javax.swing.Timer(1000, e -> dialog.dispose()).start();
-
-        // Refocus on the game panel after closing the dialog
-        mainFrame.getGamePanel().requestFocusInWindow();
-
         // If pressing P again, resume game
         mainFrame.addKeyListener(new KeyAdapter() {
             @Override

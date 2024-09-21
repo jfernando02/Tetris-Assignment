@@ -3,6 +3,7 @@ package model.gamefactory;
 import controller.MainFrame;
 import view.panel.GamePanel;
 
+import javax.swing.*;
 import java.awt.event.KeyEvent;
 
 public class GameTwo extends GameDefault {
@@ -86,7 +87,23 @@ public class GameTwo extends GameDefault {
 
     @Override
     public void stop() {
-        // Does nothing, as we're making the parent
-        // method do all the LABOUR
+        boolean wasPaused = paused;
+        mainFrame.stopSound(gameMusic);
+        if (playing) {
+            System.out.println("Game paused");
+            mainFrame.pauseGame(); // pauses both games if multiplayer
+            gamePanel.setPaused(true);
+
+        }
+        //new JDIalog for game over to ask if they're sure if they want to quit
+        JDialog dialog = new JDialog();
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.setTitle("Stop Game");
+        dialog.setSize(200, 200);
+        dialog.setVisible(false);
+        //centre the dialog
+        dialog.setLocationRelativeTo(null);
+
     }
+
 }

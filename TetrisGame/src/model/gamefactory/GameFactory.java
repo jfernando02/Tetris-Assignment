@@ -12,14 +12,14 @@ public class GameFactory {
                 switch(mainFrame.getConfigData().getPlayerOneType()) {
                     case "Human":
                         if (mainFrame.getConfigData().getPlayerTwoType().equals("Human")) {
-                            return new GameOne(mainFrame, gamePanel, "Player One");
+                            return new GameOne(mainFrame, gamePanel, "Player 1");
                         } else {
-                            return new GameDefault(mainFrame, gamePanel, "PLayer");
+                            return new GameTwo(mainFrame, gamePanel, "PLayer 1");
                         }
                     case "AI":
-                        return new GameAI(mainFrame, gamePanel, "AI Player One");
+                        return new GameAI(mainFrame, gamePanel, "AI Player 1");
                     case "External":
-                        return new GameExternal(mainFrame, gamePanel, "External Player Two");
+                        return new GameExternal(mainFrame, gamePanel, "Ext Player 2");
                     default :
                         throw new IllegalArgumentException("Invalid player type");
                 }
@@ -27,11 +27,11 @@ public class GameFactory {
             if (player == 2) {
                 switch(mainFrame.getConfigData().getPlayerTwoType()) {
                     case "Human":
-                        return new GameTwo(mainFrame, gamePanel, "Player Two");
+                        return new GameTwo(mainFrame, gamePanel, "Player 2");
                     case "AI":
-                        return new GameAI(mainFrame, gamePanel, "AI Player Two");
+                        return new GameAI(mainFrame, gamePanel, "AI Player 2");
                     case "External":
-                        return new GameExternal(mainFrame, gamePanel, "External Player Two");
+                        return new GameExternal(mainFrame, gamePanel, "Ext Player 2");
                     default :
                         throw new IllegalArgumentException("Invalid player type");
                 }
@@ -44,7 +44,7 @@ public class GameFactory {
                     case "AI":
                         return new GameAI(mainFrame, gamePanel, "AI Player");
                     case "External":
-                        return new GameExternal(mainFrame, gamePanel, "External Player");
+                        return new GameExternal(mainFrame, gamePanel, "Ext Player");
                     default :
                         throw new IllegalArgumentException("Invalid player type");
                 }

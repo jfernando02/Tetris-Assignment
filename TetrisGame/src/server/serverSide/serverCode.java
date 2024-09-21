@@ -10,7 +10,7 @@ import java.net.Socket;
 
 public class serverCode {
     public static void main(String[] args) {
-        System.out.println("Server started.");
+        System.out.println("Server started. Listening on Port 3000.");
         int portNum = 3000;
         int X = 5; // Example Value
         int rotationCount = 3; // Example Value
@@ -39,4 +39,3 @@ public class serverCode {
         }
     }
 }
-

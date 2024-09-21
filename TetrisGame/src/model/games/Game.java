@@ -2,6 +2,7 @@
 package model.games;
 
 import ai.TetrisAI;
+//import server.clientSide.clientCode; // LUCAS: For Server
 import controller.MainFrame;
 import model.*;
 import view.panel.GamePanel;
@@ -23,6 +24,7 @@ public class Game {
     protected boolean playing;
     protected boolean paused = false;
     protected Player player;
+//    protected clientCode server;// LUCAS: For Server
     protected TetrisAI ai;
     private boolean training = true;
     protected int period; //period to set the thread timer
@@ -56,6 +58,7 @@ public class Game {
             this.period = 200 - (player.getLevel()*periodDecr);
             this.gameMusic = mainFrame.playSound("src/resources/sounds/InGameMusic.wav", true);
             System.out.println("Game object says: New game Started at level " + player.getLevel());
+            mainFrame.startGameClient(); // LUCAS: Server
         }
     }
 

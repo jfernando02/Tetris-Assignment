@@ -33,6 +33,7 @@ public class MainFrame extends JFrame {
     private ArrayList<Score> scores = new ArrayList<>();
 
     private MainFramePanels panels;
+    private MainFrameClient clientSocket; // Lucas Server
 
     // Holds two threads (One for gameplay, one for rendering)
     private MainFrameGameLogic gameLogicOne;
@@ -48,6 +49,7 @@ public class MainFrame extends JFrame {
         this.mainHeight = mainHeight;
         this.configData = ConfigManager.getConfigData();
         this.panels = new MainFramePanels(this);
+//        this.clientSocket = new MainFrameClient(this, gameOne); // Lucas Server
 
         setTitle(this.title);
         setSize(this.mainWidth, this.mainHeight);
@@ -77,6 +79,7 @@ public class MainFrame extends JFrame {
         gamePanel = new GamePanel(this);
         this.gameOne = new Game(this, gamePanel);
         this.gameLogicOne = new MainFrameGameLogic(this, gameOne);
+
         gamePanel.setGame(gameOne, null);
     }
 
@@ -88,8 +91,11 @@ public class MainFrame extends JFrame {
         this.gameLogicOne = new MainFrameGameLogic(this, gameOne);
         this.gameTwo = new GameTwo(this, gamePanel);
         this.gameLogicTwo = new MainFrameGameLogic(this, gameTwo);
+        this.clientSocket = new MainFrameClient(this, gameTwo); // Lucas Server
         this.gamePanel.setGame(gameOne, gameTwo);
     }
+
+    public void startGameClient() { clientSocket.run(); } // Lucas: Server
 
     public void showGamePanel() { panels.showGamePanel(); }
 

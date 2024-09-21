@@ -1,9 +1,6 @@
 package model;
 import controller.MainFrame;
-import model.games.Game;
-
-import java.util.ArrayList;
-import java.util.Arrays;
+import model.games.GameDefault;
 
 public class Board<T> {
     private T[][] board;
@@ -12,9 +9,9 @@ public class Board<T> {
     private int spawnX;
     private int spawnY;
     private MainFrame mainFrame;
-    Game game;
+    GameDefault game;
 
-    public Board(MainFrame mainFrame, Game game) {
+    public Board(MainFrame mainFrame, GameDefault game) {
         this.mainFrame = mainFrame;
         this.game = game;
         this.width = mainFrame.getConfigData().getFieldWidth();

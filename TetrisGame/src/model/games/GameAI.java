@@ -2,7 +2,6 @@ package model.games;
 import controller.MainFrame;
 import model.Move;
 import model.Player;
-import model.TetrisBlock;
 import view.panel.GamePanel;
 import ai.TetrisAI;
 
@@ -10,7 +9,7 @@ import javax.swing.*;
 import java.awt.event.KeyEvent;
 
 
-public class GameAI extends Game {
+public class GameAI extends GameDefault {
     private TetrisAI ai;
     private boolean training = true;
 

@@ -1,7 +1,7 @@
 package view.panel;
 
 import controller.MainFrame;
-import model.games.Game;
+import model.games.GameDefault;
 import view.UIGenerator;
 
 import javax.swing.*;
@@ -14,8 +14,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class GamePanelMulti extends GamePanel {
-    private Game gameOne;
-    private Game gameTwo;
+    private GameDefault gameOne;
+    private GameDefault gameTwo;
     private PlayPanel playPanelTwo;
     private Set<Integer> pressedKeys = new HashSet<>();
 
@@ -24,7 +24,7 @@ public class GamePanelMulti extends GamePanel {
     }
 
     @Override
-    public void setGame(Game gameOne, Game gameTwo) {
+    public void setGame(GameDefault gameOne, GameDefault gameTwo) {
         this.gameOne = gameOne;
         this.gameTwo = gameTwo;
 

@@ -1,11 +1,9 @@
 package model.games;
 
 import controller.MainFrame;
-import model.Board;
-import model.Player;
 import view.panel.GamePanel;
 
-public class GameTwo extends Game {
+public class GameTwo extends GameDefault {
 
     public GameTwo(MainFrame mainFrame, GamePanel gamePanel) {
         super(mainFrame, gamePanel);

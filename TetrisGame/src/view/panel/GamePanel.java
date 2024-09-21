@@ -2,7 +2,7 @@ package view.panel;
 
 import model.*;
 import controller.*;
-import model.games.Game;
+import model.games.GameDefault;
 import view.UIGenerator;
 
 import javax.swing.*;
@@ -15,7 +15,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class GamePanel extends JPanel {
-    protected Game game;
+    protected GameDefault game;
     protected MainFrame mainFrame;
     protected JButton startButton;
     protected JButton pauseButton;
@@ -25,7 +25,7 @@ public class GamePanel extends JPanel {
         this.mainFrame = mainFrame;
     }
 
-    public void setGame(Game gameOne, Game gameTwo) {
+    public void setGame(GameDefault gameOne, GameDefault gameTwo) {
         this.game = gameOne;
         playPanel = new PlayPanel(mainFrame);
         playPanel.setGame(gameOne);

@@ -8,7 +8,6 @@ import model.TetrisBlock;
 import model.Score;
 import view.panel.GamePanel;
 import view.panel.GamePanelMulti;
-import model.factory.GameFactory; // Interface for factory design pattern
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -39,11 +38,11 @@ public class MainFrame extends JFrame {
 
     // Holds two threads (One for gameplay, one for rendering)
     private MainFrameGameLogic gameLogicOne;
-    private Game gameOne;
+    private GameDefault gameOne;
 
     // Holds two more threads for extended mode (One for gameLogic, one for rendering)
     private MainFrameGameLogic gameLogicTwo; // For extended mode
-    private Game gameTwo; // For extended mode
+    private GameDefault gameTwo; // For extended mode
 
     // Factory design pattern
     private GameFactory gameFactory;
@@ -55,7 +54,7 @@ public class MainFrame extends JFrame {
         this.mainHeight = mainHeight;
         this.configData = ConfigManager.getConfigData();
         this.panels = new MainFramePanels(this);
-
+        this.gameFactory = new GameFactory();
         setTitle(this.title);
         setSize(this.mainWidth, this.mainHeight);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -67,10 +66,6 @@ public class MainFrame extends JFrame {
             instance = new MainFrame(title, mainWidth, mainHeight);
         }
         return instance;
-    }
-
-    public void setGameFactory(GameFactory gameFactory) {
-        this.gameFactory = gameFactory;
     }
 
     // Each player draws from the same pool of 1000 pieces (nextPieces)
@@ -94,13 +89,7 @@ public class MainFrame extends JFrame {
     public void initSoloGame() {
         batchSpawnBlocks();
         gamePanel = new GamePanel(this);
-
-
-        if (configData.isPlayerOneType("AI")) {
-            this.gameOne = new GameAI(this, gamePanel);
-        } else {
-            this.gameOne = new Game(this, gamePanel);
-        }
+        this.gameOne = gameFactory.createGame(this, gamePanel, 1);
 
         this.gameLogicOne = new MainFrameGameLogic(this, gameOne);
         gamePanel.setGame(gameOne, null);
@@ -112,10 +101,10 @@ public class MainFrame extends JFrame {
         batchSpawnBlocks();
         this.gamePanel = new GamePanelMulti(this);
 
-        this.gameOne = new GameOne(this, gamePanel);
+        this.gameOne = gameFactory.createGame(this, gamePanel, 1);
         this.gameLogicOne = new MainFrameGameLogic(this, gameOne);
 
-        this.gameTwo = new GameTwo(this, gamePanel);
+        this.gameTwo = gameFactory.createGame(this, gamePanel, 2);
         this.gameLogicTwo = new MainFrameGameLogic(this, gameTwo);
 
         this.gamePanel.setGame(gameOne, gameTwo);
@@ -174,7 +163,7 @@ public class MainFrame extends JFrame {
         }
     }
 
-    public Game getGameOne() {
+    public GameDefault getGameOne() {
         return gameOne;
     }
 
@@ -290,7 +279,7 @@ public class MainFrame extends JFrame {
         this.configData = ConfigManager.getConfigData();
     }
 
-    public Game getGameTwo() {
+    public GameDefault getGameTwo() {
         return gameTwo;
     }
 

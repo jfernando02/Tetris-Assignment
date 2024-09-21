@@ -1,13 +1,11 @@
 package model.games;
 
 import controller.MainFrame;
-import model.Board;
-import model.Player;
 import view.panel.GamePanel;
 
 import java.awt.event.KeyEvent;
 
-public class GameOne extends Game {
+public class GameOne extends GameDefault {
 
     public GameOne(MainFrame mainFrame, GamePanel gamePanel) {
         super(mainFrame, gamePanel);

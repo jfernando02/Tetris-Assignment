@@ -1,14 +1,12 @@
 package ai;
 import model.*;
-import model.games.Game;
-
-import java.util.Arrays;
+import model.games.GameDefault;
 
 public class TetrisAI {
-    private Game game;
+    private GameDefault game;
     private BoardEvaluator evaluator = new BoardEvaluator();
 
-    public TetrisAI(Game game){
+    public TetrisAI(GameDefault game){
         this.game = game;
     }
 

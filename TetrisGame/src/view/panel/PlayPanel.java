@@ -1,7 +1,7 @@
 package view.panel;
 
 import model.Board;
-import model.games.Game;
+import model.games.GameDefault;
 import model.Player;
 import model.TetrisBlock;
 import controller.MainFrame;
@@ -12,7 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PlayPanel extends JPanel {
-    Game game;
+    GameDefault game;
     FieldPane fieldPane;
     NextPieceFieldPane nextPieceFieldPane;
     MainFrame mainFrame;
@@ -32,7 +32,7 @@ public class PlayPanel extends JPanel {
         this.mainFrame = mainFrame;
     }
 
-    public void setGame(Game game) {
+    public void setGame(GameDefault game) {
         this.game = game;
         this.board = game.getBoard();
         this.score = game.getScore();

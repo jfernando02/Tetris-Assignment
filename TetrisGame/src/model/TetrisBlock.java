@@ -208,7 +208,7 @@ public class TetrisBlock {
             cell.destroy();
         }
         for (TetrisCell cell : this.cells) {
-            cell.setX(nextRotation[0][this.cells.indexOf(cell)] + pivotX);
+            cell.setX(nextRotation[0][this.cells.indexOf(cell)] + pivotX-1);
             cell.setY(nextRotation[1][this.cells.indexOf(cell)] + pivotY);
             cell.resetInterpolation();
         }

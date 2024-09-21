@@ -1,9 +1,9 @@
 {
   "fieldWidth": 10,
   "fieldHeight": 20,
-  "startLevel": 5,
+  "startLevel": 1,
   "music": false,
-  "soundEffect": false,
-  "aiPlay": true,
+  "soundEffect": true,
+  "aiPlay": false,
   "extendedMode": false
 }

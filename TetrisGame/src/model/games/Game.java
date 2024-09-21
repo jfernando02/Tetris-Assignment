@@ -1,16 +1,17 @@
 // Game.java
 package model.games;
 
-import ai.TetrisAI;
 import controller.MainFrame;
-import model.*;
+import model.Board;
+import model.Player;
+import model.TetrisBlock;
+import model.TetrisCell;
 import view.panel.GamePanel;
 
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 
 public class Game {
     protected MainFrame mainFrame;
@@ -23,22 +24,17 @@ public class Game {
     protected boolean playing;
     protected boolean paused = false;
     protected Player player;
-    protected TetrisAI ai;
-    private boolean training = true;
+
     protected int period; //period to set the thread timer
     // decreases thread period by 15 every level up
     protected int periodDecr = 15;
-    private boolean gameRunning;
+    protected boolean gameRunning;
 
     public Game(MainFrame mainFrame, GamePanel gamePanel) {
         this.mainFrame = mainFrame;
         this.gamePanel = gamePanel;
         this.board = new Board(mainFrame, this);
         this.player = new Player("Player1", mainFrame.getConfigData().getStartLevel());
-        if(mainFrame.getConfigData().isAiPlay()) {
-            this.player.setAI();
-            this.ai = new TetrisAI(this);
-        }
         this.nextShapeIndex=0;
         this.activeShape = null;
         gameRunning = false;
@@ -67,21 +63,6 @@ public class Game {
         } else {
             newGame();
         }
-    }
-
-    //Is called everytime the play button is selected (will override existing configurations if not set here!)
-    public void resetGame() {
-        this.board.clearBoard();
-        this.gameRunning = false;
-        this.activeShape = null;
-        this.playing = false;
-        this.paused = false;
-        this.player = new Player("Player1", mainFrame.getConfigData().getStartLevel());
-        if(mainFrame.getConfigData().isAiPlay()){
-            this.player.setAI();
-        }
-        this.period = 200 - (player.getLevel()*periodDecr);
-        mainFrame.repaintBoard(); //don't delete or a new game won't render its new state on the fieldPanel in the GamePanel
     }
 
     //logic for playing whilst "playing = true"
@@ -147,15 +128,6 @@ public class Game {
     public void gameOverPanel() {
         mainFrame.stopSound(gameMusic);
         this.gameRunning = false;
-        if(player.isAI() && training) {
-            //Get score and give it to the board game evaluator
-            this.ai.getEvaluator().setFinalHighScore(this.player.getScore());
-            this.ai.getEvaluator().setFitness("src/ai/DNA.json");
-            this.ai = new TetrisAI(this);
-            resetGame();
-            start();
-            return;
-        }
         pause();
         //new JDIalog for game over to ask if they're sure if they want to quit
         JDialog dialog = new JDialog();
@@ -323,38 +295,33 @@ public class Game {
             return;
         }
         if (playing) {
-            if(player.isAI() && activeShape!=null){
-                dropPiece();
-            }
-            else{
-                switch (keyCode) {
-                    case KeyEvent.VK_LEFT:
-                        System.out.println("Left key pressed");
-                        activeShape.moveLeft();
-                        break;
-                    case KeyEvent.VK_RIGHT:
-                        System.out.println("Right key pressed");
-                        activeShape.moveRight();
-                        break;
-                    case KeyEvent.VK_DOWN:
-                        System.out.println("Down key pressed");
-                        activeShape.softDrop();
-                        activeShape.softDrop(); //TODO: review down speed logic
-                        break;
-                    case KeyEvent.VK_UP:
-                        System.out.println("Up key pressed");
-                        activeShape.rotateRight();
-                        break;
-                    case KeyEvent.VK_CONTROL:
-                        System.out.println("Control key pressed");
-                        activeShape.rotateLeft();
-                        break;
-                    case KeyEvent.VK_SPACE:
-                        System.out.println("Space key pressed"); // hard drop
-                        activeShape.softDrop();
-                        activeShape.softDrop(); //TODO: review down speed logic
-                        break;
-                }
+            switch (keyCode) {
+                case KeyEvent.VK_LEFT:
+                    System.out.println("Left key pressed");
+                    activeShape.moveLeft();
+                    break;
+                case KeyEvent.VK_RIGHT:
+                    System.out.println("Right key pressed");
+                    activeShape.moveRight();
+                    break;
+                case KeyEvent.VK_DOWN:
+                    System.out.println("Down key pressed");
+                    activeShape.softDrop();
+                    activeShape.softDrop(); //TODO: review down speed logic
+                    break;
+                case KeyEvent.VK_UP:
+                    System.out.println("Up key pressed");
+                    activeShape.rotateRight();
+                    break;
+                case KeyEvent.VK_CONTROL:
+                    System.out.println("Control key pressed");
+                    activeShape.rotateLeft();
+                    break;
+                case KeyEvent.VK_SPACE:
+                    System.out.println("Space key pressed"); // hard drop
+                    activeShape.softDrop();
+                    activeShape.softDrop(); //TODO: review down speed logic
+                    break;
             }
         }
         switch (keyCode) {
@@ -376,36 +343,23 @@ public class Game {
         }
     }
 
-    public void dropPiece() {
-        // Let the AI decide the best move
-        Move bestMove = ai.findBestMove(activeShape);
-        if (activeShape==null){
-            System.out.println("No active piece");
-        }
-        // Rotate the piece right
-        else if (bestMove.rotation!=activeShape.getCurrentRotation()) {
-            activeShape.rotateRight();
-        }
-        // Move the piece to the best column
-        else if (activeShape.getColumn() < bestMove.col) {
-            activeShape.moveRight();
-
-        }
-        else if (activeShape.getColumn() > bestMove.col) {
-            activeShape.moveLeft();
-        }
-        // Drop the piece
-        else {
-            activeShape.hardDrop();
-        }
-    }
-
     public Board<TetrisCell> getBoard() {
         return board;
     }
 
     public boolean isPlaying() {
         return playing;
+    }
+
+    public void resetGame() {
+        this.board.clearBoard();
+        this.gameRunning = false;
+        this.activeShape = null;
+        this.playing = false;
+        this.paused = false;
+        this.player = new Player("Player1", mainFrame.getConfigData().getStartLevel());
+        this.period = 200 - (player.getLevel()*periodDecr);
+        mainFrame.repaintBoard(); //don't delete or a new game won't render its new state on the fieldPanel in the GamePanel
     }
 
     //update period and return it to the thread assigned to the game
@@ -442,6 +396,7 @@ public class Game {
         return nextShape;
     }
 
+    //For AI
     public TetrisBlock getActiveShape() {
         return activeShape;
     }

@@ -92,13 +92,19 @@ public class GamePanel extends JPanel {
         });
         background.add(backButton, BorderLayout.SOUTH);
 
-        if (game.getPlayer().isAI()){
+        //Listens for player/AI input
+        keyListener();
+    }
+
+    //Multiplayer panel overrides this method
+    public void keyListener() {
+        if (mainFrame.getConfigData().isAiPlay()){
             java.util.Timer timer = new Timer();
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
                     if(game.getActiveShape()!=null) {
-                        gameOne.update(KeyEvent.VK_UP);
+                        game.update(KeyEvent.VK_UP);
                     }
                 }
             }, 0, game.getPeriod());
@@ -110,10 +116,11 @@ public class GamePanel extends JPanel {
                 public void keyPressed(KeyEvent e) {
                     String keyText = KeyEvent.getKeyText(e.getKeyCode());
                     System.out.println("Key pressed: " + keyText);
-                    gameOne.update(e.getKeyCode());
+                    game.update(e.getKeyCode());
                 }
             });
         }
+
     }
 
     protected void startGame() {

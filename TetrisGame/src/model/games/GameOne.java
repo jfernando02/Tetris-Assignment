@@ -19,15 +19,13 @@ public class GameOne extends Game {
         }
     }
 
+    @Override
+
+
     // If second player is a real player:
     @Override
     //Update handles user keyboard input and updates the game state accordingly
     public void update(int keyCode) {
-        if (player.isAI()) {
-            System.out.println("Game Object says: AI making move");
-            dropPiece();
-        }
-
         if (activeShape==null) {
             return;
         }
@@ -35,27 +33,31 @@ public class GameOne extends Game {
             switch (keyCode) {
                 //if comma is pressed
                 case KeyEvent.VK_COMMA:
-                    System.out.println("Player two: Comma key pressed");
+                    System.out.println("Player one: Comma key pressed");
                     activeShape.moveLeft();
                     break;
                 // if period is pressed
                 case KeyEvent.VK_PERIOD:
-                    System.out.println("Player two: Period key pressed");
+                    System.out.println("Player one: Period key pressed");
                     activeShape.moveRight();
                     break;
                 //if space is pressed
                 case KeyEvent.VK_SPACE:
-                    System.out.println("Player two: Space key pressed");
+                    System.out.println("Player one: Space key pressed");
                     activeShape.softDrop();
                     activeShape.softDrop(); //TODO: review down speed logic
                     break;
                 //if L is pressed
                 case KeyEvent.VK_L:
-                    System.out.println("Player two: L key pressed");
+                    System.out.println("Player one: L key pressed");
                     activeShape.rotateRight();
                     break;
             }
             mainFrame.repaintBoard();
+        }
+        //placeholder (TODO: Stefan: implement player types in config)
+        if (mainFrame.numberOfHumanPlayers() == 2) {
+            return;
         }
         switch (keyCode) {
             case KeyEvent.VK_P:

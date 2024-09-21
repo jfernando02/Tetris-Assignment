@@ -72,14 +72,21 @@ public class MainFrame extends JFrame {
         }
     }
 
+    //Only one game if not extended mode
     public void initSoloGame() {
         batchSpawnBlocks();
         gamePanel = new GamePanel(this);
-        this.gameOne = new Game(this, gamePanel);
+        if (configData.isAiPlay()) {
+            this.gameOne = new GameAI(this, gamePanel);
+        } else {
+            this.gameOne = new Game(this, gamePanel);
+        }
+
         this.gameLogicOne = new MainFrameGameLogic(this, gameOne);
         gamePanel.setGame(gameOne, null);
     }
 
+    //Two games if extended mode
     public void initMultiplayerGame() {
         // Second player threads
         batchSpawnBlocks();
@@ -263,6 +270,11 @@ public class MainFrame extends JFrame {
     public Game getGameTwo() {
         return gameTwo;
     }
+
+    public int numberOfHumanPlayers() {
+        return configData.isExtendedMode() ? 2 : 1;
+    }
+
 
 
 

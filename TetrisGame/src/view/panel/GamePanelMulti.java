@@ -100,6 +100,13 @@ public class GamePanelMulti extends GamePanel {
         });
         background.add(backButton, BorderLayout.SOUTH);
 
+        keyListener();
+
+    }
+
+    @Override
+    public void keyListener() {
+
         // Add a key listener to track key presses for both games
         addKeyListener(new KeyAdapter() {
             @Override
@@ -114,7 +121,6 @@ public class GamePanelMulti extends GamePanel {
                 updateGames();  // Update both games again
             }
         });
-
     }
 
     // Method to update both games based on the pressed keys

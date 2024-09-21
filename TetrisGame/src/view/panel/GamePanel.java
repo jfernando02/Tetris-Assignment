@@ -120,7 +120,6 @@ public class GamePanel extends JPanel {
                 }
             });
         }
-
     }
 
     protected void startGame() {

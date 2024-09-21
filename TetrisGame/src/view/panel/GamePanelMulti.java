@@ -12,6 +12,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GamePanelMulti extends GamePanel {
     private GameDefault gameOne;
@@ -100,13 +102,13 @@ public class GamePanelMulti extends GamePanel {
         });
         background.add(backButton, BorderLayout.SOUTH);
 
+        keyListenerAI();
         keyListener();
 
     }
 
     @Override
     public void keyListener() {
-
         // Add a key listener to track key presses for both games
         addKeyListener(new KeyAdapter() {
             @Override
@@ -123,8 +125,36 @@ public class GamePanelMulti extends GamePanel {
         });
     }
 
+    public void keyListenerAI() {
+        if (mainFrame.getConfigData().isPlayerOneType("AI")) {
+            java.util.Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if(gameOne.getActiveShape()!=null) {
+                        gameOne.update(KeyEvent.VK_UP);
+                    }
+                }
+            }, 0, gameOne.getPeriod());
+        }
+
+        if (mainFrame.getConfigData().isPlayerTwoType("AI")) {
+            java.util.Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if(gameTwo.getActiveShape()!=null) {
+                        gameTwo.update(KeyEvent.VK_UP);
+                    }
+                }
+            }, 0, gameTwo.getPeriod());
+        }
+
+    }
+
     // Method to update both games based on the pressed keys
     private void updateGames() {
+
         for (int keyCode : pressedKeys) {
             System.out.println("Key pressed: " + KeyEvent.getKeyText(keyCode));
             gameOne.update(keyCode);  // Update gameOne with relevant keys

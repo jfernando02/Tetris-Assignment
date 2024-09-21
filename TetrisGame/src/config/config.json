@@ -5,5 +5,7 @@
   "music": false,
   "soundEffect": true,
   "aiPlay": false,
-  "extendedMode": false
+  "extendedMode": false,
+  "playerOneType": "Human",
+  "playerTwoType": "None"
 }

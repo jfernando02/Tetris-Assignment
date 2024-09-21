@@ -122,13 +122,4 @@ public class HighScorePanel extends JPanel {
         }
     }
 
-    public static void main(String[] args) {
-        MainFrame frame = new MainFrame("Tetris High Score", 800, 600);
-        HighScorePanel highScorePanel = new HighScorePanel(frame);
-
-        frame.add(highScorePanel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600); // Set a default size
-        frame.setVisible(true);
-    }
 }

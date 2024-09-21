@@ -7,7 +7,8 @@ import javax.swing.*;
 public class Main {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            MainFrame mainFrame = new MainFrame("Tetris Game", 800, 600);
+            //Eager initialisation of MainFrame (Singleton pattern)
+            MainFrame mainFrame = MainFrame.getInstance("Tetris Game", 800, 600);
             mainFrame.showSplashScreen();
             mainFrame.setVisible(true);
         });

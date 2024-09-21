@@ -1,5 +1,6 @@
+// src/config/ConfigData.java
 package config;
-// Class to persist player configuration data
+
 public class ConfigData {
     private int fieldWidth;
     private int fieldHeight;
@@ -8,6 +9,8 @@ public class ConfigData {
     private boolean soundEffect;
     private boolean aiPlay;
     private boolean extendedMode;
+    private String playerOneType;
+    private String playerTwoType;
 
     // Constructor with default data
     public ConfigData() {
@@ -18,9 +21,11 @@ public class ConfigData {
         this.soundEffect = true;
         this.aiPlay = false;
         this.extendedMode = false;
+        this.playerOneType = "Human";
+        this.playerTwoType = "None";
     }
 
-    // Only getters and setters
+    // Getters and setters
     public int getFieldWidth() { return fieldWidth; }
     public void setFieldWidth(int fieldWidth) { this.fieldWidth = fieldWidth; }
 
@@ -41,4 +46,10 @@ public class ConfigData {
 
     public boolean isExtendedMode() { return extendedMode; }
     public void setExtendedMode(boolean extendedMode) { this.extendedMode = extendedMode; }
+
+    public String getPlayerOneType() { return playerOneType; }
+    public void setPlayerOneType(String playerOneType) { this.playerOneType = playerOneType; }
+
+    public String getPlayerTwoType() { return playerTwoType; }
+    public void setPlayerTwoType(String playerTwoType) { this.playerTwoType = playerTwoType; }
 }

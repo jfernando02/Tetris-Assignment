@@ -8,6 +8,7 @@ import model.TetrisBlock;
 import model.Score;
 import view.panel.GamePanel;
 import view.panel.GamePanelMulti;
+import model.factory.GameFactory; // Interface for factory design pattern
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -22,6 +23,8 @@ import java.util.ArrayList;
 
 
 public class MainFrame extends JFrame {
+    private static MainFrame instance;
+
     private String title;
     private int mainWidth;
     private int mainHeight;
@@ -42,7 +45,11 @@ public class MainFrame extends JFrame {
     private MainFrameGameLogic gameLogicTwo; // For extended mode
     private Game gameTwo; // For extended mode
 
-    public MainFrame(String title, int mainWidth, int mainHeight) {
+    // Factory design pattern
+    private GameFactory gameFactory;
+
+    // Singleton pattern
+    private MainFrame(String title, int mainWidth, int mainHeight) {
         this.title = title;
         this.mainWidth = mainWidth;
         this.mainHeight = mainHeight;
@@ -53,6 +60,17 @@ public class MainFrame extends JFrame {
         setSize(this.mainWidth, this.mainHeight);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+    }
+
+    public static MainFrame getInstance(String title, int mainWidth, int mainHeight) {
+        if (instance == null) {
+            instance = new MainFrame(title, mainWidth, mainHeight);
+        }
+        return instance;
+    }
+
+    public void setGameFactory(GameFactory gameFactory) {
+        this.gameFactory = gameFactory;
     }
 
     // Each player draws from the same pool of 1000 pieces (nextPieces)

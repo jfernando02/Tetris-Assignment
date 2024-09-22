@@ -81,7 +81,7 @@ public class TetrisCell {
         this.interpolatedY += (y - interpolatedY) * 0.1f;
     }
 
-    // Method to reset interpolatedY to the current y position
+    // Method to reset interpolatedY to the current y position for smooth rotation rendering
     public void resetInterpolation() {
         this.interpolatedY = this.y;
     }

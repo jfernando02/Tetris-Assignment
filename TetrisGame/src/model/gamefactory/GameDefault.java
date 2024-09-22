@@ -133,6 +133,7 @@ public class GameDefault implements Game {
         mainFrame.stopSound(gameMusic);
         this.gameRunning = false;
         pause();
+
         //new JDIalog for game over to ask if they're sure if they want to quit
         JDialog dialog = new JDialog();
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -159,6 +160,7 @@ public class GameDefault implements Game {
             mainFrame.getGamePanel().requestFocusInWindow();
             dialog.dispose();
         }
+        mainFrame.gameOverLoser(this);
     }
 
     // Determine if game over conditions are met
@@ -172,6 +174,20 @@ public class GameDefault implements Game {
             }
         }
         return false;
+    }
+
+    public void gameOverWinner() {
+        player.setWinner(true);
+        playing = false;
+        paused = true;
+        gameRunning = false;
+    }
+
+    public void gameOverLoser() {
+        player.setWinner(false);
+        playing = false;
+        paused = true;
+        gameRunning = false;
     }
 
     // Pauses the game if it's playing, resumes if it's paused
@@ -263,28 +279,28 @@ public class GameDefault implements Game {
         if (playing) {
             switch (keyCode) {
                 case KeyEvent.VK_LEFT:
-                    System.out.println("Left key pressed");
+                    System.out.println(playerName+": Left key pressed");
                     activeShape.moveLeft();
                     break;
                 case KeyEvent.VK_RIGHT:
-                    System.out.println("Right key pressed");
+                    System.out.println(playerName+": Right key pressed");
                     activeShape.moveRight();
                     break;
                 case KeyEvent.VK_DOWN:
-                    System.out.println("Down key pressed");
+                    System.out.println(playerName+": Down key pressed");
                     activeShape.softDrop();
                     activeShape.softDrop(); //TODO: review down speed logic
                     break;
                 case KeyEvent.VK_UP:
-                    System.out.println("Up key pressed");
+                    System.out.println(playerName+": Up key pressed");
                     activeShape.rotateRight();
                     break;
                 case KeyEvent.VK_CONTROL:
-                    System.out.println("Control key pressed");
+                    System.out.println(playerName+": Control key pressed");
                     activeShape.rotateLeft();
                     break;
                 case KeyEvent.VK_SPACE:
-                    System.out.println("Space key pressed"); // hard drop
+                    System.out.println(playerName+": Space key pressed"); // hard drop
                     activeShape.softDrop();
                     activeShape.softDrop(); //TODO: review down speed logic
                     break;
@@ -292,17 +308,17 @@ public class GameDefault implements Game {
         }
         switch (keyCode) {
             case KeyEvent.VK_P:
-                System.out.println("P key pressed");
+                System.out.println(playerName+": P key pressed");
                 //if paused, set GamePanel pause button to resume
                 gamePanel.pauseGame();
                 break;
             case KeyEvent.VK_S:
-                System.out.println("S key pressed"); //stop
+                System.out.println(playerName+": S key pressed"); //stop
                 //toggle sound effect off
                 mainFrame.toggleSound();
                 break;
             case KeyEvent.VK_M:
-                System.out.println("M key pressed"); //mute
+                System.out.println(playerName+": M key pressed"); //mute
                 //toggle music off
                 mainFrame.toggleMusic();
                 break;

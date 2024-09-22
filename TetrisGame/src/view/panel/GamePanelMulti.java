@@ -1,7 +1,7 @@
 package view.panel;
 
 import controller.MainFrame;
-import model.gamefactory.GameDefault;
+import model.gamefactory.Game;
 import view.UIGenerator;
 
 import javax.swing.*;
@@ -14,8 +14,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class GamePanelMulti extends GamePanel {
-    private GameDefault gameOne;
-    private GameDefault gameTwo;
+    private Game gameOne;
+    private Game gameTwo;
     private PlayPanel playPanelTwo;
     private Set<Integer> pressedKeys = new HashSet<>();
 
@@ -24,7 +24,7 @@ public class GamePanelMulti extends GamePanel {
     }
 
     @Override
-    public void setGame(GameDefault gameOne, GameDefault gameTwo) {
+    public void setGame(Game gameOne, Game gameTwo) {
         this.gameOne = gameOne;
         this.gameTwo = gameTwo;
 
@@ -102,6 +102,11 @@ public class GamePanelMulti extends GamePanel {
 
         keyListenerAI();
         keyListener();
+
+    }
+    @Override
+    public void gameOver() {
+        // game over for both players
 
     }
 
@@ -195,8 +200,8 @@ public class GamePanelMulti extends GamePanel {
 
     @Override
     public void updateMessageLabel(String sound) {
-        playPanel.updateMessageLabel(sound);
-        playPanelTwo.updateMessageLabel(sound);
+        playPanel.setGameOverMessage();
+        playPanelTwo.setGameOverMessage();
     }
 
     @Override

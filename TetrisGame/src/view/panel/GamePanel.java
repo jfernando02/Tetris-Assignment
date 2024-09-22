@@ -2,7 +2,7 @@ package view.panel;
 
 import model.*;
 import controller.*;
-import model.gamefactory.GameDefault;
+import model.gamefactory.Game;
 import view.UIGenerator;
 
 import javax.swing.*;
@@ -15,7 +15,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class GamePanel extends JPanel {
-    protected GameDefault game;
+    protected Game game;
     protected MainFrame mainFrame;
     protected JButton startButton;
     protected JButton pauseButton;
@@ -25,7 +25,7 @@ public class GamePanel extends JPanel {
         this.mainFrame = mainFrame;
     }
 
-    public void setGame(GameDefault gameOne, GameDefault gameTwo) {
+    public void setGame(Game gameOne, Game gameTwo) {
         this.game = gameOne;
         playPanel = new PlayPanel(mainFrame);
         playPanel.setGame(gameOne);
@@ -133,6 +133,11 @@ public class GamePanel extends JPanel {
 
     public void setStartButtonText(String text) {
         startButton.setText(text);
+    }
+
+    public void gameOver() {
+        // clear message label
+        playPanel.setGameOverMessage();
     }
 
 

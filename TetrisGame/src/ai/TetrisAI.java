@@ -37,7 +37,7 @@ public class TetrisAI {
 
     private int[][] simulateDrop(int[][] board, TetrisAIBlock piece, int col)
     {
-// Simulate dropping the piece in the given column and return the new board
+        // Simulate dropping the piece in the given column and return the new board
         int[][] simulatedBoard = copyBoard(board);
         int dropRow = getDropRow(simulatedBoard, piece, col);
         if (dropRow == -1) {
@@ -47,7 +47,7 @@ public class TetrisAI {
         return simulatedBoard;
     }
     private int getDropRow(int[][] board, TetrisAIBlock piece, int col) {
-// Find the row where the piece would land if dropped in the given column
+        // Find the row where the piece would land if dropped in the given column
         int row = 0;
         while (canPlacePiece(board, piece, col, row)) {
             row++;
@@ -56,7 +56,7 @@ public class TetrisAI {
     }
     private boolean canPlacePiece(int[][] board, TetrisAIBlock piece, int col,
                                   int row) {
-// Check if the piece can be placed at the given column and row
+        // Check if the piece can be placed at the given column and row
         int[][] coordinates = piece.getCurrentCoordinates();
         for (int i = 0; i<coordinates[0].length; i++) {
             int x = row + coordinates[1][i];

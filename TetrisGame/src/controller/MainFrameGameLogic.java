@@ -1,6 +1,6 @@
 package controller;
 
-import model.gamefactory.GameDefault;
+import model.gamefactory.Game;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -12,9 +12,9 @@ public class MainFrameGameLogic {
     private ScheduledExecutorService renderExecutor;
     private ScheduledExecutorService gameLogicExecutor;
     private volatile long period;
-    private GameDefault game;
+    private Game game;
 
-    public MainFrameGameLogic(MainFrame mainFrame, GameDefault game) {
+    public MainFrameGameLogic(MainFrame mainFrame, Game game) {
         this.mainFrame = mainFrame;
         this.game = game;
     }
@@ -83,5 +83,13 @@ public class MainFrameGameLogic {
         this.period = period;
     }
 
-    public GameDefault getGame() { return game; }
+    public Game getGame() { return game; }
+
+    public void gameOverLoser() {
+        game.gameOverLoser();
+    }
+
+    public void gameOverWinner() {
+        game.gameOverWinner();
+    }
 }

@@ -38,11 +38,11 @@ public class MainFrame extends JFrame {
 
     // Holds two threads (One for gameplay, one for rendering)
     private MainFrameGameLogic gameLogicOne;
-    private GameDefault gameOne;
+    private Game gameOne;
 
     // Holds two more threads for extended mode (One for gameLogic, one for rendering)
     private MainFrameGameLogic gameLogicTwo; // For extended mode
-    private GameDefault gameTwo; // For extended mode
+    private Game gameTwo; // For extended mode
 
     // Factory design pattern
     private GameFactory gameFactory;
@@ -163,10 +163,9 @@ public class MainFrame extends JFrame {
         }
     }
 
-    public GameDefault getGameOne() {
+    public Game getGameOne() {
         return gameOne;
     }
-
 
     public GamePanel getGamePanel() {
         return gamePanel;
@@ -279,7 +278,7 @@ public class MainFrame extends JFrame {
         this.configData = ConfigManager.getConfigData();
     }
 
-    public GameDefault getGameTwo() {
+    public Game getGameTwo() {
         return gameTwo;
     }
 
@@ -290,5 +289,17 @@ public class MainFrame extends JFrame {
 
     public void saveConfigData() {
         ConfigManager.saveConfigData(configData);
+    }
+
+    public void gameOverLoser(Game game) {
+        //call Game over loser for mainFramGameLogic
+        if (game.equals(gameOne)) {
+            gameLogicOne.gameOverLoser();
+            gameLogicTwo.gameOverWinner();
+        } else {
+            gameLogicTwo.gameOverLoser();
+            gameLogicOne.gameOverWinner();
+        }
+        gamePanel.gameOver();
     }
 }

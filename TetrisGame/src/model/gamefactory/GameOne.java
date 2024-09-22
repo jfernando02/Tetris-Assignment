@@ -22,23 +22,23 @@ public class GameOne extends GameDefault {
             switch (keyCode) {
                 //if comma is pressed
                 case KeyEvent.VK_COMMA:
-                    System.out.println("Player one: Comma key pressed");
+                    System.out.println(playerName+": Comma key pressed");
                     activeShape.moveLeft();
                     break;
                 // if period is pressed
                 case KeyEvent.VK_PERIOD:
-                    System.out.println("Player one: Period key pressed");
+                    System.out.println(playerName+": Period key pressed");
                     activeShape.moveRight();
                     break;
                 //if space is pressed
                 case KeyEvent.VK_SPACE:
-                    System.out.println("Player one: Space key pressed");
+                    System.out.println(playerName+": Space key pressed");
                     activeShape.softDrop();
                     activeShape.softDrop(); //TODO: review down speed logic
                     break;
                 //if L is pressed
                 case KeyEvent.VK_L:
-                    System.out.println("Player one: L key pressed");
+                    System.out.println(playerName+": L key pressed");
                     activeShape.rotateRight();
                     break;
             }
@@ -50,17 +50,17 @@ public class GameOne extends GameDefault {
         }
         switch (keyCode) {
             case KeyEvent.VK_P:
-                System.out.println("P key pressed");
+                System.out.println(playerName+": key pressed");
                 //if paused, set GamePanel pause button to resume
                 //mainFrame.pauseGame();
                 break;
             case KeyEvent.VK_S:
-                System.out.println("S key pressed"); //stop
+                System.out.println(playerName+": key pressed"); //stop
                 //toggle sound effect off
                 mainFrame.toggleSound();
                 break;
             case KeyEvent.VK_M:
-                System.out.println("M key pressed"); //mute
+                System.out.println(playerName+": key pressed"); //mute
                 //toggle music off
                 mainFrame.toggleMusic();
                 break;

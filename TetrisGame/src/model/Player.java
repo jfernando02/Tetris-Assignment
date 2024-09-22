@@ -7,6 +7,7 @@ public class Player {
     private int level;
     private int linesCleared;
     private String playerType;
+    boolean winner;
 
     public Player(String name, int initialLevel) {
         this.name = name;
@@ -15,6 +16,7 @@ public class Player {
         this.level = initialLevel;
         this.score = 0;
         this.linesCleared = 0;
+
     }
 
     public void updateScore(int clearedLines){
@@ -77,5 +79,13 @@ public class Player {
         score = 0;
         level = initialLevel;
         linesCleared = 0;
+    }
+
+    public void setWinner(boolean winner) {
+        this.winner = winner;
+    }
+
+    public boolean isWinner() {
+        return winner;
     }
 }

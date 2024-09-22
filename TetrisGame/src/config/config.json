@@ -5,5 +5,5 @@
   "music": true,
   "soundEffect": true,
   "playerOneType": "Human",
-  "playerTwoType": "AI"
+  "playerTwoType": "Human"
 }

@@ -1,7 +1,7 @@
 package view.panel;
 
 import model.Board;
-import model.gamefactory.GameDefault;
+import model.gamefactory.Game;
 import model.Player;
 import model.TetrisBlock;
 import controller.MainFrame;
@@ -12,7 +12,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PlayPanel extends JPanel {
-    GameDefault game;
+    Game game;
     FieldPane fieldPane;
     NextPieceFieldPane nextPieceFieldPane;
     MainFrame mainFrame;
@@ -28,11 +28,14 @@ public class PlayPanel extends JPanel {
     private JLabel linesClearedLabel;
     private JLabel periodLabel;
 
+    //game over panel
+    private JDialog dialog;
+
     public PlayPanel(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
     }
 
-    public void setGame(GameDefault game) {
+    public void setGame(Game game) {
         this.game = game;
         this.board = game.getBoard();
         this.score = game.getScore();
@@ -141,6 +144,19 @@ public class PlayPanel extends JPanel {
         add(centerPanel, BorderLayout.CENTER);
     }
 
+    // Update message label and keep it that way
+    public void setMessageLabel(String message) {
+        messageLabel.setText(message);
+        messageLabel.setVisible(true);
+    }
+
+    public void setGameOverMessage() {
+        System.out.println("Play Panel: Tried to set game over message");
+        String result = game.getPlayer().isWinner() ? "You Win!" : "Game Over";
+        setMessageLabel(result);
+
+    }
+
     public void updateMessageLabel(String message) {
         messageLabel.setText(message);
         messageLabel.setVisible(!message.isEmpty());
@@ -161,6 +177,7 @@ public class PlayPanel extends JPanel {
             }
         }
     }
+
 
     // Update next piece field
     public void updateNextPieceField(TetrisBlock nextPiece) {

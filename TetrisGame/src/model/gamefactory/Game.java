@@ -29,4 +29,6 @@ public interface Game {
     TetrisBlock getActiveShape();
     Player getPlayer();
     boolean isGameOver();
+    void gameOverWinner();
+    void gameOverLoser();
 }

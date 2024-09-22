@@ -96,12 +96,12 @@ public class GameDefault implements Game {
     }
 
     // For safety, not sure if we need it
-    private boolean shouldSettle() {
+    protected boolean shouldSettle() {
         return System.currentTimeMillis() - activeShape.getLandTime() >= TetrisBlock.getBufferTime();
     }
 
     // Finalize the shape and place it on the board (for slight landing buffer)
-    private void finalizeShape() {
+    protected void finalizeShape() {
         activeShape.placeOnBoard();
         mainFrame.playSound("src/resources/sounds/BlockPlacement.wav", false);
         checkForLineClear();

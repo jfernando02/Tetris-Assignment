@@ -52,6 +52,7 @@ public class MainFrameGameLogic {
             gameLogicExecutor.shutdownNow();
         }
         gameLogicExecutor = Executors.newSingleThreadScheduledExecutor();
+
         renderExecutor.scheduleAtFixedRate(() -> {
             if (game.isPlaying()) {
                 SwingUtilities.invokeLater(() -> {
@@ -61,10 +62,16 @@ public class MainFrameGameLogic {
         }, 0, period / 10, TimeUnit.MILLISECONDS);
         gameLogicExecutor.scheduleAtFixedRate(() -> {
             if (game.isPlaying()) {
-                game.play();
+                synchronized (game) {
+                    game.play();
+                    if (game.getPlayer().getPlayerType().equals("AI")) {
+                        game.update(0);
+                    }
+                }
             }
         }, 0, period, TimeUnit.MILLISECONDS);
     }
+
 
     // Also stop second game if extended mode is enabled (only needs to be called once)
     public void stopGame() {

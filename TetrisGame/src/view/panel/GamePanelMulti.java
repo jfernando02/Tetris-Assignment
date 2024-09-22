@@ -101,7 +101,7 @@ public class GamePanelMulti extends GamePanel {
         background.add(backButton, BorderLayout.SOUTH);
 
         keyListenerOptions();
-        keyListenerAI();
+
         keyListenerMove();
 
     }
@@ -145,42 +145,6 @@ public class GamePanelMulti extends GamePanel {
         });
     }
 
-    public void keyListenerAI() {
-        if (mainFrame.getConfigData().isPlayerOneType("AI")) {
-            Thread gameOneThread = new Thread(() -> {
-                while (true) {
-                    if (gameOne.getActiveShape() != null) {
-                        gameOne.update(KeyEvent.VK_UP);
-                    }
-                    try {
-                        Thread.sleep(gameOne.getPeriod());
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        break;
-                    }
-                }
-            });
-            gameOneThread.start();
-        }
-
-        if (mainFrame.getConfigData().isPlayerTwoType("AI")) {
-            Thread gameTwoThread = new Thread(() -> {
-                while (true) {
-                    if (gameTwo.getActiveShape() != null) {
-                        gameTwo.update(KeyEvent.VK_UP);
-                    }
-                    try {
-                        Thread.sleep(gameTwo.getPeriod());
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        break;
-                    }
-                }
-            });
-            gameTwoThread.start();
-        }
-    }
-
     // Method to update both games based on the pressed keys
     private void updateGames() {
         for (int keyCode : pressedKeys) {
@@ -219,8 +183,8 @@ public class GamePanelMulti extends GamePanel {
 
     @Override
     public void updateMessageLabel(String sound) {
-        playPanel.setGameOverMessage();
-        playPanelTwo.setGameOverMessage();
+        playPanel.updateMessageLabel(sound);
+        playPanelTwo.updateMessageLabel(sound);
     }
 
     @Override

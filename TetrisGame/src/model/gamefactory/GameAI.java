@@ -12,13 +12,84 @@ import java.awt.event.KeyEvent;
 public class GameAI extends GameDefault {
     private TetrisAI ai;
     private boolean training = false;
+    private Move bestMove;
     //private boolean training = true;
     public GameAI(MainFrame mainFrame, GamePanel gamePanel, String playerNumber) {
         super(mainFrame, gamePanel, playerNumber);
         this.ai = new TetrisAI(this);
         this.player.setPlayerType("AI");
+
     }
 
+    @Override
+    public void play() {
+        if (playing) {
+            if (this.activeShape == null) {
+                spawn();
+                gamePanel.updatePlayPanel();
+                activeShape.run(this.board);
+            } else {
+                if (activeShape.hasLanded() && shouldSettle() && activeShape.bottomCollision()) {
+                    finalizeShape();
+                    this.activeShape = null;
+                } else {
+                    activeShape.softDrop();
+                }
+            }
+        }
+    }
+
+    public void dropPiece() {
+        // Let the AI decide the best move
+        bestMove = ai.findBestMove(activeShape);
+        if (activeShape == null) {
+            System.out.println("No active piece");
+        } else {
+            // Perform the best move
+            update(KeyEvent.VK_UNDEFINED);
+        }
+    }
+
+    @Override
+    public void update(int keyCode) {
+        if (activeShape == null) {
+            return;
+        }
+        if (playing && activeShape != null) {
+            bestMove = ai.findBestMove(activeShape);
+            // Rotate the piece right
+            if (bestMove.rotation != activeShape.getCurrentRotation()) {
+                activeShape.rotateRight();
+                return;
+            }
+            // Move the piece to the best column
+            if (activeShape.getColumn() < bestMove.col) {
+                activeShape.moveRight();
+                return;
+            }
+
+            if (activeShape.getColumn() > bestMove.col) {
+                activeShape.moveLeft();
+                return;
+            }
+            activeShape.softDrop();
+            bestMove = null; // Reset the best move after performing it
+
+        }
+    }
+    /*
+    if (mainFrame.getConfigData().isPlayerOneType("AI")) {
+            java.util.Timer timer = new Timer();
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    if(game.getActiveShape()!=null) {
+                        game.update(KeyEvent.VK_UP);
+                    }
+                }
+            }, 0, periodOne);
+        }
+     */
     @Override
     public void resetGame() {
         this.board.clearBoard();
@@ -32,6 +103,7 @@ public class GameAI extends GameDefault {
         mainFrame.repaintBoard(); //don't delete or a new game won't render its new state on the fieldPanel in the GamePanel
     }
 
+    // Ai needs a different game over checker
     @Override
     public boolean isGameOver() {
         // Check if any of the cells of the next shape are already occupied on the board
@@ -90,38 +162,5 @@ public class GameAI extends GameDefault {
         mainFrame.gameOverLoser(this);
     }
 
-    @Override
-    public void update(int keyCode) {
-        if (activeShape==null) {
-            return;
-        }
-        if (playing && activeShape!=null) {
-                dropPiece();
-        }
-    }
 
-    public void dropPiece() {
-        // Let the AI decide the best move
-        Move bestMove = ai.findBestMove(activeShape);
-        if (activeShape==null){
-            System.out.println("No active piece");
-        }
-        // Rotate the piece right
-        else if (bestMove.rotation!=activeShape.getCurrentRotation()) {
-            activeShape.rotateRight();
-        }
-        // Move the piece to the best column
-        else if (activeShape.getColumn() < bestMove.col) {
-            activeShape.moveRight();
-
-        }
-        else if (activeShape.getColumn() > bestMove.col) {
-            activeShape.moveLeft();
-        }
-        // Drop the piece
-        else {
-            //activeShape.hardDrop(); // For training use hardDrop
-            activeShape.softDrop();
-        }
-    }
 }

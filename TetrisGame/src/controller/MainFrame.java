@@ -155,11 +155,6 @@ public class MainFrame extends JFrame {
         }
     }
 
-    public Game getGameOne() {
-
-        return gameOne;
-    }
-
     public GamePanel getGamePanel() {
         return gamePanel;
     }
@@ -271,9 +266,6 @@ public class MainFrame extends JFrame {
         this.configData = ConfigManager.getConfigData();
     }
 
-    public Game getGameTwo() {
-        return gameTwo;
-    }
 
     public int numberOfHumanPlayers() {
         return configData.isExtendedMode() ? 2 : 1;
@@ -298,6 +290,8 @@ public class MainFrame extends JFrame {
 
     public void resetGames() {
         gameOne.resetGame();
-        gameTwo.resetGame();
+        if (getConfigData().isExtendedMode()) {
+            gameTwo.resetGame();
+        }
     }
 }

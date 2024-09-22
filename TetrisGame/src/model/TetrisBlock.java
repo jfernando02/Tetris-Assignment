@@ -289,4 +289,12 @@ public class TetrisBlock {
         return block;
     }
 
+    public boolean getRow() {
+        for (TetrisCell cell : this.cells) {
+            if (cell.getY() == 0 || (board.getCell(cell.getX(), cell.getY() - 1) != null && !board.getCell(cell.getX(), cell.getY() - 1).isActive)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

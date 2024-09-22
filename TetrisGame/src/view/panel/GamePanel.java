@@ -21,6 +21,8 @@ public class GamePanel extends JPanel {
     protected JButton pauseButton;
     protected PlayPanel playPanel;
     protected boolean wasPaused;
+    private volatile int periodOne;
+    private volatile int periodTwo;
 
     public GamePanel(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
@@ -131,19 +133,7 @@ public class GamePanel extends JPanel {
 
     //Multiplayer panel overrides this method
     public void keyListenerMove() {
-        if (mainFrame.getConfigData().isPlayerOneType("AI")) {
-            java.util.Timer timer = new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    if(game.getActiveShape()!=null) {
-                        game.update(KeyEvent.VK_UP);
-                    }
-                }
-            }, 0, game.getPeriod());
-        }
-
-        else{
+        if (!mainFrame.getConfigData().isPlayerOneType("AI")) {
             addKeyListener(new KeyAdapter() {
                 @Override
                 public void keyPressed(KeyEvent e) {

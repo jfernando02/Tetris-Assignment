@@ -90,7 +90,7 @@ public class GamePanel extends JPanel {
         JButton backButton = new UIGenerator.CustomButton("Back", 180, 30);
         backButton.setOpaque(false); // Make backButton transparent
         backButton.addActionListener(e -> {
-            mainFrame.playSound("src/resources/sounds/MenuKeyPresses.wav", false);
+            mainFrame.playSound("menuKeyPress");
             stopGame();
         });
         background.add(backButton, BorderLayout.SOUTH);
@@ -148,7 +148,7 @@ public class GamePanel extends JPanel {
     protected void startGame() {
         //clear message label of play panel
         playPanel.messageLabel.setText("");
-        mainFrame.playSound("src/resources/sounds/MenuKeyPresses.wav", false);
+        mainFrame.playSound("menuKeyPress");
         mainFrame.startGame();
         //make Play button say "playing"
         startButton.setText("Playing");
@@ -167,7 +167,7 @@ public class GamePanel extends JPanel {
     }
 
     protected void stopGame() {
-        mainFrame.playSound("src/resources/sounds/MenuKeyPresses.wav", false);
+        mainFrame.playSound("menuKeyPress");
         System.out.println("GamePanel says: Game stopped");
         if (game.isPlaying()) {
             game.stop();
@@ -204,7 +204,7 @@ public class GamePanel extends JPanel {
     }
 
     public void pauseGame() {
-        mainFrame.playSound("src/resources/sounds/MenuKeyPresses.wav", false);
+        mainFrame.playSound("menuKeyPress");
         mainFrame.pauseGame();
         //if game paused set button text to "Resume"
         if (game.isPaused()) {

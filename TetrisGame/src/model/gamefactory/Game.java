@@ -24,7 +24,6 @@ public interface Game {
     void setStartLevel(int level);
     boolean isGameRunning();
     int getScore();
-    Clip getPlayingMusic();
     boolean isPaused();
     TetrisBlock getNextPiece();
     TetrisBlock getActiveShape();

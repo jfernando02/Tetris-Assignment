@@ -120,7 +120,7 @@ public class GameAI extends GameDefault {
 
     @Override
     public void gameOverPanel() {
-        mainFrame.stopSound(gameMusic);
+        mainFrame.stopMusic();
         this.gameRunning = false;
         mainFrame.pauseGame();
         if(training) {

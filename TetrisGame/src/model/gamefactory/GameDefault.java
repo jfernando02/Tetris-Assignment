@@ -21,7 +21,7 @@ public class GameDefault implements Game {
     protected TetrisBlock nextShape;
     private int nextShapeIndex;
     protected GamePanel gamePanel;
-    protected Clip gameMusic;
+
     protected boolean playing;
     protected boolean paused = false;
     protected Player player;
@@ -49,11 +49,11 @@ public class GameDefault implements Game {
     //method which holds the logic for starting a new game
     public void newGame() {
         if (!gameRunning) {
+            mainFrame.playMusic();
             this.gameRunning = true;
             this.playing = true;
             this.paused = false;
             this.period = 200 - (player.getLevel()*periodDecr);
-            this.gameMusic = mainFrame.playSound("src/resources/sounds/InGameMusic.wav", true);
             System.out.println("Game object says: New game Started at level " + player.getLevel());
         }
     }
@@ -103,11 +103,11 @@ public class GameDefault implements Game {
     // Finalize the shape and place it on the board (for slight landing buffer)
     protected void finalizeShape() {
         activeShape.placeOnBoard();
-        mainFrame.playSound("src/resources/sounds/BlockPlacement.wav", false);
+        mainFrame.playSound("blockPlacement");
         checkForLineClear();
         if (isGameOver()) {
             this.playing = false;
-            mainFrame.playSound("src/resources/sounds/GameOver.wav", false);
+            mainFrame.playSound("gameOver");
             gameOverPanel();
         }
     }
@@ -133,7 +133,7 @@ public class GameDefault implements Game {
     }
 
     public void gameOverPanel() {
-        mainFrame.stopSound(gameMusic);
+        mainFrame.stopMusic();
         this.gameRunning = false;
         mainFrame.pauseGame();
 
@@ -196,16 +196,14 @@ public class GameDefault implements Game {
     // Pauses the game if it's playing, resumes if it's paused
     public void pause() {
         if (paused && !playing) {
+            mainFrame.playMusic();
             playing = true;
             paused = false;
-            // Resume music
-            this.gameMusic = mainFrame.playSound("src/resources/sounds/InGameMusic.wav", true);
-
             gamePanel.setPaused(false);
             return;
         }
         if (playing) {
-            mainFrame.stopSound(gameMusic);
+            mainFrame.stopMusic();
             System.out.println("Game Object says: Game paused");
             playing = false;
             paused = true;
@@ -228,7 +226,7 @@ public class GameDefault implements Game {
 
     // Resumes a paused game
     public void resumeGame() {
-        this.gameMusic = mainFrame.playSound("src/resources/sounds/InGameMusic.wav", true);
+        mainFrame.playMusic();
         System.out.println("Game Object says: Game resumed");
         playing = true;
         paused = false;
@@ -239,7 +237,7 @@ public class GameDefault implements Game {
 
     //Stops the game and offers the user an option to return to the main menu
     public void stop() {
-        mainFrame.stopSound(gameMusic);
+        mainFrame.stopMusic();
         //remember if it was paused
         Boolean wasPaused = isPaused();
         if (playing) {
@@ -248,7 +246,6 @@ public class GameDefault implements Game {
             gamePanel.setPaused(true);
         }
     }
-
 
     //Update handles user keyboard input and updates the game state accordingly
     public void update(int keyCode) {
@@ -328,9 +325,6 @@ public class GameDefault implements Game {
         return player.getScore();
     }
 
-    public Clip getPlayingMusic() {
-        return gameMusic;
-    }
 
     public boolean isPaused() {
         return paused;

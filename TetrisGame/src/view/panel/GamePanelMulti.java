@@ -95,7 +95,7 @@ public class GamePanelMulti extends GamePanel {
         JButton backButton = new UIGenerator.CustomButton("Back", 180, 30);
         backButton.setOpaque(false); // Make backButton transparent
         backButton.addActionListener(e -> {
-            mainFrame.playSound("src/resources/sounds/MenuKeyPresses.wav", false);
+            mainFrame.playSound("menuKeyPress");
             stopGame();
         });
         background.add(backButton, BorderLayout.SOUTH);
@@ -108,7 +108,7 @@ public class GamePanelMulti extends GamePanel {
 
     @Override
     protected void stopGame() {
-        mainFrame.playSound("src/resources/sounds/MenuKeyPresses.wav", false);
+        mainFrame.playSound("menuKeyPress");
         System.out.println("GamePanel says: Game stopped");
         //pause gameOne
         if (gameOne.isPlaying()) {
@@ -159,7 +159,7 @@ public class GamePanelMulti extends GamePanel {
         //clear message label of play panels
         playPanel.messageLabel.setText("");
         playPanelTwo.messageLabel.setText("");
-        mainFrame.playSound("src/resources/sounds/MenuKeyPresses.wav", false);
+        mainFrame.playSound("menuKeyPress");
         mainFrame.startGame();
         mainFrame.startGameTwo();
         // Make Play button say "playing"
@@ -170,7 +170,7 @@ public class GamePanelMulti extends GamePanel {
 
     @Override
     public void pauseGame() {
-        mainFrame.playSound("src/resources/sounds/MenuKeyPresses.wav", false);
+        mainFrame.playSound("menuKeyPress");
         mainFrame.pauseGame();
         //if game paused set button text to "Resume"
         if (gameOne.isPaused() || gameTwo.isPaused()) {

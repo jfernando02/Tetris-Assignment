@@ -8,21 +8,21 @@ import model.TetrisBlock;
 import model.Score;
 import view.panel.GamePanel;
 import view.panel.GamePanelMulti;
+import util.*;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
 
 public class MainFrame extends JFrame {
     private static MainFrame instance;
+    BackgroundMusic backgroundMusic;
+    SoundEffects soundEffects;
 
     private String title;
     private int mainWidth;
@@ -48,7 +48,7 @@ public class MainFrame extends JFrame {
     private GameFactory gameFactory;
 
     // Singleton pattern
-    private MainFrame(String title, int mainWidth, int mainHeight) {
+    private MainFrame(String title, int mainWidth, int mainHeight) throws UnsupportedAudioFileException, LineUnavailableException, IOException {
         this.title = title;
         this.mainWidth = mainWidth;
         this.mainHeight = mainHeight;
@@ -59,10 +59,18 @@ public class MainFrame extends JFrame {
         setSize(this.mainWidth, this.mainHeight);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
+
+        try {
+            this.backgroundMusic = new BackgroundMusic();
+            this.soundEffects = new SoundEffects();
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
+        }
+
     }
 
     // Singleton pattern for thread safety with the lazy initialisation
-    public static synchronized MainFrame getInstance(String title, int mainWidth, int mainHeight) {
+    public static synchronized MainFrame getInstance(String title, int mainWidth, int mainHeight) throws UnsupportedAudioFileException, LineUnavailableException, IOException {
         if (instance == null) {
             instance = new MainFrame(title, mainWidth, mainHeight);
         }
@@ -182,33 +190,17 @@ public class MainFrame extends JFrame {
     }
 
     // Method to play sound with an option to loop, returns the clip for stopping
-    public Clip playSound(String soundFile, boolean loop) {
-        Clip clip = null;
-
-        try {
-            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(soundFile).getAbsoluteFile());
-            clip = AudioSystem.getClip();
-            clip.open(audioInputStream);
-            if (loop) {
-                if (getConfigData().isMusic()) {
-                    clip.loop(Clip.LOOP_CONTINUOUSLY);
-                }
-            } else if (getConfigData().isSoundEffect()) {
-                clip.start();
-            }
-        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-            e.printStackTrace();
-        }
-
-        return clip;
+    public void playMusic() {
+        backgroundMusic.playMusic();
     }
 
     //stop sound helper function
-    public void stopSound(Clip clip) {
-        //if the clip is not null
-        if (clip != null) {
-            clip.stop();
-        }
+    public void stopMusic() {
+        backgroundMusic.stopMusic();
+    }
+
+    public void playSound(String sound) {
+        soundEffects.playSound(sound);
     }
 
     public void resetFieldPaneConfig() {
@@ -249,13 +241,13 @@ public class MainFrame extends JFrame {
         if (getConfigData().isMusic()) {
             configData.setMusic(false);
             //stop the playing sound
-            gameOne.getPlayingMusic().stop();
+            stopMusic();
             gamePanel.updateMessageLabel("Music Off");
         } else {
             setMusic(true);
             //play the music
             if(!gameOne.isPaused()) {
-                gameOne.getPlayingMusic().loop(Clip.LOOP_CONTINUOUSLY);
+                playMusic();
             }
             gamePanel.updateMessageLabel("Music On");
         }

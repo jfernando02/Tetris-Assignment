@@ -123,7 +123,7 @@ public class ConfigurePanel extends JDialog {
             //centre the button
             //back closes the dialog
             backButton.addActionListener(e -> {
-                mainFrame.playSound("src/resources/sounds/MenuKeyPresses.wav", false);
+                mainFrame.playSound("menuKeyPress");
                 //save the configuration
                 mainFrame.saveConfigData();
                 dispose();

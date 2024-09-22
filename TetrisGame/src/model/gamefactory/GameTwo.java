@@ -71,7 +71,7 @@ public class GameTwo extends GameDefault {
     @Override
     public void stop() {
         boolean wasPaused = paused;
-        mainFrame.stopSound(gameMusic);
+        mainFrame.stopMusic();
         if (playing) {
             System.out.println("Game paused");
             mainFrame.pauseGame(); // pauses both games if multiplayer

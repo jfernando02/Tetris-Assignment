@@ -78,7 +78,7 @@ public class MainPanel extends JPanel {
         highScoresButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainFrame.playSound("src/resources/sounds/MenuKeyPresses.wav", false);
+                mainFrame.playSound("menuKeyPress");
                 mainFrame.showHighScorePanel(); // Navigate to HighScorePanel
             }
 
@@ -88,7 +88,7 @@ public class MainPanel extends JPanel {
         playButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainFrame.playSound("src/resources/sounds/MenuKeyPresses.wav", false);
+                mainFrame.playSound("menuKeyPress");
                 mainFrame.showGamePanel();
                 //focus on mainPanel
                 mainFrame.getGamePanel().requestFocusInWindow();
@@ -99,7 +99,7 @@ public class MainPanel extends JPanel {
         configButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainFrame.playSound("src/resources/sounds/MenuKeyPresses.wav", false);
+                mainFrame.playSound("menuKeyPress");
                 mainFrame.showConfigurePanel();
             }
         });
@@ -108,7 +108,7 @@ public class MainPanel extends JPanel {
         exitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mainFrame.playSound("src/resources/sounds/MenuKeyPresses.wav", false);
+                mainFrame.playSound("menuKeyPress");
                 System.exit(0);
             }
         });

@@ -72,7 +72,7 @@ public class Board<T> {
         }
         //clear line sound
         try {
-            mainFrame.playSound("src/resources/sounds/lineClear.wav", false);
+            mainFrame.playSound("lineClear");
         } catch (Exception e) {
             e.printStackTrace();
         }

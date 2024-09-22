@@ -6,7 +6,7 @@ import view.panel.GamePanel;
 //factory creator, will create the total number of games and return them
 public class GameFactory {
     //Pick the type of player for which to construct the game (left or right side of the game panel)
-    public GameDefault createGame(MainFrame mainFrame, GamePanel gamePanel, int player) {
+    public Game createGame(MainFrame mainFrame, GamePanel gamePanel, int player) {
         if (mainFrame.getConfigData().isExtendedMode()) {
             if (player == 1) {
                 switch(mainFrame.getConfigData().getPlayerOneType()) {

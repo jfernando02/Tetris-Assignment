@@ -61,7 +61,8 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    public static MainFrame getInstance(String title, int mainWidth, int mainHeight) {
+    // Singleton pattern for thread safety with the lazy initialisation
+    public static synchronized MainFrame getInstance(String title, int mainWidth, int mainHeight) {
         if (instance == null) {
             instance = new MainFrame(title, mainWidth, mainHeight);
         }

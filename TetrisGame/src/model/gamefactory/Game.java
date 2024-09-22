@@ -6,7 +6,8 @@ import model.Player;
 import model.TetrisBlock;
 import model.TetrisCell;
 import javax.sound.sampled.Clip;
-// Factory Product Interface
+
+// Factory Product Interface is a contract for the concrete products to implement
 public interface Game {
     void newGame();
     void start();

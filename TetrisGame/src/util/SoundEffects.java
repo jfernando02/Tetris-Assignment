@@ -42,19 +42,36 @@ public class SoundEffects {
     }
 
     public void playSound(String sound) {
-        switch(sound) {
+        switch (sound) {
             case "blockPlacement":
-                blockPlacement.start();
+                if (blockPlacement.isRunning()) {
+                    blockPlacement.stop(); // Stop the current clip if it’s playing
+                    blockPlacement.setFramePosition(0); // Reset the clip to the start
+                }
+                blockPlacement.start(); // Play the clip from the start
                 break;
             case "gameOver":
+                if (gameOver.isRunning()) {
+                    gameOver.stop();
+                    gameOver.setFramePosition(0);
+                }
                 gameOver.start();
                 break;
             case "lineClear":
+                if (lineClear.isRunning()) {
+                    lineClear.stop();
+                    lineClear.setFramePosition(0);
+                }
                 lineClear.start();
                 break;
             case "menuKeyPress":
+                if (menuKeyPress.isRunning()) {
+                    menuKeyPress.stop();
+                    menuKeyPress.setFramePosition(0);
+                }
                 menuKeyPress.start();
                 break;
         }
     }
+
 }

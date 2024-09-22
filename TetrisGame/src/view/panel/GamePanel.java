@@ -123,6 +123,8 @@ public class GamePanel extends JPanel {
     }
 
     protected void startGame() {
+        //clear message label of play panel
+        playPanel.messageLabel.setText("");
         mainFrame.playSound("src/resources/sounds/MenuKeyPresses.wav", false);
         mainFrame.startGame();
         //make Play button say "playing"
@@ -137,6 +139,7 @@ public class GamePanel extends JPanel {
 
     public void gameOver() {
         // clear message label
+        System.out.println("GamePanel says: Game over");
         playPanel.setGameOverMessage();
     }
 

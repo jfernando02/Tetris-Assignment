@@ -28,8 +28,6 @@ public class PlayPanel extends JPanel {
     private JLabel linesClearedLabel;
     private JLabel periodLabel;
 
-    //game over panel
-    private JDialog dialog;
 
     public PlayPanel(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
@@ -154,7 +152,6 @@ public class PlayPanel extends JPanel {
         System.out.println("Play Panel: Tried to set game over message");
         String result = game.getPlayer().isWinner() ? "You Win!" : "Game Over";
         setMessageLabel(result);
-
     }
 
     public void updateMessageLabel(String message) {

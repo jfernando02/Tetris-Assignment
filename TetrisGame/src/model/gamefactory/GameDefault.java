@@ -46,7 +46,6 @@ public class GameDefault implements Game {
         this.period = 200 - (player.getLevel()*periodDecr); //starting period, each level will decrease this by 10 (can be changed)
     }
 
-
     //method which holds the logic for starting a new game
     public void newGame() {
         if (!gameRunning) {
@@ -132,7 +131,7 @@ public class GameDefault implements Game {
     public void gameOverPanel() {
         mainFrame.stopSound(gameMusic);
         this.gameRunning = false;
-        pause();
+        mainFrame.pauseGame();
 
         //new JDIalog for game over to ask if they're sure if they want to quit
         JDialog dialog = new JDialog();

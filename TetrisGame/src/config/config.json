@@ -4,6 +4,6 @@
   "startLevel": 10,
   "music": true,
   "soundEffect": true,
-  "playerOneType": "Human",
+  "playerOneType": "AI",
   "playerTwoType": "Human"
 }

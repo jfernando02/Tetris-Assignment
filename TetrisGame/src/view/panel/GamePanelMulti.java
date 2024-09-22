@@ -107,6 +107,8 @@ public class GamePanelMulti extends GamePanel {
     @Override
     public void gameOver() {
         // game over for both players
+        playPanel.setGameOverMessage();
+        playPanelTwo.setGameOverMessage();
 
     }
 
@@ -166,7 +168,6 @@ public class GamePanelMulti extends GamePanel {
 
     // Method to update both games based on the pressed keys
     private void updateGames() {
-
         for (int keyCode : pressedKeys) {
             System.out.println("Key pressed: " + KeyEvent.getKeyText(keyCode));
             gameOne.update(keyCode);  // Update gameOne with relevant keys
@@ -176,6 +177,9 @@ public class GamePanelMulti extends GamePanel {
 
     @Override
     public void startGame() {
+        //clear message label of play panels
+        playPanel.messageLabel.setText("");
+        playPanelTwo.messageLabel.setText("");
         mainFrame.playSound("src/resources/sounds/MenuKeyPresses.wav", false);
         mainFrame.startGame();
         mainFrame.startGameTwo();

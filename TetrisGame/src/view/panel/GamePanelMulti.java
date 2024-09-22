@@ -187,11 +187,6 @@ public class GamePanelMulti extends GamePanel {
         playPanelTwo.updateMessageLabel(sound);
     }
 
-    @Override
-    public void updateField() {
-        playPanel.fieldPane.updateBoard(gameOne.getBoard());
-        playPanelTwo.fieldPane.updateBoard(gameTwo.getBoard());
-    }
 
     @Override
     public void setPaused(boolean paused) {
@@ -207,5 +202,11 @@ public class GamePanelMulti extends GamePanel {
         playPanel.updatePanel();
         playPanelTwo.updatePanel();
         requestFocusInWindow();
+    }
+
+    @Override
+    public void updateField() {
+        playPanel.fieldPane.updateBoard(gameOne.getBoard());
+        playPanelTwo.fieldPane.updateBoard(gameTwo.getBoard());
     }
 }

@@ -120,7 +120,11 @@ public class GameDefault implements Game {
             System.out.println("Game Object says: " + clearedLines + " lines cleared");
             player.updateScore(clearedLines);
             //update MainFrame period in case of level up
-            this.period = 200 - (player.getLevel()*periodDecr);
+            //check if period is not less than 50
+            int newPeriod = 200 - (player.getLevel()*periodDecr);
+            if (newPeriod >= 50) {
+                this.period = newPeriod;
+            }
             System.out.println("Game Object says: Period set to " + period);
             mainFrame.updateGamePeriod();
             //update PlayPanel

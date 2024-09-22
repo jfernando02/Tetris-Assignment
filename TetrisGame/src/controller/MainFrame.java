@@ -136,14 +136,24 @@ public class MainFrame extends JFrame {
 
     public void updateGamePeriod() {
         //set period
-        gameLogicOne.setPeriod(gameOne.getPeriod());
-        gameLogicOne.updateGamePeriod();
+        //never let period drop below 50
+        if (gameOne.getPeriod() < 50) {
+            gameLogicOne.setPeriod(50);
+        } else {
+            gameLogicOne.setPeriod(gameOne.getPeriod());
+            gameLogicOne.updateGamePeriod();
+        }
+
     }
 
     public void updateGamePeriodTwo() {
         //set period
-        gameLogicTwo.setPeriod(gameTwo.getPeriod());
-        gameLogicTwo.updateGamePeriod();
+        if(gameTwo.getPeriod() < 50) {
+            gameLogicTwo.setPeriod(50);
+        } else {
+            gameLogicTwo.setPeriod(gameTwo.getPeriod());
+            gameLogicTwo.updateGamePeriod();
+        }
     }
 
     public void pauseGame() {
@@ -157,10 +167,6 @@ public class MainFrame extends JFrame {
 
     public GamePanel getGamePanel() {
         return gamePanel;
-    }
-
-    public void setGamePanel(GamePanel gamePanel) {
-        this.gamePanel = gamePanel;
     }
 
     public ConfigData getConfigData() {
@@ -266,11 +272,9 @@ public class MainFrame extends JFrame {
         this.configData = ConfigManager.getConfigData();
     }
 
-
     public int numberOfHumanPlayers() {
         return configData.isExtendedMode() ? 2 : 1;
     }
-
 
     public void saveConfigData() {
         ConfigManager.saveConfigData(configData);

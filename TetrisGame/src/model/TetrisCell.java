@@ -7,7 +7,7 @@ import java.awt.geom.Rectangle2D;
 public class TetrisCell {
     int x; // X coordinate of the cell relative to the board
     int y; // Y coordinate of the cell relative to the board
-    private float interpolatedY;
+    private double interpolatedY;
     String color; // Color of the cell
     Board<TetrisCell> board;
     Boolean isActive;

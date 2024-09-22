@@ -18,7 +18,7 @@ public class GameDefault implements Game {
     protected MainFrame mainFrame;
     protected Board board;
     protected TetrisBlock activeShape;
-    private TetrisBlock nextShape;
+    protected TetrisBlock nextShape;
     private int nextShapeIndex;
     protected GamePanel gamePanel;
     protected Clip gameMusic;
@@ -242,8 +242,10 @@ public class GameDefault implements Game {
             System.out.println("Game paused");
             mainFrame.pauseGame(); // pauses both games if multiplayer
             gamePanel.setPaused(true);
-
         }
+    }
+
+    public void quitDialog() {
         //new JDIalog for game over to ask if they're sure if they want to quit
         JDialog dialog = new JDialog();
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

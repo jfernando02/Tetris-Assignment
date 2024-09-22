@@ -16,6 +16,7 @@ public interface Game {
     void pause();
     void resumeGame();
     void stop();
+    void quitDialog();
     void update(int keyCode);
     Board<TetrisCell> getBoard();
     boolean isPlaying();

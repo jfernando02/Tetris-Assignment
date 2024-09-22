@@ -33,9 +33,24 @@ public class GameAI extends GameDefault {
     }
 
     @Override
+    public boolean isGameOver() {
+        // Check if any of the cells of the next shape are already occupied on the board
+        int[][] cells = nextShape.getShape();
+        for (int i = 0; i < cells.length; i++) {
+            int cellX = cells[0][i] + this.board.getSpawnX();
+            int cellY = cells[1][i] + this.board.getSpawnY();
+            if(board.getCell(cellX, cellY)!=null){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public void gameOverPanel() {
         mainFrame.stopSound(gameMusic);
         this.gameRunning = false;
+        mainFrame.pauseGame();
         if(training) {
             //Get score and give it to the board game evaluator
             this.ai.getEvaluator().setFinalHighScore(this.player.getScore());
@@ -45,7 +60,7 @@ public class GameAI extends GameDefault {
             start();
             return;
         }
-        pause();
+
         //new JDIalog for game over to ask if they're sure if they want to quit
         JDialog dialog = new JDialog();
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -72,6 +87,7 @@ public class GameAI extends GameDefault {
             mainFrame.getGamePanel().requestFocusInWindow();
             dialog.dispose();
         }
+        mainFrame.gameOverLoser(this);
     }
 
     @Override
@@ -79,10 +95,8 @@ public class GameAI extends GameDefault {
         if (activeShape==null) {
             return;
         }
-        if (playing) {
-            if(activeShape!=null) {
+        if (playing && activeShape!=null) {
                 dropPiece();
-            }
         }
         if (!mainFrame.getConfigData().isExtendedMode()) {
             switch (keyCode) {

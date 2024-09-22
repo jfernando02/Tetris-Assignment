@@ -2,8 +2,8 @@
   "fieldWidth": 10,
   "fieldHeight": 20,
   "startLevel": 10,
-  "music": true,
-  "soundEffect": true,
-  "playerOneType": "Human",
-  "playerTwoType": "Human"
+  "music": false,
+  "soundEffect": false,
+  "playerOneType": "AI",
+  "playerTwoType": "AI"
 }

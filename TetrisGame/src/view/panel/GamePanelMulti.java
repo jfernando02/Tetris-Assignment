@@ -96,24 +96,39 @@ public class GamePanelMulti extends GamePanel {
         backButton.setOpaque(false); // Make backButton transparent
         backButton.addActionListener(e -> {
             mainFrame.playSound("src/resources/sounds/MenuKeyPresses.wav", false);
-            mainFrame.stopGame();
+            stopGame();
         });
         background.add(backButton, BorderLayout.SOUTH);
 
+        keyListenerOptions();
         keyListenerAI();
-        keyListener();
+        keyListenerMove();
 
     }
+
+    @Override
+    protected void stopGame() {
+        mainFrame.playSound("src/resources/sounds/MenuKeyPresses.wav", false);
+        System.out.println("GamePanel says: Game stopped");
+        //pause gameOne
+        if (gameOne.isPlaying()) {
+            gameOne.stop();
+        }
+        if (gameTwo.isPlaying()) {
+            gameTwo.stop();
+        }
+        quitDialog();
+    }
+
     @Override
     public void gameOver() {
         // game over for both players
         playPanel.setGameOverMessage();
         playPanelTwo.setGameOverMessage();
-
     }
 
     @Override
-    public void keyListener() {
+    public void keyListenerMove() {
         // Add a key listener to track key presses for both games
         addKeyListener(new KeyAdapter() {
             @Override

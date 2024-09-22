@@ -48,22 +48,5 @@ public class GameOne extends GameDefault {
         if (mainFrame.numberOfHumanPlayers() == 2) {
             return;
         }
-        switch (keyCode) {
-            case KeyEvent.VK_P:
-                System.out.println(playerName+": key pressed");
-                //if paused, set GamePanel pause button to resume
-                //mainFrame.pauseGame();
-                break;
-            case KeyEvent.VK_S:
-                System.out.println(playerName+": key pressed"); //stop
-                //toggle sound effect off
-                mainFrame.toggleSound();
-                break;
-            case KeyEvent.VK_M:
-                System.out.println(playerName+": key pressed"); //mute
-                //toggle music off
-                mainFrame.toggleMusic();
-                break;
-        }
     }
 }

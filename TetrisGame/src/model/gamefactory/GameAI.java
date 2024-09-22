@@ -98,25 +98,6 @@ public class GameAI extends GameDefault {
         if (playing && activeShape!=null) {
                 dropPiece();
         }
-        if (!mainFrame.getConfigData().isExtendedMode()) {
-            switch (keyCode) {
-                case KeyEvent.VK_P:
-                    System.out.println("P key pressed");
-                    //if paused, set GamePanel pause button to resume
-                    gamePanel.pauseGame();
-                    break;
-                case KeyEvent.VK_S:
-                    System.out.println("S key pressed"); //stop
-                    //toggle sound effect off
-                    mainFrame.toggleSound();
-                    break;
-                case KeyEvent.VK_M:
-                    System.out.println("M key pressed"); //mute
-                    //toggle music off
-                    mainFrame.toggleMusic();
-                    break;
-            }
-        }
     }
 
     public void dropPiece() {

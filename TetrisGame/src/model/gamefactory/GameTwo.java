@@ -42,23 +42,6 @@ public class GameTwo extends GameDefault {
                     break;
             }
         }
-        switch (keyCode) {
-            case KeyEvent.VK_P:
-                System.out.println(playerName+": P key pressed");
-                //if paused, set GamePanel pause button to resume
-                gamePanel.pauseGame();
-                break;
-            case KeyEvent.VK_S:
-                System.out.println(playerName+": S key pressed"); //stop
-                //toggle sound effect off
-                mainFrame.toggleSound();
-                break;
-            case KeyEvent.VK_M:
-                System.out.println(playerName+": M key pressed"); //mute
-                //toggle music off
-                mainFrame.toggleMusic();
-                break;
-        }
     }
     @Override
     public void checkForLineClear() {

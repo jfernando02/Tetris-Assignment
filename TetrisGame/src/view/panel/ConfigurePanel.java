@@ -95,7 +95,7 @@ public class ConfigurePanel extends JDialog {
 
             // Sound Effect Checkbox
             addCheckBox(configBox, gbc, 0, 5, "Sound Effect:",
-                    mainFrame.getConfigData().isMusic(), e -> {
+                    mainFrame.getConfigData().isSoundEffect(), e -> {
                         mainFrame.setSoundEffect(((JCheckBox) e.getSource()).isSelected());
                     });
 

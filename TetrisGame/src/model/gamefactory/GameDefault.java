@@ -228,7 +228,6 @@ public class GameDefault implements Game {
         System.out.println("Game Object says: Game resumed");
         playing = true;
         paused = false;
-
         gamePanel.setPaused(false);
         gamePanel.requestFocusInWindow();
     }
@@ -236,8 +235,9 @@ public class GameDefault implements Game {
 
     //Stops the game and offers the user an option to return to the main menu
     public void stop() {
-        boolean wasPaused = paused;
         mainFrame.stopSound(gameMusic);
+        //remember if it was paused
+        Boolean wasPaused = isPaused();
         if (playing) {
             System.out.println("Game paused");
             mainFrame.pauseGame(); // pauses both games if multiplayer
@@ -245,32 +245,6 @@ public class GameDefault implements Game {
         }
     }
 
-    public void quitDialog() {
-        //new JDIalog for game over to ask if they're sure if they want to quit
-        JDialog dialog = new JDialog();
-        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        dialog.setTitle("Stop Game");
-        dialog.setSize(200, 200);
-        dialog.setVisible(false);
-        //centre the dialog
-        dialog.setLocationRelativeTo(null);
-
-        //ask if they want to quit the game
-        int result = JOptionPane.showConfirmDialog(dialog,
-                "Are you sure you want to quit the game and go to the main menu?", "Stop Game", JOptionPane.YES_NO_OPTION);
-        if (result == JOptionPane.YES_OPTION) {
-            System.out.println("Game stopped");
-            resetGame();
-            dialog.dispose();
-            //go to main panel
-            mainFrame.showMainPanel();
-            //reset field pane configuration to default (requirement)
-            mainFrame.resetFieldPaneConfig();
-        } else {
-            mainFrame.pauseGame();
-            dialog.dispose();
-        }
-    }
 
     //Update handles user keyboard input and updates the game state accordingly
     public void update(int keyCode) {
@@ -303,26 +277,9 @@ public class GameDefault implements Game {
                 case KeyEvent.VK_SPACE:
                     System.out.println(playerName+": Space key pressed"); // hard drop
                     activeShape.softDrop();
-                    activeShape.softDrop(); //TODO: review down speed logic
+                    activeShape.softDrop();
                     break;
             }
-        }
-        switch (keyCode) {
-            case KeyEvent.VK_P:
-                System.out.println(playerName+": P key pressed");
-                //if paused, set GamePanel pause button to resume
-                gamePanel.pauseGame();
-                break;
-            case KeyEvent.VK_S:
-                System.out.println(playerName+": S key pressed"); //stop
-                //toggle sound effect off
-                mainFrame.toggleSound();
-                break;
-            case KeyEvent.VK_M:
-                System.out.println(playerName+": M key pressed"); //mute
-                //toggle music off
-                mainFrame.toggleMusic();
-                break;
         }
     }
 

@@ -41,7 +41,7 @@ public class MainFrameGameLogic {
         renderExecutor = Executors.newSingleThreadScheduledExecutor();
         gameLogicExecutor = Executors.newSingleThreadScheduledExecutor();
         game.start();
-        this.period = mainFrame.getGameOne().getPeriod();
+        this.period = game.getPeriod();
         updateGamePeriod();
     }
 
@@ -73,9 +73,6 @@ public class MainFrameGameLogic {
         System.out.println("MainFrame said: Game Stopped");
     }
 
-    public void quitDialog() {
-        game.quitDialog();
-    }
 
     // Also pause second game if extended mode is enabled (only needs to be called once)
     public void pauseGame() {

@@ -20,6 +20,7 @@ public class GamePanel extends JPanel {
     protected JButton startButton;
     protected JButton pauseButton;
     protected PlayPanel playPanel;
+    protected boolean wasPaused;
 
     public GamePanel(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
@@ -92,12 +93,44 @@ public class GamePanel extends JPanel {
         });
         background.add(backButton, BorderLayout.SOUTH);
 
+        //Listens for pause/stop
+        keyListenerOptions();
+
         //Listens for player/AI input
-        keyListener();
+        keyListenerMove();
+    }
+
+    //Thread for listening to pause/stop
+    public void keyListenerOptions() {
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                //if not game over
+                String keyText = KeyEvent.getKeyText(e.getKeyCode());
+                System.out.println("Key pressed: " + keyText);
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_P:
+                        System.out.println("P key pressed");
+                        //if paused, set GamePanel pause button to resume
+                        pauseGame();
+                        break;
+                    case KeyEvent.VK_S:
+                        System.out.println("S key pressed"); //stop
+                        //toggle sound effect off
+                        mainFrame.toggleSound();
+                        break;
+                    case KeyEvent.VK_M:
+                        System.out.println("M key pressed"); //mute
+                        //toggle music off
+                        mainFrame.toggleMusic();
+                        break;
+                }
+            }
+        });
     }
 
     //Multiplayer panel overrides this method
-    public void keyListener() {
+    public void keyListenerMove() {
         if (mainFrame.getConfigData().isPlayerOneType("AI")) {
             java.util.Timer timer = new Timer();
             timer.schedule(new TimerTask() {
@@ -143,11 +176,41 @@ public class GamePanel extends JPanel {
         playPanel.setGameOverMessage();
     }
 
-
     protected void stopGame() {
         mainFrame.playSound("src/resources/sounds/MenuKeyPresses.wav", false);
-        mainFrame.stopGame();
         System.out.println("GamePanel says: Game stopped");
+        if (game.isPlaying()) {
+            game.stop();
+        }
+        quitDialog();
+    }
+
+    // Stop game quit screen
+    public void quitDialog() {
+        //new JDIalog for game over to ask if they're sure if they want to quit
+        JDialog dialog = new JDialog();
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.setTitle("Stop Game");
+        dialog.setSize(200, 200);
+        dialog.setVisible(false);
+        //centre the dialog
+        dialog.setLocationRelativeTo(null);
+
+        //ask if they want to quit the game
+        int result = JOptionPane.showConfirmDialog(dialog,
+                "Are you sure you want to quit the game and go to the main menu?", "Stop Game", JOptionPane.YES_NO_OPTION);
+        if (result == JOptionPane.YES_OPTION) {
+            System.out.println("Game stopped");
+            mainFrame.resetGames();
+            dialog.dispose();
+            //go to main panel
+            mainFrame.showMainPanel();
+            //reset field pane configuration to default (requirement)
+            mainFrame.resetFieldPaneConfig();
+        } else {
+            mainFrame.pauseGame();
+            dialog.dispose();
+        }
     }
 
     public void pauseGame() {

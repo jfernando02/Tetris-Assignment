@@ -146,16 +146,6 @@ public class MainFrame extends JFrame {
         gameLogicTwo.updateGamePeriod();
     }
 
-    public void stopGame() {
-        // gameLogicOne will also stop gameTwo if extended mode is enabled
-        gameLogicOne.stopGame();
-        gameLogicOne.quitDialog();
-        if (gameLogicTwo != null) {
-            gameLogicTwo.stopGame();
-        }
-
-    }
-
     public void pauseGame() {
         // gameLogicOne will also pause gameTwo if extended mode is enabled
         gameLogicOne.pauseGame();
@@ -166,6 +156,7 @@ public class MainFrame extends JFrame {
     }
 
     public Game getGameOne() {
+
         return gameOne;
     }
 
@@ -303,5 +294,10 @@ public class MainFrame extends JFrame {
             gameLogicOne.gameOverWinner();
         }
         gamePanel.gameOver();
+    }
+
+    public void resetGames() {
+        gameOne.resetGame();
+        gameTwo.resetGame();
     }
 }

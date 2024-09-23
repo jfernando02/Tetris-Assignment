@@ -21,8 +21,8 @@ import java.util.ArrayList;
 
 public class MainFrame extends JFrame {
     private static MainFrame instance;
-    BackgroundMusic backgroundMusic;
-    SoundEffects soundEffects;
+    private BackgroundMusic backgroundMusic;
+    private SoundEffects soundEffects;
 
     private String title;
     private int mainWidth;
@@ -77,10 +77,10 @@ public class MainFrame extends JFrame {
         return instance;
     }
 
-    // Each player draws from the same pool of 1000 pieces (nextPieces)
+    // Each player draws from the same pool of 1000 prototypal piece shapes (nextPieces)
     public TetrisBlock getNextBlock(int index) {
         int idx = index % 1000; // Wrap around to the beginning of the array
-        TetrisBlock block = TetrisBlock.prototype(nextPieces[idx]);
+        TetrisBlock block = TetrisBlock.prototype(nextPieces[idx]); // Instantiate an object from the prototype
         block.spawnBlock();
         return block;
     }

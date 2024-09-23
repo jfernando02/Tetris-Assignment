@@ -14,7 +14,7 @@ public class TetrisBlock {
     private static final long BUFFER_TIME = 500; // Buffer time in milliseconds
 
     public TetrisBlock() {
-        this.shape = TetrisShape.getRandomShape();
+        //this.shape = TetrisShape.getRandomShape();
         this.hasLanded = false;
     }
 
@@ -287,14 +287,5 @@ public class TetrisBlock {
         TetrisBlock block = new TetrisBlock();
         block.shape = shape;
         return block;
-    }
-
-    public boolean getRow() {
-        for (TetrisCell cell : this.cells) {
-            if (cell.getY() == 0 || (board.getCell(cell.getX(), cell.getY() - 1) != null && !board.getCell(cell.getX(), cell.getY() - 1).isActive)) {
-                return true;
-            }
-        }
-        return false;
     }
 }

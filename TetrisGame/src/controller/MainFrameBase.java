@@ -34,7 +34,7 @@ public abstract class MainFrameBase extends JFrame {
 
         try {
             this.backgroundMusic = new BackgroundMusic();
-            this.soundEffects = new SoundEffects();
+            this.soundEffects = new SoundEffects(this);
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
         }

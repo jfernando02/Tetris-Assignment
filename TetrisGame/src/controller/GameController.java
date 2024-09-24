@@ -72,15 +72,6 @@ public class GameController {
         }, 0, period, TimeUnit.MILLISECONDS);
     }
 
-
-    // Also stop second game if extended mode is enabled (only needs to be called once)
-    public void stopGame() {
-        game.stop();
-        // if extended mode is enabled, also stops second game
-        System.out.println("MainFrame said: Game Stopped");
-    }
-
-
     // Also pause second game if extended mode is enabled (only needs to be called once)
     public void pauseGame() {
         game.pause();

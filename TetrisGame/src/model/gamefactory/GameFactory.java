@@ -14,7 +14,7 @@ public class GameFactory {
                         if (mainFrame.getConfigData().getPlayerTwoType().equals("Human")) {
                             return new GameOne(mainFrame, gamePanel, "Player 1");
                         } else {
-                            return new GameTwo(mainFrame, gamePanel, "PLayer 1");
+                            return new GameDefault(mainFrame, gamePanel, "PLayer 1");
                         }
                     case "AI":
                         return new GameAI(mainFrame, gamePanel, "AI Player 1");

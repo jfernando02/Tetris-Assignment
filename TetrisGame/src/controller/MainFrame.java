@@ -32,14 +32,16 @@ public class MainFrame extends MainFrameBase {
     private GameFactory gameFactory;
 
     // Singleton pattern: mainFrame is the only instance of MainFrame. Facade: the main class that controls most of the game
-    private MainFrame(String title, int mainWidth, int mainHeight) throws UnsupportedAudioFileException, LineUnavailableException, IOException {
+    private MainFrame(String title, int mainWidth, int mainHeight)
+            throws UnsupportedAudioFileException, LineUnavailableException, IOException {
         super(title, mainWidth, mainHeight); // Call the superclass constructor
         this.panels = new PanelsController(this);
         this.gameFactory = new GameFactory();
     }
 
     // Singleton pattern for thread safety with the lazy initialisation
-    public static synchronized MainFrame getInstance(String title, int mainWidth, int mainHeight) throws UnsupportedAudioFileException, LineUnavailableException, IOException {
+    public static synchronized MainFrame getInstance(String title, int mainWidth, int mainHeight)
+            throws UnsupportedAudioFileException, LineUnavailableException, IOException {
         if (instance == null) {
             instance = new MainFrame(title, mainWidth, mainHeight);
         }

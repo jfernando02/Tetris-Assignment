@@ -19,6 +19,10 @@ public class BackgroundMusic {
         music.loop(Clip.LOOP_CONTINUOUSLY);
     }
 
+    public void resetMusic() {
+        music.setMicrosecondPosition(0);
+    }
+
     // to stop audio
     public void stopMusic() {
         if (music != null && music.isRunning()) {

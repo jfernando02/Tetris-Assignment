@@ -44,9 +44,6 @@ public class GameOne extends GameDefault {
             }
             mainFrame.repaintBoard();
         }
-        //placeholder (TODO: Stefan: implement player types in config)
-        if (mainFrame.numberOfHumanPlayers() == 2) {
-            return;
-        }
+
     }
 }

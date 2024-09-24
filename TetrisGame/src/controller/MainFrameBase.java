@@ -1,5 +1,4 @@
 package controller;
-
 import config.ConfigData;
 import config.ConfigManager;
 import model.Score;
@@ -12,7 +11,8 @@ import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
-// Parent class of MainFrame which hosts the skeleton
+// Parent class of MainFrame which hosts the skeleton: the background music, sound effects, title, width,
+// height, config data, and scores
 public abstract class MainFrameBase extends JFrame {
     protected BackgroundMusic backgroundMusic;
     protected SoundEffects soundEffects;
@@ -70,5 +70,20 @@ public abstract class MainFrameBase extends JFrame {
         this.configData = ConfigManager.getConfigData();
     }
 
+    public int numberOfHumanPlayers() {
+        return configData.isExtendedMode() ? 2 : 1;
+    }
+
+    public void setMusic(boolean music) {
+        configData.setMusic(music);
+        ConfigManager.saveConfigData(configData);
+        System.out.println("Updated music setting: " + music);
+    }
+
+    public void setSoundEffect(boolean soundEffect) {
+        configData.setSoundEffect(soundEffect);
+        ConfigManager.saveConfigData(configData);
+        System.out.println("Updated sound effect setting: " + soundEffect);
+    }
 
 }

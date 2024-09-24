@@ -176,12 +176,6 @@ public class MainFrame extends MainFrameBase {
         }
     }
 
-    public void setSoundEffect(boolean soundEffect) {
-        configData.setSoundEffect(soundEffect);
-        ConfigManager.saveConfigData(configData);
-        System.out.println("Updated sound effect setting: " + soundEffect);
-    }
-
 
     public void toggleMusic() {
         if (getConfigData().isMusic()) {
@@ -197,25 +191,6 @@ public class MainFrame extends MainFrameBase {
             }
             gamePanel.updateMessageLabel("Music On");
         }
-    }
-
-    public void setMusic(boolean music) {
-        configData.setMusic(music);
-        ConfigManager.saveConfigData(configData);
-        System.out.println("Updated music setting: " + music);
-    }
-
-    public void resetConfigData() {
-        ConfigManager.resetConfigData();
-        this.configData = ConfigManager.getConfigData();
-    }
-
-    public int numberOfHumanPlayers() {
-        return configData.isExtendedMode() ? 2 : 1;
-    }
-
-    public void saveConfigData() {
-        ConfigManager.saveConfigData(configData);
     }
 
     public void gameOverLoser(Game game) {

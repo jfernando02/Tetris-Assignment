@@ -7,14 +7,14 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import javax.swing.SwingUtilities;
 
-public class MainFrameGameLogic {
+public class GameController {
     private MainFrame mainFrame;
     private ScheduledExecutorService renderExecutor;
     private ScheduledExecutorService gameLogicExecutor;
     private volatile long period;
     private Game game;
 
-    public MainFrameGameLogic(MainFrame mainFrame, Game game) {
+    public GameController(MainFrame mainFrame, Game game) {
         this.mainFrame = mainFrame;
         this.game = game;
     }

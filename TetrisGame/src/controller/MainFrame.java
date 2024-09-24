@@ -1,72 +1,41 @@
 package controller;
 
-import config.ConfigData;
 import config.ConfigManager;
 import model.TetrisShape;
 import model.gamefactory.*;
 import model.TetrisBlock;
-import model.Score;
 import view.panel.GamePanel;
 import view.panel.GamePanelMulti;
-import util.*;
 
-import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import javax.swing.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
-
-public class MainFrame extends JFrame {
+public class MainFrame extends MainFrameBase {
     private static MainFrame instance;
-    private BackgroundMusic backgroundMusic;
-    private SoundEffects soundEffects;
-
-    private String title;
-    private int mainWidth;
-    private int mainHeight;
 
     private GamePanel gamePanel;
     private TetrisShape[] nextPieces;
 
-    private ConfigData configData;
-    private ArrayList<Score> scores = new ArrayList<>();
-
-    private MainFramePanels panels;
+    private PanelsController panels;
 
     // Holds two threads (One for gameplay, one for rendering)
-    private MainFrameGameLogic gameLogicOne;
+    private GameController gameLogicOne;
     private Game gameOne;
 
     // Holds two more threads for extended mode (One for gameLogic, one for rendering)
-    private MainFrameGameLogic gameLogicTwo; // For extended mode
+    private GameController gameLogicTwo; // For extended mode
     private Game gameTwo; // For extended mode
 
     // Factory design pattern
     private GameFactory gameFactory;
 
-    // Singleton pattern
+    // Singleton pattern: mainFrame is the only instance of MainFrame. Facade: the main class that controls most of the game
     private MainFrame(String title, int mainWidth, int mainHeight) throws UnsupportedAudioFileException, LineUnavailableException, IOException {
-        this.title = title;
-        this.mainWidth = mainWidth;
-        this.mainHeight = mainHeight;
-        this.configData = ConfigManager.getConfigData();
-        this.panels = new MainFramePanels(this);
+        super(title, mainWidth, mainHeight); // Call the superclass constructor
+        this.panels = new PanelsController(this);
         this.gameFactory = new GameFactory();
-        setTitle(this.title);
-        setSize(this.mainWidth, this.mainHeight);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-
-        try {
-            this.backgroundMusic = new BackgroundMusic();
-            this.soundEffects = new SoundEffects();
-        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
-            e.printStackTrace();
-        }
-
     }
 
     // Singleton pattern for thread safety with the lazy initialisation
@@ -100,7 +69,7 @@ public class MainFrame extends JFrame {
         gamePanel = new GamePanel(this);
         this.gameOne = gameFactory.createGame(this, gamePanel, 1);
 
-        this.gameLogicOne = new MainFrameGameLogic(this, gameOne);
+        this.gameLogicOne = new GameController(this, gameOne);
         gamePanel.setGame(gameOne, null);
     }
 
@@ -111,10 +80,10 @@ public class MainFrame extends JFrame {
         this.gamePanel = new GamePanelMulti(this);
 
         this.gameOne = gameFactory.createGame(this, gamePanel, 1);
-        this.gameLogicOne = new MainFrameGameLogic(this, gameOne);
+        this.gameLogicOne = new GameController(this, gameOne);
 
         this.gameTwo = gameFactory.createGame(this, gamePanel, 2);
-        this.gameLogicTwo = new MainFrameGameLogic(this, gameTwo);
+        this.gameLogicTwo = new GameController(this, gameTwo);
 
         this.gamePanel.setGame(gameOne, gameTwo);
     }
@@ -177,35 +146,12 @@ public class MainFrame extends JFrame {
         return gamePanel;
     }
 
-    public ConfigData getConfigData() {
-        return configData;
-    }
-
-    public MainFrameGameLogic getGameLogicOne() {
+    public GameController getGameLogicOne() {
         return gameLogicOne;
     }
 
-    public MainFrameGameLogic getGameLogicTwo() {
+    public GameController getGameLogicTwo() {
         return gameLogicTwo;
-    }
-
-    // Method to play sound with an option to loop, returns the clip for stopping
-    public void playMusic() {
-        backgroundMusic.playMusic();
-    }
-
-    //stop sound helper function
-    public void stopMusic() {
-        backgroundMusic.stopMusic();
-    }
-
-    public void playSound(String sound) {
-        soundEffects.playSound(sound);
-    }
-
-    public void resetFieldPaneConfig() {
-        ConfigManager.resetFieldPaneConfig();
-        this.configData = ConfigManager.getConfigData();
     }
 
     // Important for rendering the current board state in the field pane, used by GAME PANEL

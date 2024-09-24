@@ -1,12 +1,11 @@
 package controller;
 
-import model.*;
 import view.panel.*;
 
-public class MainFramePanels {
+public class PanelsController {
     private MainFrame mainFrame;
 
-    public MainFramePanels(MainFrame mainFrame) {
+    public PanelsController(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
     }
 

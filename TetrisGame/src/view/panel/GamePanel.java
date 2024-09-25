@@ -20,9 +20,6 @@ public class GamePanel extends JPanel {
     protected JButton startButton;
     protected JButton pauseButton;
     protected PlayPanel playPanel;
-    protected boolean wasPaused;
-    private volatile int periodOne;
-    private volatile int periodTwo;
 
     public GamePanel(MainFrame mainFrame) {
         this.mainFrame = mainFrame;

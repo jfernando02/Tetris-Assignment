@@ -1,0 +1,693 @@
+@startuml
+
+/' diagram meta data start
+config=StructureConfiguration;
+{
+  "projectClassification": {
+    "searchMode": "OpenProject", // OpenProject, AllProjects
+    "includedProjects": "",
+    "pathEndKeywords": "*.impl",
+    "isClientPath": "",
+    "isClientName": "",
+    "isTestPath": "",
+    "isTestName": "",
+    "isMappingPath": "",
+    "isMappingName": "",
+    "isDataAccessPath": "",
+    "isDataAccessName": "",
+    "isDataStructurePath": "",
+    "isDataStructureName": "",
+    "isInterfaceStructuresPath": "",
+    "isInterfaceStructuresName": "",
+    "isEntryPointPath": "",
+    "isEntryPointName": "",
+    "treatFinalFieldsAsMandatory": false
+  },
+  "graphRestriction": {
+    "classPackageExcludeFilter": "",
+    "classPackageIncludeFilter": "",
+    "classNameExcludeFilter": "",
+    "classNameIncludeFilter": "",
+    "methodNameExcludeFilter": "",
+    "methodNameIncludeFilter": "",
+    "removeByInheritance": "", // inheritance/annotation based filtering is done in a second step
+    "removeByAnnotation": "",
+    "removeByClassPackage": "", // cleanup the graph after inheritance/annotation based filtering is done
+    "removeByClassName": "",
+    "cutMappings": false,
+    "cutEnum": true,
+    "cutTests": true,
+    "cutClient": true,
+    "cutDataAccess": true,
+    "cutInterfaceStructures": true,
+    "cutDataStructures": true,
+    "cutGetterAndSetter": true,
+    "cutConstructors": true
+  },
+  "graphTraversal": {
+    "forwardDepth": 3,
+    "backwardDepth": 3,
+    "classPackageExcludeFilter": "",
+    "classPackageIncludeFilter": "",
+    "classNameExcludeFilter": "",
+    "classNameIncludeFilter": "",
+    "methodNameExcludeFilter": "",
+    "methodNameIncludeFilter": "",
+    "hideMappings": false,
+    "hideDataStructures": false,
+    "hidePrivateMethods": true,
+    "hideInterfaceCalls": true, // indirection: implementation -> interface (is hidden) -> implementation
+    "onlyShowApplicationEntryPoints": false, // root node is included
+    "useMethodCallsForStructureDiagram": "ForwardOnly" // ForwardOnly, BothDirections, No
+  },
+  "details": {
+    "aggregation": "GroupByClass", // ByClass, GroupByClass, None
+    "showClassGenericTypes": true,
+    "showMethods": true,
+    "showMethodParameterNames": true,
+    "showMethodParameterTypes": true,
+    "showMethodReturnType": true,
+    "showPackageLevels": 2,
+    "showDetailedClassStructure": true
+  },
+  "rootClass": "controller.MainFrame",
+  "extensionCallbackMethod": "" // qualified.class.name#methodName - signature: public static String method(String)
+}
+diagram meta data end '/
+
+
+
+digraph g {
+    rankdir="TB"
+    splines=polyline
+    
+
+'nodes 
+subgraph cluster_104069929 { 
+   	label=model
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   Board104069929[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Board&lt;T&gt;</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   board: T[][] [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   game: GameDefault [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   height: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   mainFrame: MainFrame [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   spawnX: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   spawnY: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   width: int [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ clearBoard()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ clearCompleteLines(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ clearLines(y: int)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ convertBoard(): int[][]</TD></TR>
+<TR><TD ALIGN="LEFT" >+ destroyCell(x: int, y: int)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ dropCellTo(x: int, y: int, cell: TetrisCell)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getCell(x: int, y: int): T</TD></TR>
+<TR><TD ALIGN="LEFT" >+ isActivePieceCell(x: int, y: int): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ isOccupied(x: int, y: int): boolean</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+Player104069929[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Player</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   initialLevel: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   level: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   linesCleared: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   name: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   playerType: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   score: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   winner: boolean [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ reset()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ updateLevel()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ updateScore(clearedLines: int)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+Score104069929[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)Score</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   name: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   score: int [1]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+TetrisBlock104069929[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)TetrisBlock</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   board: Board&lt;TetrisCell&gt; [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   cells: ArrayList&lt;TetrisCell&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   currentRotation: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   hasLanded: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   landTime: long [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   shape: TetrisShape [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ bottomCollision(): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >- canMove(moveX: int, moveY: int): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ checkValidPivot(rotation: int): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ convertBlock(): TetrisAIBlock</TD></TR>
+<TR><TD ALIGN="LEFT" >+ deactivate()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ hardDrop()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ leftCollision(): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ moveCells(moveX: int, moveY: int)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ moveLeft()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ moveRight()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ pivot(rotation: int)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ placeOnBoard()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ prototype(shape: TetrisShape): TetrisBlock</TD></TR>
+<TR><TD ALIGN="LEFT" >+ render(g: Graphics, cellSize: int)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ rightCollision(): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ rotateLeft()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ rotateRight()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ run(board: Board&lt;TetrisCell&gt;)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ softDrop()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ spawnBlock(): TetrisBlock</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+TetrisCell104069929[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)TetrisCell</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >#   board: Board&lt;TetrisCell&gt; [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   color: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   interpolatedY: double [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   isActive: Boolean [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   x: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   y: int [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ destroy()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ render(g: Graphics, cellSize: int)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ renderNextPiece(g: Graphics, cellSize: int, initialShape: int[][])</TD></TR>
+<TR><TD ALIGN="LEFT" >+ resetInterpolation()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ updateInterpolatedY()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+
+subgraph cluster_106433028 { 
+   	label=panel
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   GamePanel1369366907[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)GamePanel</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >#   game: Game [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   mainFrame: MainFrame [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   pauseButton: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   periodOne: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   periodTwo: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   playPanel: PlayPanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   startButton: JButton [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   wasPaused: boolean [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ gameOver()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ keyListenerMove()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ keyListenerOptions()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ pauseGame()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ quitDialog()</TD></TR>
+<TR><TD ALIGN="LEFT" ># startGame()</TD></TR>
+<TR><TD ALIGN="LEFT" ># stopGame()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ updateField()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ updateFieldTwo(board: Board&lt;TetrisCell&gt;)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ updateMessageLabel(soundOff: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ updatePlayPanel()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+MainPanel1369366907[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)MainPanel</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   backGroundImage: Image [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   backgroundLabel: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   buttonPanel: JPanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   logoLabel: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   mainFrame: MainFrame [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   menuLogo: Image [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >- resizeComponents()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+PlayPanel1369366907[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)PlayPanel</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >#   board: Board [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   fieldPane: FieldPane [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   game: Game [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   initialLevelLabel: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   levelLabel: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   linesClearedLabel: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   mainFrame: MainFrame [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   messageLabel: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   nextPieceFieldPane: NextPieceFieldPane [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   periodLabel: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   player: Player [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   playerLabel: JLabel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   score: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   scoreLabel: JLabel [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ updateMessageLabel(message: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ updateNextPieceField(nextPiece: TetrisBlock)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ updatePanel()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ updatePlayerInfo()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+
+subgraph cluster_1354792126 { 
+   	label=config
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   ConfigData1354792126[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)ConfigData</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   fieldHeight: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   fieldWidth: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   music: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   playerOneType: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   playerTwoType: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   soundEffect: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   startLevel: int [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ isPlayerOneType(type: String): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ isPlayerTwoType(type: String): boolean</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+ConfigManager1354792126[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)ConfigManager</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >- loadFromFile(): ConfigData</TD></TR>
+<TR><TD ALIGN="LEFT" >+ resetConfigData()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ resetFieldPaneConfig()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ saveConfigData(configData: ConfigData)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+
+subgraph cluster_1404891352 { 
+   	label=gamefactory
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   GameAI1313329773[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)GameAI</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   ai: TetrisAI [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   bestMove: Move [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   training: boolean [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ dropPiece()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ gameOverPanel()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ play()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ resetGame()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ update(keyCode: int)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+GameDefault1313329773[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)GameDefault</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >#   activeShape: TetrisBlock [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   board: Board [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   gamePanel: GamePanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   gameRunning: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   mainFrame: MainFrame [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   nextShape: TetrisBlock [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   nextShapeIndex: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   paused: boolean [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   period: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   periodDecr: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   player: Player [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   playerName: String [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   playing: boolean [1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" ># checkForLineClear()</TD></TR>
+<TR><TD ALIGN="LEFT" ># finalizeShape()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ gameOverLoser()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ gameOverPanel()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ gameOverWinner()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ newGame()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ pause()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ play()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ resetGame()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ resumeGame()</TD></TR>
+<TR><TD ALIGN="LEFT" ># shouldSettle(): boolean</TD></TR>
+<TR><TD ALIGN="LEFT" >+ spawn()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ start()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ stop()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ update(keyCode: int)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+GameExternal1313329773[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)GameExternal</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+GameFactory1313329773[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)GameFactory</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ createGame(mainFrame: MainFrame, gamePanel: GamePanel, player: int): Game</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+GameOne1313329773[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)GameOne</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ update(keyCode: int)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+GameTwo1313329773[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)GameTwo</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ checkForLineClear()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ stop()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ update(keyCode: int)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+
+subgraph cluster_3600386 { 
+   	label=util
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   BackgroundMusic3600386[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)BackgroundMusic</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >#   audio: AudioInputStream [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   music: Clip [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ playMusic()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ resetMusic()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ stopMusic()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+SoundEffects3600386[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)SoundEffects</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >#   blockPlacement: Clip [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   gameOver: Clip [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   lineClear: Clip [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   mainFrame: MainFrameBase [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   menuKeyPress: Clip [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >- addClipListener(clip: Clip)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ playSound(sound: String)</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+
+subgraph cluster_637428636 { 
+   	label=controller
+	labeljust=l
+	fillcolor="#ececec"
+	style=filled
+   
+   ExternalController637428636[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)ExternalController</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   mainFrame: MainFrame [0..1]</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+GameController637428636[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)GameController</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   game: Game [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   gameLogicExecutor: ScheduledExecutorService [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   mainFrame: MainFrame [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   period: long [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   renderExecutor: ScheduledExecutorService [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ gameOverLoser()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ gameOverWinner()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ pauseGame()</TD></TR>
+<TR><TD ALIGN="LEFT" >- runGamePeriod()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ startGame()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ updateGamePeriod()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+MainFrame637428636[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)MainFrame</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   gameFactory: GameFactory [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   gameLogicOne: GameController [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   gameLogicTwo: GameController [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   gameOne: Game [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   gamePanel: GamePanel [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   gameTwo: Game [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   nextPieces: TetrisShape[] [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >-   panels: PanelsController [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ batchSpawnBlocks()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ gameOverLoser(game: Game)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getInstance(title: String, mainWidth: int, mainHeight: int): MainFrame</TD></TR>
+<TR><TD ALIGN="LEFT" >+ getNextBlock(index: int): TetrisBlock</TD></TR>
+<TR><TD ALIGN="LEFT" >+ initMultiplayerGame()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ initSoloGame()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ pauseGame()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ repaintBoard()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ resetGames()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ showConfigurePanel()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ showGamePanel()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ showHighScorePanel()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ showMainPanel()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ showSplashScreen()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ startGame()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ startGameTwo()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ toggleMusic()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ toggleSound()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ updateGamePeriod()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ updateGamePeriodTwo()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+MainFrameBase637428636[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)MainFrameBase</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >#   backgroundMusic: BackgroundMusic [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   configData: ConfigData [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   mainHeight: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   mainWidth: int [1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   scores: ArrayList&lt;Score&gt; [0..*]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   soundEffects: SoundEffects [0..1]</TD></TR>
+<TR><TD ALIGN="LEFT" >#   title: String [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ numberOfHumanPlayers(): int</TD></TR>
+<TR><TD ALIGN="LEFT" >+ playMusic()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ playSound(sound: String)</TD></TR>
+<TR><TD ALIGN="LEFT" >+ resetConfigData()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ resetFieldPaneConfig()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ saveConfigData()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ stopMusic()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+
+PanelsController637428636[
+	label=<<TABLE BORDER="1" CELLBORDER="0" CELLPADDING="4" CELLSPACING="0">
+<TR><TD ALIGN="LEFT" >(C)PanelsController</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >-   mainFrame: MainFrame [0..1]</TD></TR>
+<HR/>
+<TR><TD ALIGN="LEFT" >+ showConfigurePanel()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ showGamePanel()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ showHighScorePanel()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ showMainPanel()</TD></TR>
+<TR><TD ALIGN="LEFT" >+ showSplashScreen()</TD></TR>
+</TABLE>>
+	style=filled
+	margin=0
+	shape=plaintext
+	fillcolor="#FFFFFF"
+];
+} 
+
+'edges    
+Board104069929 -> MainFrame637428636[label="mainFrame
+[0..1]"];
+ExternalController637428636 -> MainFrame637428636[label="mainFrame
+[0..1]"];
+GameController637428636 -> MainFrame637428636[label="mainFrame
+[0..1]"];
+GameDefault1313329773 -> Board104069929[label="board
+[0..1]"];
+GameDefault1313329773 -> GameAI1313329773[arrowhead=none, arrowtail=empty, dir=both];
+GameDefault1313329773 -> GameExternal1313329773[arrowhead=none, arrowtail=empty, dir=both];
+GameDefault1313329773 -> GameOne1313329773[arrowhead=none, arrowtail=empty, dir=both];
+GameDefault1313329773 -> GamePanel1369366907[label="gamePanel
+[0..1]"];
+GameDefault1313329773 -> GameTwo1313329773[arrowhead=none, arrowtail=empty, dir=both];
+GameDefault1313329773 -> MainFrame637428636[label="mainFrame
+[0..1]"];
+GameDefault1313329773 -> Player104069929[label="player
+[0..1]"];
+GameDefault1313329773 -> TetrisBlock104069929[label="activeShape
+[0..1]"];
+GameDefault1313329773 -> TetrisBlock104069929[label="nextShape
+[0..1]"];
+GamePanel1369366907 -> MainFrame637428636[label="mainFrame
+[0..1]"];
+MainFrame637428636 -> ConfigData1354792126[label="pauseGame() -> isPlayerTwoType()"];
+MainFrame637428636 -> GameController637428636[label="gameLogicOne
+[0..1]"];
+MainFrame637428636 -> GameController637428636[label="gameLogicTwo
+[0..1]"];
+MainFrame637428636 -> GameDefault1313329773[arrowhead=none];
+MainFrame637428636 -> GameFactory1313329773[label="gameFactory
+[0..1]"];
+MainFrame637428636 -> GamePanel1369366907[label="gamePanel
+[0..1]"];
+MainFrame637428636 -> PanelsController637428636[label="panels
+[0..1]"];
+MainFrameBase637428636 -> BackgroundMusic3600386[label="backgroundMusic
+[0..1]"];
+MainFrameBase637428636 -> ConfigData1354792126[label="configData
+[0..1]"];
+MainFrameBase637428636 -> MainFrame637428636[arrowhead=none, arrowtail=empty, dir=both];
+MainFrameBase637428636 -> Score104069929[label="scores
+[0..*]"];
+MainFrameBase637428636 -> SoundEffects3600386[label="soundEffects
+[0..1]"];
+MainPanel1369366907 -> MainFrame637428636[label="mainFrame
+[0..1]"];
+PanelsController637428636 -> MainFrame637428636[label="mainFrame
+[0..1]"];
+PlayPanel1369366907 -> MainFrame637428636[label="mainFrame
+[0..1]"];
+SoundEffects3600386 -> MainFrameBase637428636[label="mainFrame
+[0..1]"];
+TetrisBlock104069929 -> Board104069929[label="board
+[0..1]"];
+TetrisBlock104069929 -> TetrisCell104069929[label="board
+[0..1]"];
+TetrisBlock104069929 -> TetrisCell104069929[label="cells
+[0..*]"];
+    
+}
+@enduml

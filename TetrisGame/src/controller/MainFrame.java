@@ -1,6 +1,5 @@
 package controller;
 
-import config.ConfigManager;
 import model.TetrisShape;
 import model.gamefactory.*;
 import model.TetrisBlock;

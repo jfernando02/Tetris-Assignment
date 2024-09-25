@@ -12,14 +12,13 @@ import javax.swing.*;
 import java.awt.*;
 
 public class PlayPanel extends JPanel {
-    Game game;
-    FieldPane fieldPane;
-    NextPieceFieldPane nextPieceFieldPane;
-    MainFrame mainFrame;
-    Board board;
-    int score;
-    Player player;
-    JLabel messageLabel;
+    private Game game;
+    protected FieldPane fieldPane;
+    private NextPieceFieldPane nextPieceFieldPane;
+    private MainFrame mainFrame;
+    private Board board;
+    private Player player;
+    protected JLabel messageLabel;
 
     private JLabel playerLabel;
     private JLabel initialLevelLabel;
@@ -36,7 +35,7 @@ public class PlayPanel extends JPanel {
     public void setGame(Game game) {
         this.game = game;
         this.board = game.getBoard();
-        this.score = game.getScore();
+        int score = game.getScore();
         this.fieldPane = new FieldPane(board, 15);
         this.nextPieceFieldPane = new NextPieceFieldPane(game.getNextPiece(), 15);
         this.player = game.getPlayer();

@@ -227,11 +227,8 @@ subgraph cluster_106433028 {
 <TR><TD ALIGN="LEFT" >#   game: Game [0..1]</TD></TR>
 <TR><TD ALIGN="LEFT" >#   mainFrame: MainFrame [0..1]</TD></TR>
 <TR><TD ALIGN="LEFT" >#   pauseButton: JButton [0..1]</TD></TR>
-<TR><TD ALIGN="LEFT" >-   periodOne: int [1]</TD></TR>
-<TR><TD ALIGN="LEFT" >-   periodTwo: int [1]</TD></TR>
 <TR><TD ALIGN="LEFT" >#   playPanel: PlayPanel [0..1]</TD></TR>
 <TR><TD ALIGN="LEFT" >#   startButton: JButton [0..1]</TD></TR>
-<TR><TD ALIGN="LEFT" >#   wasPaused: boolean [1]</TD></TR>
 <HR/>
 <TR><TD ALIGN="LEFT" >+ gameOver()</TD></TR>
 <TR><TD ALIGN="LEFT" >+ keyListenerMove()</TD></TR>

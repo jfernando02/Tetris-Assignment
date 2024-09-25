@@ -34,14 +34,16 @@ public abstract class MainFrameBase extends JFrame {
 
         try {
             this.backgroundMusic = new BackgroundMusic();
-            this.soundEffects = new SoundEffects(this);
+            this.soundEffects = new SoundEffects();
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
         }
     }
 
     public void playMusic() {
-        backgroundMusic.playMusic();
+        if (getConfigData().isMusic()) {
+            backgroundMusic.playMusic();
+        }
     }
 
     public void stopMusic() {
@@ -49,7 +51,9 @@ public abstract class MainFrameBase extends JFrame {
     }
 
     public void playSound(String sound) {
-        soundEffects.playSound(sound);
+        if (getConfigData().isSoundEffect()) {
+            soundEffects.playSound(sound);
+        }
     }
 
     public ConfigData getConfigData() {

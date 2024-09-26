@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -19,23 +20,44 @@ public class serverCode {
         try (ServerSocket serverSocket = new ServerSocket(3000)) {
             System.out.println("Server is running...");
 
-            while (true) {
-                try (Socket clientSocket = serverSocket.accept()) { // Accept Connection with Client
-                    System.out.println("Client connected");
-                    BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                    PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+            while (true) { // Initalise all data connections to be able to close everything before new instance of a game
+                Socket clientSocket = null;
+                BufferedReader in = null;
+                PrintWriter out = null;
 
-                    // Wait for Message from Client and then calculate what move to make and then send it back
+                try {
+                    clientSocket = serverSocket.accept();
+                    System.out.println("Client connected");
+
+                    in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                    out = new PrintWriter(clientSocket.getOutputStream(), true);
+
+                    // Process as normal
                     String message;
                     while ((message = in.readLine()) != null) {
                         System.out.println("Message Received: " + message);
                         String response = calculateMoveInfo(message);
-                        out.println(response);
+                        out.println(response); // Send response to client
                     }
 
                     System.out.println("Client has disconnected");
+
                 } catch (Exception e) {
-                    System.out.println("Error for Client/Server Connection: " + e.getMessage());
+                    System.out.println("Error handling client: " + e.getMessage());
+                } finally { // close resources after complete
+                    try {
+                        if (in != null) {
+                            in.close();
+                        }
+                        if (out != null) {
+                            out.close();
+                        }
+                        if (clientSocket != null && !clientSocket.isClosed()) {
+                            clientSocket.close();
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Error closing resources: " + e.getMessage());
+                    }
                 }
             }
         } catch (Exception e) {

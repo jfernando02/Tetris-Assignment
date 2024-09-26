@@ -140,4 +140,18 @@ public class ExternalController {
         return xPosition;
     }
 
+    public void disconnect() { // Disconnect immediately so server knows when to reset
+        try {
+            if (out != null) {
+                out.close();
+            }
+            if (socket != null && !socket.isClosed()) {
+                socket.close();
+                System.out.println("External Controller Says: Disconnected from server.");
+            }
+        } catch (IOException e) {
+            System.err.println("External Controller Says: Error while disconnecting - " + e.getMessage());
+        }
+    }
+
 }

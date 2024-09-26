@@ -2,6 +2,7 @@ package model.gamefactory;
 
 import controller.MainFrame;
 import controller.ExternalController;
+import model.Player;
 import model.TetrisBlock;
 import view.panel.GamePanel;
 
@@ -65,6 +66,20 @@ public class GameExternal extends GameDefault {
 
 //        System.out.println("Rotation Count: " + rotationCount);
 //        System.out.println("X Position: " + xPosition);
+    }
+
+    @Override
+    public void resetGame() {
+        this.board.clearBoard();
+        this.gameRunning = false;
+        this.activeShape = null;
+        this.playing = false;
+        this.paused = false;
+        this.player = new Player(player.getName(), mainFrame.getConfigData().getStartLevel());
+        this.player.setPlayerType("External");
+        this.period = 200 - (player.getLevel()*periodDecr);
+        mainFrame.repaintBoard(); //don't delete or a new game won't render its new state on the fieldPanel in the GamePanel
+        this.externalController.disconnect(); // So client can reconnect after starting a new game
     }
 
 }

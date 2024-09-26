@@ -64,7 +64,7 @@ public class GameController {
             if (game.isPlaying()) {
                 synchronized (game) {
                     game.play();
-                    if (game.getPlayer().getPlayerType().equals("AI")) {
+                    if (game.getPlayer().getPlayerType().equals("AI") || game.getPlayer().getPlayerType().equals("External")) { // FOR SERVER
                         game.update(0);
                     }
                 }

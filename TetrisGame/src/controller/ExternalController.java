@@ -48,7 +48,8 @@ public class ExternalController {
                 try {
                     String serverMessage;
                     while ((serverMessage = in.readLine()) != null) {
-                        System.out.println("External Controller Says: Server - " + serverMessage);
+//                        System.out.println("External Controller Says: Server - " + serverMessage);
+                        System.out.println("External Controller Says: MoveInfo Received");
                         handleServerResponse(serverMessage); // Handle the server response
                     }
                 } catch (IOException e) {

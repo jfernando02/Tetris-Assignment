@@ -25,12 +25,12 @@ public class GameExternal extends GameDefault {
     @Override
     public void update(int keyCode) {
         if (activeShape == null) {
-            System.out.println("activeShape == NULL.");
+//            System.out.println("activeShape == NULL.");
             return;
         }
         // Check if the active shape has changed
         if (activeShape != lastActiveShape) {
-            System.out.println("New active shape detected: " + activeShape);
+//            System.out.println("New active shape detected: " + activeShape);
 
             // Send game state when new block given
             externalController.sendGameUpdate();
@@ -63,8 +63,8 @@ public class GameExternal extends GameDefault {
         this.rotationCount = externalController.getRotationCount();
         this.xPosition = externalController.getXPosition();
 
-        System.out.println("Rotation Count: " + rotationCount);
-        System.out.println("X Position: " + xPosition);
+//        System.out.println("Rotation Count: " + rotationCount);
+//        System.out.println("X Position: " + xPosition);
     }
 
 }

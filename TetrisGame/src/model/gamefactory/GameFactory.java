@@ -8,7 +8,6 @@ import controller.ExternalController;
 public class GameFactory {
     //Pick the type of player for which to construct the game (left or right side of the game panel)
     public Game createGame(MainFrame mainFrame, GamePanel gamePanel, int player) {
-        ExternalController externalController = new ExternalController(mainFrame); // For Server
 
         if (mainFrame.getConfigData().isExtendedMode()) {
             if (player == 1) {
@@ -22,7 +21,7 @@ public class GameFactory {
                     case "AI":
                         return new GameAI(mainFrame, gamePanel, "AI Player 1");
                     case "External":
-                        return new GameExternal(mainFrame, gamePanel, "Ext Player 2", externalController);
+                        return new GameExternal(mainFrame, gamePanel, "Ext Player 2", new ExternalController(mainFrame));
                     default:
                         throw new IllegalArgumentException("Invalid player type");
                 }
@@ -34,7 +33,7 @@ public class GameFactory {
                     case "AI":
                         return new GameAI(mainFrame, gamePanel, "AI Player 2");
                     case "External":
-                        return new GameExternal(mainFrame, gamePanel, "Ext Player 2", externalController);
+                        return new GameExternal(mainFrame, gamePanel, "Ext Player 2", new ExternalController(mainFrame));
                     default:
                         throw new IllegalArgumentException("Invalid player type");
                 }
@@ -47,7 +46,7 @@ public class GameFactory {
                     case "AI":
                         return new GameAI(mainFrame, gamePanel, "AI Player");
                     case "External":
-                        return new GameExternal(mainFrame, gamePanel, "Ext Player", externalController);
+                        return new GameExternal(mainFrame, gamePanel, "Ext Player", new ExternalController(mainFrame));
                     default:
                         throw new IllegalArgumentException("Invalid player type");
                 }

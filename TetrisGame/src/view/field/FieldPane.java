@@ -27,7 +27,7 @@ public class FieldPane extends JPanel {
 
     // This method is called by the system to render the game field
     @Override
-    protected void paintComponent(Graphics g) {
+    public void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (board == null) {
             return;

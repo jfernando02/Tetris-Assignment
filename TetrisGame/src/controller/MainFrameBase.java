@@ -74,9 +74,6 @@ public abstract class MainFrameBase extends JFrame {
         this.configData = ConfigManager.getConfigData();
     }
 
-    public int numberOfHumanPlayers() {
-        return configData.isExtendedMode() ? 2 : 1;
-    }
 
     public void setMusic(boolean music) {
         configData.setMusic(music);

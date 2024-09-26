@@ -6,7 +6,6 @@ import view.panel.GamePanel;
 import ai.TetrisAI;
 
 import javax.swing.*;
-import java.awt.event.KeyEvent;
 
 // Concrete Product of the Factory Method which inherits from the GameDefault base product class
 public class GameAI extends GameDefault {
@@ -39,7 +38,6 @@ public class GameAI extends GameDefault {
         }
     }
 
-
     @Override
     public void update(int keyCode) {
         if (activeShape == null) {
@@ -67,19 +65,7 @@ public class GameAI extends GameDefault {
 
         }
     }
-    /*
-    if (mainFrame.getConfigData().isPlayerOneType("AI")) {
-            java.util.Timer timer = new Timer();
-            timer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    if(game.getActiveShape()!=null) {
-                        game.update(KeyEvent.VK_UP);
-                    }
-                }
-            }, 0, periodOne);
-        }
-     */
+
     @Override
     public void resetGame() {
         this.board.clearBoard();

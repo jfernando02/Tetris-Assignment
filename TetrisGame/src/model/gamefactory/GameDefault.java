@@ -8,7 +8,6 @@ import model.TetrisBlock;
 import model.TetrisCell;
 import view.panel.GamePanel;
 
-import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;

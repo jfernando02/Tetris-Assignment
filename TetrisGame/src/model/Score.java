@@ -1,6 +1,6 @@
 package model;
 
-public class Score {
+public class Score implements Comparable<Score> {
     private int score;
     private String name; // for gameover logic
 
@@ -16,5 +16,10 @@ public class Score {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public int compareTo(Score score) {
+        return score.getScore() - this.score;
     }
 }

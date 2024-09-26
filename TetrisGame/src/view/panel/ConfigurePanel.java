@@ -9,8 +9,6 @@ import java.awt.event.ActionListener;
 import java.awt.*;
 
 public class ConfigurePanel extends JDialog {
-    private JSlider widthSlider;
-    private JSlider heightSlider;
 
     // Constructor for the configuration panel
     public ConfigurePanel(MainFrame mainFrame) {

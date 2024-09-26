@@ -1,16 +1,19 @@
 package server.clientSide;
 
-import java.util.Arrays;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class tetrisGameInfo {
     private int width;
     private int height;
-    private int[][] cells;
-    private int[][] currentShape;
-    private int[][] nextShape;
+    private String cells;
+    private String currentShape;
+    private String nextShape;
 
-    // Constructor
-    public tetrisGameInfo(int width, int height, int[][] cells, int[][] currentShape, int[][] nextShape) {
+    private static ObjectMapper objectMapper = new ObjectMapper();  // For parsing Array later on
+
+    // Constructor for game info message layout
+    public tetrisGameInfo(int width, int height, String cells, String currentShape, String nextShape) {
         this.width = width;
         this.height = height;
         this.cells = cells;
@@ -18,56 +21,35 @@ public class tetrisGameInfo {
         this.nextShape = nextShape;
     }
 
-    // Getters & Setters
-    public int getWidth() {
-        return width;
+    // Getters
+    public int getWidth() {return width;}
+
+    public int getHeight() {return height;}
+
+    public String getCells() {return cells;}
+
+    public String getCurrentShape() {return currentShape;}
+
+    public String getNextShape() {return nextShape;}
+
+    // Parse the cells using Jackson
+    public int[][] parseCells() throws JsonProcessingException {
+        return objectMapper.readValue(cells, int[][].class);
     }
 
-    public int getHeight() {
-        return height;
+    // Parse the next shape using Jackson
+    public int[][] parseNextShape() throws JsonProcessingException {
+        return objectMapper.readValue(nextShape, int[][].class);
     }
 
-    public int[][] getCells() {
-        return cells;
-    }
-
-    public int[][] getCurrentShape() {
-        return currentShape;
-    }
-
-    public int[][] getNextShape() {
-        return nextShape;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public void setCells(int[][] cells) {
-        this.cells = cells;
-    }
-
-    public void setCurrentShape(int[][] currentShape) {
-        this.currentShape = currentShape;
-    }
-
-    public void setNextShape(int[][] nextShape) {
-        this.nextShape = nextShape;
-    }
-
-    // Sending Messages in JSON string format
     @Override
     public String toString() {
         return "tetrisGameInfo{" +
                 "width=" + width +
-                ",height=" + height +
-                ",cells=" + Arrays.deepToString(cells) +
-                ",currentShape=" + Arrays.deepToString(currentShape) +
-                ",nextShape=" + Arrays.deepToString(nextShape) +
+                ", height=" + height +
+                ", cells='" + cells + '\'' +
+                ", currentShape='" + currentShape + '\'' +
+                ", nextShape='" + nextShape + '\'' +
                 '}';
     }
 }

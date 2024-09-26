@@ -22,18 +22,6 @@ public class Board<T> {
         this.spawnY = 0;
     }
 
-    /*
-    // for expanding width and height of the board
-    public void refreshBoard() {
-        this.width = mainFrame.getConfigData().getFieldWidth();
-        this.height = mainFrame.getConfigData().getFieldHeight();
-        this.board = (T[][]) new Object[width][height];
-        this.spawnX = (this.width / 2 - 2);
-        this.spawnY = 0;
-    }
-    */
-
-
     public void setCell(int x, int y, T cell) {
         board[x][y] = cell;
     }

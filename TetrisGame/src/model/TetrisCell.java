@@ -5,11 +5,11 @@ import java.awt.geom.Rectangle2D;
 
 // Class for each individual cell in the Tetris grid
 public class TetrisCell {
-    int x; // X coordinate of the cell relative to the board
-    int y; // Y coordinate of the cell relative to the board
+    private int x; // X coordinate of the cell relative to the board
+    private int y; // Y coordinate of the cell relative to the board
     private double interpolatedY;
-    String color; // Color of the cell
-    Board<TetrisCell> board;
+    private String color; // Color of the cell
+    private Board<TetrisCell> board;
     Boolean isActive;
 
     public TetrisCell(int x, int y, String color, Board<TetrisCell> board) {

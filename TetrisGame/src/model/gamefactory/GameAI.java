@@ -39,16 +39,6 @@ public class GameAI extends GameDefault {
         }
     }
 
-    public void dropPiece() {
-        // Let the AI decide the best move
-        bestMove = ai.findBestMove(activeShape);
-        if (activeShape == null) {
-            System.out.println("No active piece");
-        } else {
-            // Perform the best move
-            update(KeyEvent.VK_UNDEFINED);
-        }
-    }
 
     @Override
     public void update(int keyCode) {

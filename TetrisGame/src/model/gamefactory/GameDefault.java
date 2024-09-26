@@ -137,6 +137,9 @@ public class GameDefault implements Game {
         this.gameRunning = false;
         mainFrame.pauseGame();
 
+        // ---- HERE----
+
+
         //new JDIalog for game over to ask if they're sure if they want to quit
         JDialog dialog = new JDialog();
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);

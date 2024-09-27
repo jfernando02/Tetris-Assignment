@@ -2,7 +2,6 @@ package controller;
 import config.ConfigData;
 import config.ConfigManager;
 import config.HighScoreManager;
-import model.Score;
 import util.BackgroundMusic;
 import util.SoundEffects;
 import view.panel.HighScorePanel;
@@ -11,7 +10,6 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import java.io.IOException;
-import java.util.ArrayList;
 
 // Parent class of MainFrame which hosts the skeleton: the background music, sound effects, title, width,
 // height, config data, and scores

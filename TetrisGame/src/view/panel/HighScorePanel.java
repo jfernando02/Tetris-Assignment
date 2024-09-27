@@ -1,43 +1,36 @@
 package view.panel;
 
+import config.HighScoreData;
+import config.HighScoreManager;
 import controller.MainFrame;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.net.URL;
+import java.util.List;
 
 public class HighScorePanel extends JPanel {
 
-    private Image image;
     private JButton backButton;
-    private JLabel[] labels = new JLabel[30]; // Array to hold all labels
+    private JLabel[] labels = new JLabel[30];
+    private HighScoreManager highScoreManager;
 
-    public HighScorePanel(MainFrame mainFrame) {
-        // Load the image using a relative path or as a resource
-        URL imageUrl = getClass().getResource("/resources/images/highscore.jpg"); // Adjust path as needed
-        if (imageUrl == null) {
-            System.err.println("Image not found: highscore.jpg");
-        } else {
-            image = new ImageIcon(imageUrl).getImage();
-        }
-
+    public HighScorePanel(MainFrame mainFrame, HighScoreManager highScoreManager) {
+        this.highScoreManager = highScoreManager;
         setLayout(null);
 
-        // Create and add labels
-        createLabels();
+        //background color to black
+        setBackground(Color.BLACK);
 
-        // Create the "Back" button
+        createLabels(); // dynamically labels
+
+        // Back button
         backButton = new JButton("Back");
         backButton.setPreferredSize(new Dimension(100, 30));
         add(backButton);
 
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mainFrame.playSound("menuKeyPress");
-                mainFrame.showMainPanel(); // Call method to show MainPanel
-            }
+        backButton.addActionListener((ActionEvent e) -> {
+            mainFrame.playSound("menuKeyPress");
+            mainFrame.showMainPanel();
         });
 
         addComponentListener(new java.awt.event.ComponentAdapter() {
@@ -46,80 +39,70 @@ public class HighScorePanel extends JPanel {
                 resizeComponents();
             }
         });
-
-        // Initial resize to set correct positions
         resizeComponents();
     }
-
     private void createLabels() {
-        String[] rankings = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10"};
-        String[] names = {"STEFAN", "LARRY", "FISTON", "LUCAS", "JACK", "JOSEPH", "DANIEL", "AAA", "AAA", "AAA"};
-        String[] scores = {"100000", "95000", "87000", "83000", "72000", "60000", "28000", "000", "000", "000"};
+        List<HighScoreData> highScoreData = highScoreManager.getTopScores();
 
-        // Create and add ranking labels
+        //ranking labels
         for (int i = 0; i < 10; i++) {
-            labels[i] = createLabel(rankings[i]);
+            labels[i] = createLabel(String.valueOf(i + 1)); // Rank label (1 to 10)
             add(labels[i]);
         }
 
-        // Create and add name labels
+        //name labels names
         for (int i = 0; i < 10; i++) {
-            labels[10 + i] = createLabel(names[i]);
+            if (i < highScoreData.size()) {
+                labels[10 + i] = createLabel(highScoreData.get(i).getName());
+            } else {
+                labels[10 + i] = createLabel("");
+            }
             add(labels[10 + i]);
         }
 
-        // Create and add score labels
+        // labels scores added
         for (int i = 0; i < 10; i++) {
-            labels[20 + i] = createLabel(scores[i]);
+            if (i < highScoreData.size()) {
+                labels[20 + i] = createLabel(String.valueOf(highScoreData.get(i).getScore()));
+            } else {
+                labels[20 + i] = createLabel("0");
+            }
             add(labels[20 + i]);
         }
     }
 
+    // JLabel with consistent style
     private JLabel createLabel(String text) {
         JLabel label = new JLabel(text);
-        label.setFont(new Font("Bauhaus 93", Font.BOLD, 30)); // Default size, will be updated in resizeComponents
+        label.setFont(new Font("Times Square", Font.PLAIN, 25));
         label.setForeground(Color.WHITE);
-        label.setSize(200, 50); // Use size instead of bounds for scaling
+        label.setSize(200, 50);
         return label;
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        if (image != null) {
-            g.drawImage(image, 0, 0, getWidth(), getHeight(), this);
-        }
     }
 
     private void resizeComponents() {
         int width = getWidth();
         int height = getHeight();
+        int fontSize = Math.max(20, height / 20);
 
-        // Calculate font size as a percentage of panel height
-        int fontSize = Math.max(20, height / 20); // Adjust percentage as needed
-
-        // Update font size for all labels
         for (JLabel label : labels) {
-            label.setFont(new Font("Bauhaus 93", Font.BOLD, fontSize));
+            if (label != null) { // Check for null
+                label.setFont(new Font("Times Square", Font.PLAIN, fontSize));
+            }
         }
 
-        // Define relative positions as percentages
-        int[] xPositions = {10, 25, 40, 55, 70}; // X positions for ranking
-        int[] yPositions = {15, 35}; // Y positions for different rows
-
-        // Update label positions
         for (int i = 0; i < 10; i++) {
-            int x = (int) (xPositions[i % 5] / 85.0 * width);
-            int y = (i < 5) ? (int) (yPositions[0] / 150.0 * height) : (int) (yPositions[1] / 60.0 * height);
+            int x = 50;
+            int y = 50 + i * (fontSize + 20);
+
             labels[i].setLocation(x, y);
-            labels[10 + i].setLocation(x, y + fontSize + 10); // Adjust position for names
-            labels[20 + i].setLocation(x, y + 2 * (fontSize + 10)); // Adjust position for scores
+            labels[10 + i].setLocation(x + 100, y);
+            labels[20 + i].setLocation(x + 300, y);
         }
 
-        // Center the button horizontally at the bottom
+        //back button at the bottom
         if (backButton != null) {
             backButton.setBounds((width - 100) / 2, height - 70, 100, 30);
         }
     }
-
 }

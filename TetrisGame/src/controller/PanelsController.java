@@ -1,6 +1,9 @@
 package controller;
 
+import config.HighScoreManager;
 import view.panel.*;
+
+import javax.swing.*;
 
 public class PanelsController {
     private MainFrame mainFrame;
@@ -19,7 +22,6 @@ public class PanelsController {
 
     // Show the single or multiplayer game panel
     public void showGamePanel() {
-
         if (mainFrame.getConfigData().isExtendedMode()) {
             mainFrame.initMultiplayerGame();
         } else {
@@ -36,14 +38,20 @@ public class PanelsController {
         mainFrame.repaint();
     }
 
+    // Only `showConfigurePanel`
     public void showConfigurePanel() {
         ConfigurePanel configurePanel = new ConfigurePanel(mainFrame);
+        configurePanel.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         configurePanel.setVisible(true);
     }
 
     public void showHighScorePanel() {
-        HighScorePanel highScorePanel = new HighScorePanel(mainFrame);
         mainFrame.getContentPane().removeAll();
+        HighScoreManager highScoreManager = new HighScoreManager();
+
+        // method to communicate instance of HighScoreManager to HighScorePanel.
+        HighScorePanel highScorePanel = new HighScorePanel(mainFrame, highScoreManager);
+
         mainFrame.setContentPane(highScorePanel);
         mainFrame.revalidate();
         mainFrame.repaint();

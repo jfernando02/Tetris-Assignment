@@ -6,6 +6,7 @@ import server.clientSide.tetrisGameInfo;
 import model.TetrisBlock;
 import model.gamefactory.GameDefault;
 
+import javax.swing.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.Arrays;
@@ -27,23 +28,22 @@ public class ExternalController {
         this.game = (GameDefault) game;
     }
 
+    // Main Code that establishes connection to server when available and reading server message
     public void run() {
         String serverAddress = "localhost";
         int portNum = 3000;
-        System.out.println("External Controller Says: Client has attempted to connect to server.");
         try {
-            socket = new Socket(serverAddress, portNum); // Socket Connection
+            socket = new Socket(serverAddress, portNum);
             out = new PrintWriter(socket.getOutputStream(), true);
-            System.out.println("External Controller Says: Client has connected to server.");
+            System.out.println("External Controller Says: A new client has connected to server.");
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            new Thread(() -> { // Safer Method of Receiving Messages from the Server.
+            new Thread(() -> { // For receiving move info from server
                 try {
                     String serverMessage;
+                    System.out.println("External Controller Says: Server/Client Information Exchange has begun");
                     while ((serverMessage = in.readLine()) != null) {
-//                        System.out.println("External Controller Says: Server - " + serverMessage);
-                        System.out.println("External Controller Says: MoveInfo Received");
-                        handleServerResponse(serverMessage); // Handle the server response
+                        handleServerResponse(serverMessage);
                     }
                 } catch (IOException e) {
                     System.err.println("Error reading from server: " + e.getMessage());
@@ -51,60 +51,25 @@ public class ExternalController {
             }).start();
 
         } catch (IOException e) {
-            System.out.println("External Controller Says: Error Type - " + e.getMessage());
-            e.printStackTrace();
+//            System.out.println("External Controller Says: Error Type - " + e.getMessage());
         }
     }
 
+    // Code to get information of the game and send it to the server
     public synchronized void sendGameUpdate() {
-        if (mainFrame == null || game == null) { // Debug Check
-            System.err.println("External Controller Says: mainFrame/game is not initialized.");
-            return;
-        }
-
-        if (socket == null || socket.isClosed()) { // Debug Check
-            System.out.println("External Controller Says: Socket not connected. Will Establish Connection inside sendGameUpdate().");
-            run();  // Establish the socket connection if there is none
-        }
-
-        if (out == null) { // Debug Check
-            try {
-                out = new PrintWriter(socket.getOutputStream(), true);
-            } catch (IOException e) {
-                System.err.println("External Controller Says: Could not initialize PrintWriter.");
-                e.printStackTrace();
-                return;
-            }
-        }
-
         // Information To Send to Server.
         int width = mainFrame.getConfigData().getFieldWidth();
         int height = mainFrame.getConfigData().getFieldHeight();
         TetrisBlock currentPiece = game.getActiveShape();
-        if (currentPiece == null) { // Debug Check
-            System.out.println("Current Piece is NULL");
-            return; // Exit if there's no active piece
-        }
         TetrisBlock nextPiece = game.getNextPiece();
         String board = Arrays.deepToString(game.getBoard().convertBoard());
-        String nextShape = "Empty"; // incase of null
-        String currentShape = "Empty"; // incase of null
-
+        String nextShape = Arrays.deepToString(nextPiece.getShape());
+        String currentShape = Arrays.deepToString(currentPiece.getShape());
         Gson gson = new Gson();
-
-        if (currentPiece != null) {
-            nextShape = Arrays.deepToString(nextPiece.getShape());
-            currentShape = Arrays.deepToString(currentPiece.getShape());
-        } else if (nextPiece != null) {
-            nextShape = Arrays.deepToString(nextPiece.getShape());
-        } else {
-            System.out.println("Current Piece is NULL");
-        }
 
         tetrisGameInfo gameInfo = new tetrisGameInfo(width, height, board, currentShape, nextShape);
         String gameJson = gson.toJson(gameInfo);
         out.println(gameJson);
-        System.out.println("External Controller Says: Game State sent to Server.");
     }
 
     private void handleServerResponse(String message) {
@@ -124,16 +89,13 @@ public class ExternalController {
         }
     }
 
-    // Getters for call inside GameExternal
-    public int getRotationCount() {
-        return rotationCount;
-    }
+    // Getters for calls inside GameExternal
+    public int getRotationCount() {return rotationCount;}
 
-    public int getXPosition() {
-        return xPosition;
-    }
+    public int getXPosition() {return xPosition;}
 
-    public void disconnect() { // Disconnect immediately so server knows when to reset
+    // for GameExternal so clients can connect after starting a new game
+    public void disconnect() {
         try {
             if (out != null) {
                 out.close();
@@ -147,4 +109,17 @@ public class ExternalController {
         }
     }
 
+    // Just to check whether the server/client connection was properly established
+    public boolean isConnected() {
+        return socket != null && socket.isConnected() && !socket.isClosed();
+    }
+
+    public void showServerConnectionError() {
+        // Create a dialog to inform the user
+        JOptionPane.showMessageDialog(mainFrame,
+                "You're currently trying to run external mode without an active server running.\n " +
+                        "Ensure the server is running before using this configuration.",
+                "Server Connection Error",
+                JOptionPane.ERROR_MESSAGE);
+    }
 }

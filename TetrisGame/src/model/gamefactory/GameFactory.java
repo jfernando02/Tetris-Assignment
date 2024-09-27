@@ -21,7 +21,7 @@ public class GameFactory {
                     case "AI":
                         return new GameAI(mainFrame, gamePanel, "AI Player 1");
                     case "External":
-                        return new GameExternal(mainFrame, gamePanel, "Ext Player 2", new ExternalController(mainFrame));
+                        return new GameExternal(mainFrame, gamePanel, "Ext Player 1", new ExternalController(mainFrame));
                     default:
                         throw new IllegalArgumentException("Invalid player type");
                 }

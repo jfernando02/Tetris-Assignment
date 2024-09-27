@@ -10,7 +10,7 @@ public class tetrisGameInfo {
     private String currentShape;
     private String nextShape;
 
-    private static ObjectMapper objectMapper = new ObjectMapper();  // For parsing Array later on
+    private static ObjectMapper objectMapper = new ObjectMapper();  // For be able to read strings as Arrays later
 
     // Constructor for game info message layout
     public tetrisGameInfo(int width, int height, String cells, String currentShape, String nextShape) {
@@ -32,12 +32,10 @@ public class tetrisGameInfo {
 
     public String getNextShape() {return nextShape;}
 
-    // Parse the cells using Jackson
     public int[][] parseCells() throws JsonProcessingException {
         return objectMapper.readValue(cells, int[][].class);
     }
 
-    // Parse the next shape using Jackson
     public int[][] parseCurrentShape() throws JsonProcessingException {
         return objectMapper.readValue(currentShape, int[][].class);
     }

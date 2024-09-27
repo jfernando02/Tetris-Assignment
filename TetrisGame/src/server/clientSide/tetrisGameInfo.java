@@ -38,8 +38,8 @@ public class tetrisGameInfo {
     }
 
     // Parse the next shape using Jackson
-    public int[][] parseNextShape() throws JsonProcessingException {
-        return objectMapper.readValue(nextShape, int[][].class);
+    public int[][] parseCurrentShape() throws JsonProcessingException {
+        return objectMapper.readValue(currentShape, int[][].class);
     }
 
     @Override

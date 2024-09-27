@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -14,7 +13,7 @@ import java.util.Arrays;
 import server.clientSide.tetrisGameInfo;
 
 public class serverCode {
-    private static final Random random = new Random(); // Just to create random values for rotation/x position
+    private static final Random random = new Random(); // Just to create random values for rotation
 
     public static void main(String[] args) {
         try (ServerSocket serverSocket = new ServerSocket(3000)) {
@@ -72,22 +71,51 @@ public class serverCode {
         try {
             gameData = gson.fromJson(message, tetrisGameInfo.class);
 
-            // Still need to update the deciding logic to incorporate some sort of algorithm to determine rotation/xPosition.
-            try {
-                int[][] cellsArray = gameData.parseCells();
-                int[][] nextShapeArray = gameData.parseNextShape();
+            // Retrieve Game Info
+            int[][] cellsArray = gameData.parseCells();
+            int[][] currentShapeArray = gameData.parseCurrentShape();
+            int width = gameData.getWidth();
+            int height = gameData.getHeight();
 
-                // Random Values For Now
-                int rotationCount = random.nextInt(4);
-                int xPosition = random.nextInt(gameData.getWidth());
+            // Logic for making better moves.
+            int[] columnHeights = calculateColumnHeights(cellsArray, width, height);  // Get column heights
+            int bestColumn = getBestColumn(columnHeights); // To find best Column
+            int bestRotation = random.nextInt(4); // Currently still random
 
-                return String.format("RotationCount: %d, xPosition: %d", rotationCount, xPosition); // Format to send message back to client
-            } catch (JsonProcessingException e) {
-                return "Error: Failed to convert arrays.";
-            }
+            return String.format("RotationCount: %d, xPosition: %d", bestRotation, bestColumn);
 
-        } catch (JsonSyntaxException e) {
+        } catch (JsonSyntaxException | JsonProcessingException e) {
             return "Error: Invalid JSON format";
         }
+    }
+
+    // Calculate column heights for the game board
+    public static int[] calculateColumnHeights(int[][] cellsArray, int width, int height) {
+        int[] columnHeights = new int[width];
+
+        for (int col = 0; col < width; col++) {
+            // look for filled cells in column
+            for (int row = 0; row < height; row++) {
+                if (cellsArray[col][row] != 0) {
+                    columnHeights[col] = height - row;  // Calculate height from the top
+                    break;
+                }
+            }
+        }
+        return columnHeights;
+    }
+
+    // find the column to place the block depending on that columns height
+    public static int getBestColumn(int[] columnHeights) {
+        int minHeight = Integer.MAX_VALUE;
+        int bestColumn = 0;
+
+        for (int col = 0; col < columnHeights.length; col++) {
+            if (columnHeights[col] < minHeight) {
+                minHeight = columnHeights[col];
+                bestColumn = col;
+            }
+        }
+        return bestColumn;
     }
 }

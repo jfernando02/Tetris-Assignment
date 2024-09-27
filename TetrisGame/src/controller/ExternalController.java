@@ -12,25 +12,18 @@ import java.util.Arrays;
 
 public class ExternalController {
     private MainFrame mainFrame;
-    private TetrisBlock tetrisBlock;
     private GameDefault game;
-    private PrintWriter out; // To send messages to the server
+    private PrintWriter out; //
     private Socket socket;
 
-    private int rotationCount; // Store rotation count
-    private int xPosition;      // Store x position
+    private int rotationCount;
+    private int xPosition;
 
     public ExternalController(MainFrame mainFrame) {
         this.mainFrame = mainFrame;
     }
 
     public void setGame(Game game) {
-        this.game = (GameDefault) game;
-    }
-
-    public ExternalController(MainFrame mainFrame, Game game) {
-        this.mainFrame = mainFrame;
-        this.tetrisBlock = new TetrisBlock();
         this.game = (GameDefault) game;
     }
 

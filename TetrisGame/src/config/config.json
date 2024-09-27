@@ -1,7 +1,7 @@
 {
   "fieldWidth": 10,
   "fieldHeight": 20,
-  "startLevel": 3,
+  "startLevel": 2,
   "music": true,
   "soundEffect": true,
   "playerOneType": "Human",

@@ -6,6 +6,7 @@ import model.TetrisBlock;
 import view.panel.GamePanel;
 import view.panel.GamePanelMulti;
 
+
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -100,10 +101,6 @@ public class MainFrame extends MainFrameBase {
     }
 
     public void showConfigurePanel() { panels.showConfigurePanel(); }
-
-    public void showHighScorePanel() {
-        panels.showHighScorePanel();
-    }
 
     public void startGame() {
         gameLogicOne.startGame();

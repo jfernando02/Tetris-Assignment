@@ -1,9 +1,11 @@
 package controller;
 import config.ConfigData;
 import config.ConfigManager;
+import config.HighScoreManager;
 import model.Score;
 import util.BackgroundMusic;
 import util.SoundEffects;
+import view.panel.HighScorePanel;
 
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
@@ -20,7 +22,8 @@ public abstract class MainFrameBase extends JFrame {
     protected int mainWidth;
     protected int mainHeight;
     protected ConfigData configData;
-    protected ArrayList<Score> scores = new ArrayList<>();
+    protected HighScorePanel highScorePanel;
+
 
     public MainFrameBase(String title, int mainWidth, int mainHeight) throws UnsupportedAudioFileException, LineUnavailableException, IOException {
         this.title = title;
@@ -38,6 +41,16 @@ public abstract class MainFrameBase extends JFrame {
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
         }
+    }
+    public void showHighScorePanel() {
+        HighScoreManager highScoreManager = new HighScoreManager();
+        if (highScorePanel == null) {
+            highScorePanel = new HighScorePanel((MainFrame) this, highScoreManager);
+        }
+        this.getContentPane().removeAll();
+        this.add(highScorePanel);
+        this.revalidate();
+        this.repaint();
     }
 
     public void playMusic() {

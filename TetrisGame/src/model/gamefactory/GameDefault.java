@@ -7,6 +7,7 @@ import model.Player;
 import model.TetrisBlock;
 import model.TetrisCell;
 import view.panel.GamePanel;
+import config.HighScoreManager;
 
 import javax.swing.*;
 import java.awt.event.KeyAdapter;
@@ -20,6 +21,7 @@ public class GameDefault implements Game {
     protected TetrisBlock nextShape;
     private int nextShapeIndex;
     protected GamePanel gamePanel;
+    private HighScoreManager highScoreManager;
 
     protected boolean playing;
     protected boolean paused = false;
@@ -39,6 +41,7 @@ public class GameDefault implements Game {
         this.player = new Player(playerName, mainFrame.getConfigData().getStartLevel());
         this.player.setPlayerType("Human");
         this.nextShapeIndex=0;
+        this.highScoreManager = new HighScoreManager();
         this.activeShape = null;
         gameRunning = false;
         spawn();
@@ -135,6 +138,9 @@ public class GameDefault implements Game {
         mainFrame.stopMusic();
         this.gameRunning = false;
         mainFrame.pauseGame();
+        String playerName = JOptionPane.showInputDialog("Enter your name: ");
+        int score = player.getScore(); // `player` is of type `Player`
+        highScoreManager.addScore(playerName, score);
 
         // ---- HERE----
 

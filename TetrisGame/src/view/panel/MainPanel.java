@@ -79,7 +79,7 @@ public class MainPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mainFrame.playSound("menuKeyPress");
-                mainFrame.showHighScorePanel(); // Navigate to HighScorePanel
+                mainFrame.showHighScorePanel(); // Go to HighScorePanel
             }
 
         });

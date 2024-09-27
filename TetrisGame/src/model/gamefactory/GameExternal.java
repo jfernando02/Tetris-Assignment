@@ -9,48 +9,53 @@ import view.panel.GamePanel;
 public class GameExternal extends GameDefault {
     private ExternalController externalController;
 
+    private boolean serverMessageShown = false;  // Error Notifier on first go
+
     private int rotationCount;
     private int xPosition;
-    private TetrisBlock lastActiveShape; // Tracker to limit server/client messaging
+    private TetrisBlock lastActiveShape;
 
     public GameExternal(MainFrame mainFrame, GamePanel gamePanel, String playerName, ExternalController externalController) {
         super(mainFrame, gamePanel, playerName);
         this.externalController = externalController;
         this.player.setPlayerType("External");
-
-        this.externalController.setGame(this); //
-        this.externalController.run(); // Initial Start of Client/Server Connection
+        this.externalController.setGame(this);
     }
 
-    // Method to update the game state based on server data
+    // Handling server/client connections, move changes, errors, etc.
     @Override
     public void update(int keyCode) {
         if (activeShape == null) {
-//            System.out.println("activeShape == NULL.");
             return;
         }
-        // Check if the active shape has changed
+
+        // Attempt to establish connection with server if there isn't to begin with
+        if (!externalController.isConnected()) {
+            externalController.run(); // attempt reconnection throughout
+            if (!serverMessageShown && !externalController.isConnected()) { // single error message at initial start
+                externalController.showServerConnectionError();
+                serverMessageShown = true;
+                System.out.println("GameExternal Says: Client will attempt to make connections to server throughout the game.");
+            }
+            return;
+        }
+
+        // Retrieve Game Update whenever a new shape appears and apply change
         if (activeShape != lastActiveShape) {
-//            System.out.println("New active shape detected: " + activeShape);
-
-            // Send game state when new block given
             externalController.sendGameUpdate();
-            getRotationCountAndXPosition(); // Fetch the latest rotation count and x position
+            getRotationCountAndXPosition();
 
-            // Apply rotation
             if (rotationCount > 0) {
                 for (int i = 0; i < rotationCount; i++) {
                     activeShape.rotateRight();
                 }
             }
-
             lastActiveShape = activeShape;
         }
 
         int currentCol = activeShape.getColumn();
         int colDiff = xPosition - currentCol;
 
-        // Move the active shape
         if (colDiff > 0) {
             activeShape.moveRight();
         } else if (colDiff < 0) {
@@ -60,12 +65,10 @@ public class GameExternal extends GameDefault {
         activeShape.softDrop();
     }
 
+    // Getter
     private void getRotationCountAndXPosition() {
         this.rotationCount = externalController.getRotationCount();
         this.xPosition = externalController.getXPosition();
-
-//        System.out.println("Rotation Count: " + rotationCount);
-//        System.out.println("X Position: " + xPosition);
     }
 
     @Override
@@ -79,7 +82,7 @@ public class GameExternal extends GameDefault {
         this.player.setPlayerType("External");
         this.period = 200 - (player.getLevel()*periodDecr);
         mainFrame.repaintBoard(); //don't delete or a new game won't render its new state on the fieldPanel in the GamePanel
-        this.externalController.disconnect(); // So client can reconnect after starting a new game
+        this.externalController.disconnect(); // So clients can connect after starting a new game
     }
 
 }

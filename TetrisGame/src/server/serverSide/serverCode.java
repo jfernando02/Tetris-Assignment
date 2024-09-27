@@ -3,65 +3,80 @@ package server.serverSide;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Random;
-import java.util.Arrays;
+
 import server.clientSide.tetrisGameInfo;
 
 public class serverCode {
-    private static final Random random = new Random(); // Just to create random values for rotation/x position
+    private static int activeClientCount = 0;
 
     public static void main(String[] args) {
         try (ServerSocket serverSocket = new ServerSocket(3000)) {
-            System.out.println("Server is running...");
+            System.out.println("Server is running. Awaiting Connections from Clients. ");
 
-            while (true) { // Initalise all data connections to be able to close everything before new instance of a game
-                Socket clientSocket = null;
-                BufferedReader in = null;
-                PrintWriter out = null;
-
-                try {
-                    clientSocket = serverSocket.accept();
-                    System.out.println("Client connected");
-
-                    in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                    out = new PrintWriter(clientSocket.getOutputStream(), true);
-
-                    // Process as normal
-                    String message;
-                    while ((message = in.readLine()) != null) {
-                        System.out.println("Message Received: " + message);
-                        String response = calculateMoveInfo(message);
-                        out.println(response); // Send response to client
-                    }
-
-                    System.out.println("Client has disconnected");
-
-                } catch (Exception e) {
-                    System.out.println("Error handling client: " + e.getMessage());
-                } finally { // close resources after complete
-                    try {
-                        if (in != null) {
-                            in.close();
-                        }
-                        if (out != null) {
-                            out.close();
-                        }
-                        if (clientSocket != null && !clientSocket.isClosed()) {
-                            clientSocket.close();
-                        }
-                    } catch (Exception e) {
-                        System.out.println("Error closing resources: " + e.getMessage());
-                    }
+            while (true) { // Handle Client Connections
+                Socket clientSocket = serverSocket.accept();
+                synchronized (serverCode.class) { // Synchronize to ensure thread safety
+                    activeClientCount++;
                 }
+                String clientId = "Client " + activeClientCount;
+                System.out.println("Client has connected, ID:" + activeClientCount);
+
+                // Call new thread for each new client
+                new Thread(new ClientHandler(clientSocket, clientId)).start();
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public static synchronized void clientDisconnected() {
+        activeClientCount--;
+    }
+}
+
+// Separate class to be able to have multiple External Clients connect
+class ClientHandler implements Runnable {
+    private Socket clientSocket;
+    private String clientId;
+    private static Random random = new Random(); // Just to create random values for rotation
+
+    public ClientHandler(Socket socket, String clientId) {
+        this.clientSocket = socket;
+        this.clientId = clientId;
+    }
+
+    public void run() {
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)) {
+
+            // Process game info from the client
+            String message;
+            while ((message = in.readLine()) != null) {
+                System.out.println(clientId + ": Message Received: " + message);
+                String response = calculateMoveInfo(message);
+                out.println(response);
+            }
+            System.out.println(clientId + " has disconnected");
+
+        } catch (Exception e) {
+            System.out.println("Error handling " + clientId + ": " + e.getMessage());
+        } finally {
+            try {
+                if (clientSocket != null && !clientSocket.isClosed()) {
+                    clientSocket.close();
+                }
+            } catch (Exception e) {
+                System.out.println("Error closing client socket for " + clientId + ": " + e.getMessage());
+            } finally {
+                serverCode.clientDisconnected();
+            }
         }
     }
 
@@ -71,23 +86,50 @@ public class serverCode {
 
         try {
             gameData = gson.fromJson(message, tetrisGameInfo.class);
+            // Retrieve Game Info
+            int[][] cellsArray = gameData.parseCells();
+            int[][] currentShapeArray = gameData.parseCurrentShape();
+            int width = gameData.getWidth();
+            int height = gameData.getHeight();
 
-            // Still need to update the deciding logic to incorporate some sort of algorithm to determine rotation/xPosition.
-            try {
-                int[][] cellsArray = gameData.parseCells();
-                int[][] nextShapeArray = gameData.parseNextShape();
+            // Logic for making better moves
+            int[] columnHeights = calculateColumnHeights(cellsArray, width, height);
+            int bestColumn = getBestColumn(columnHeights);
+            int bestRotation = random.nextInt(4); // Currently still random
 
-                // Random Values For Now
-                int rotationCount = random.nextInt(4);
-                int xPosition = random.nextInt(gameData.getWidth());
+            return String.format("RotationCount: %d, xPosition: %d", bestRotation, bestColumn);
 
-                return String.format("RotationCount: %d, xPosition: %d", rotationCount, xPosition); // Format to send message back to client
-            } catch (JsonProcessingException e) {
-                return "Error: Failed to convert arrays.";
-            }
-
-        } catch (JsonSyntaxException e) {
+        } catch (JsonSyntaxException | JsonProcessingException e) {
             return "Error: Invalid JSON format";
         }
+    }
+
+    // Calculate column heights to know which column to favour
+    public static int[] calculateColumnHeights(int[][] cellsArray, int width, int height) {
+        int[] columnHeights = new int[width];
+
+        for (int col = 0; col < width; col++) {
+            for (int row = 0; row < height; row++) {
+                if (cellsArray[col][row] != 0) {
+                    columnHeights[col] = height - row;
+                    break;
+                }
+            }
+        }
+        return columnHeights;
+    }
+
+    // Find suitable column to place block
+    public static int getBestColumn(int[] columnHeights) {
+        int minHeight = Integer.MAX_VALUE;
+        int bestColumn = 0;
+
+        for (int col = 0; col < columnHeights.length; col++) {
+            if (columnHeights[col] < minHeight) {
+                minHeight = columnHeights[col];
+                bestColumn = col;
+            }
+        }
+        return bestColumn;
     }
 }

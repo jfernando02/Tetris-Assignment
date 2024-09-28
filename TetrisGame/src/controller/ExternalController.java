@@ -7,6 +7,7 @@ import model.TetrisBlock;
 import model.gamefactory.GameDefault;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.Arrays;
@@ -35,7 +36,7 @@ public class ExternalController {
         try {
             socket = new Socket(serverAddress, portNum);
             out = new PrintWriter(socket.getOutputStream(), true);
-            System.out.println("External Controller Says: A new client has connected to server.");
+            System.out.println("External Controller Says: Client has now connected to server.");
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
             new Thread(() -> { // For receiving move info from server
@@ -115,11 +116,24 @@ public class ExternalController {
     }
 
     public void showServerConnectionError() {
-        // Create a dialog to inform the user
-        JOptionPane.showMessageDialog(mainFrame,
-                "You're currently trying to run external mode without an active server running.\n " +
-                        "Ensure the server is running before using this configuration.",
-                "Server Connection Error",
-                JOptionPane.ERROR_MESSAGE);
+        JDialog dialog = new JDialog(mainFrame, "Server Connection Error", Dialog.ModalityType.MODELESS);
+
+        // Set up message, positioning, etc.
+        JLabel messageLabel = new JLabel("<html><body>Warning: Server isn't currently active");
+        messageLabel.setForeground(Color.BLACK);
+        dialog.add(messageLabel, BorderLayout.CENTER);
+        messageLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        messageLabel.setVerticalAlignment(SwingConstants.CENTER);
+        dialog.setLayout(new BorderLayout());
+        dialog.add(messageLabel, BorderLayout.CENTER);
+
+        // Setup Dialog window
+        dialog.setSize(300, 100);
+        dialog.setLocationRelativeTo(mainFrame);
+        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        dialog.setVisible(true);
+
+        // Timer
+        new javax.swing.Timer(1500, e -> dialog.dispose()).start();
     }
 }

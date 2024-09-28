@@ -1,0 +1,36 @@
+package model;
+import model.Score;
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class ScoreTest {
+
+    @Test
+    public void testScoreInitialization() {
+        // Initialize a Score object with score 500 and name "Player1"
+        Score score = new Score(500, "Player1");
+
+        // Print the initialization values
+        System.out.println("Score initialized with: " + score.getScore() + ", Name: " + score.getName());
+
+        // Check if the score is set correctly
+        assertEquals(500, score.getScore());
+
+        // Check if the name is set correctly
+        assertEquals("Player1", score.getName());
+    }
+
+    @Test
+    public void testScoreSetterGetter() {
+        // Initialize a Score object
+        Score score = new Score(100, "Player2");
+
+        // Print the initial values
+        System.out.println("Initial Score: " + score.getScore() + ", Name: " + score.getName());
+
+        // Verify the initial values
+        assertEquals(100, score.getScore());
+        assertEquals("Player2", score.getName());
+
+    }
+}

@@ -1,0 +1,38 @@
+package model;
+
+import model.Player;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class PlayerTest {
+
+    private Player player;
+
+    @Before
+    public void setUp() {
+        // Initialize the player with a starting level (e.g., level 0)
+        player = new Player("TestPlayer", 0);
+    }
+
+    @Test
+    public void testScoreIncreasesPerLevel() {
+        // Test when clearing 1 line
+        player.updateScore(1);
+        assertEquals(100, player.getScore()); // Score should be 100 for 1 line
+        assertEquals(0, player.getLevel()); // Level should still be 0
+
+        // Test when clearing 4 lines
+        player.updateScore(4);
+        assertEquals(1100, player.getScore()); // Score should now be 1100 (100 + 1000)
+        assertEquals(0, player.getLevel()); // Level still 0 because lines cleared < 10
+
+        player.updateScore(4);
+        assertEquals(2100, player.getScore()); // Score should now be 2100 (1100 + 1000)
+        assertEquals(0, player.getLevel()); // Level still 0 because lines cleared < 10
+
+        player.updateScore(1);
+        assertEquals(2200, player.getScore()); // Score should now be 2200 (2100 + 100)
+        assertEquals(1, player.getLevel()); // Level 1 because lines cleared => 10
+    }
+}

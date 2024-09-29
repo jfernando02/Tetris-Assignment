@@ -1,6 +1,7 @@
 package controller;
 import config.ConfigData;
 import config.ConfigManager;
+import config.HighScoreData;
 import config.HighScoreManager;
 import util.BackgroundMusic;
 import util.SoundEffects;
@@ -20,6 +21,7 @@ public abstract class MainFrameBase extends JFrame {
     protected int mainWidth;
     protected int mainHeight;
     protected ConfigData configData;
+    protected HighScoreData highScoreData;
     protected HighScorePanel highScorePanel;
 
 
@@ -28,6 +30,7 @@ public abstract class MainFrameBase extends JFrame {
         this.mainWidth = mainWidth;
         this.mainHeight = mainHeight;
         this.configData = ConfigManager.getConfigData();
+        this.highScoreData = HighScoreManager.getHighScoreData();
         setTitle(this.title);
         setSize(this.mainWidth, this.mainHeight);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -39,16 +42,6 @@ public abstract class MainFrameBase extends JFrame {
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
         }
-    }
-    public void showHighScorePanel() {
-        HighScoreManager highScoreManager = new HighScoreManager();
-        if (highScorePanel == null) {
-            highScorePanel = new HighScorePanel((MainFrame) this, highScoreManager);
-        }
-        this.getContentPane().removeAll();
-        this.add(highScorePanel);
-        this.revalidate();
-        this.repaint();
     }
 
     public void playMusic() {
@@ -71,6 +64,7 @@ public abstract class MainFrameBase extends JFrame {
         return configData;
     }
 
+
     public void saveConfigData() {
         ConfigManager.saveConfigData(configData);
     }
@@ -78,6 +72,19 @@ public abstract class MainFrameBase extends JFrame {
     public void resetConfigData() {
         ConfigManager.resetConfigData();
         this.configData = ConfigManager.getConfigData();
+    }
+
+    public HighScoreData getHighScoreData() {
+        return highScoreData;
+    }
+
+    public void saveHighScoreData() {
+        HighScoreManager.saveHighScores(highScoreData);
+    }
+
+    public void resetHighScoreData() {
+        HighScoreManager.resetHighScores();
+        this.highScoreData = HighScoreManager.getHighScoreData();
     }
 
     public void resetFieldPaneConfig() {

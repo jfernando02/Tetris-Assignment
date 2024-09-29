@@ -21,7 +21,6 @@ public class GameDefault implements Game {
     protected TetrisBlock nextShape;
     private int nextShapeIndex;
     protected GamePanel gamePanel;
-    private HighScoreManager highScoreManager;
 
     protected boolean playing;
     protected boolean paused = false;
@@ -41,7 +40,6 @@ public class GameDefault implements Game {
         this.player = new Player(playerName, mainFrame.getConfigData().getStartLevel());
         this.player.setPlayerType("Human");
         this.nextShapeIndex=0;
-        this.highScoreManager = new HighScoreManager();
         this.activeShape = null;
         gameRunning = false;
         spawn();
@@ -138,11 +136,14 @@ public class GameDefault implements Game {
         mainFrame.stopMusic();
         this.gameRunning = false;
         mainFrame.pauseGame();
-        String playerName = JOptionPane.showInputDialog("Enter your name: ");
-        int score = player.getScore(); // `player` is of type `Player`
-        highScoreManager.addScore(playerName, score);
 
-        // ---- HERE----
+        if(mainFrame.getHighScoreData().isTopTenScore(player.getScore()) && player.getScore() > 0) {
+            String playerName = JOptionPane.showInputDialog("Top 10 score! Enter your name if you wish to be on the leaderboard:");
+            // Add the score to the high score data
+            mainFrame.getHighScoreData().addScore(playerName, player.getScore());
+            // Save new score to scores.json
+            mainFrame.saveHighScoreData();
+        }
 
 
         //new JDIalog for game over to ask if they're sure if they want to quit

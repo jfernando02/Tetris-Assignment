@@ -10,6 +10,7 @@ import view.panel.GamePanelMulti;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+import java.awt.*;
 import java.io.IOException;
 
 // Singleton pattern for thread safety with lazy initialisation
@@ -69,13 +70,41 @@ public class MainFrame extends MainFrameBase {
 
     //Only one game if not extended mode
     public void initSoloGame() {
+        // Spawn the blocks and initialize the game panel for solo mode
         batchSpawnBlocks();
         gamePanel = new GamePanel(this);
         this.gameOne = gameFactory.createGame(this, gamePanel, 1);
 
         this.gameLogicOne = new GameController(this, gameOne);
         gamePanel.setGame(gameOne, null);
+
+        // Get the preferred size of the game panel
+        Dimension preferredSize = gamePanel.getPreferredSize();
+
+        // Resize the main frame to accommodate the new game panel size
+        setPreferredSize(preferredSize);
+        setMinimumSize(preferredSize); // Set the minimum size of the frame
+
+        pack(); // Adjust the frame to fit the preferred size of its components
+
+        // Add a ComponentListener to ensure the frame cannot be resized smaller than the minimum size
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                // Get the current size of the frame
+                Dimension currentSize = getSize();
+
+                // Ensure the width and height are not smaller than the minimum size
+                if (currentSize.width < preferredSize.width || currentSize.height < preferredSize.height) {
+                    // Set the frame size to the minimum size if it's smaller
+                    setSize(Math.max(currentSize.width, preferredSize.width),
+                            Math.max(currentSize.height, preferredSize.height));
+                }
+            }
+        });
+        setResizable(true); // Allow the frame to be resizable
     }
+
 
     //Two games if extended mode
     public void initMultiplayerGame() {
@@ -90,7 +119,34 @@ public class MainFrame extends MainFrameBase {
         this.gameLogicTwo = new GameController(this, gameTwo);
 
         this.gamePanel.setGame(gameOne, gameTwo);
+
+        // Get the preferred size of the game panel
+        Dimension preferredSize = gamePanel.getPreferredSize();
+
+        // Resize the main frame to accommodate the new game panel size
+        setPreferredSize(preferredSize);
+        setMinimumSize(preferredSize); // Set the minimum size of the frame
+
+        pack(); // Adjust the frame to fit the preferred size of its components
+
+        // Add a ComponentListener to ensure the frame cannot be resized smaller than the minimum size
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                // Get the current size of the frame
+                Dimension currentSize = getSize();
+
+                // Ensure the width and height are not smaller than the minimum size
+                if (currentSize.width < preferredSize.width || currentSize.height < preferredSize.height) {
+                    // Set the frame size to the minimum size if it's smaller
+                    setSize(Math.max(currentSize.width, preferredSize.width),
+                            Math.max(currentSize.height, preferredSize.height));
+                }
+            }
+        });
+        setResizable(true); // Allow the frame to be resizable
     }
+
 
     public void showGamePanel() { panels.showGamePanel(); }
 
@@ -103,6 +159,8 @@ public class MainFrame extends MainFrameBase {
     }
 
     public void showConfigurePanel() { panels.showConfigurePanel(); }
+
+    public void showHighScorePanel() { panels.showHighScorePanel(); }
 
     public void startGame() {
         gameLogicOne.startGame();
@@ -120,7 +178,6 @@ public class MainFrame extends MainFrameBase {
             gameLogicOne.setPeriod(gameOne.getPeriod());
             gameLogicOne.updateGamePeriod();
         }
-
     }
 
     public void updateGamePeriodTwo() {

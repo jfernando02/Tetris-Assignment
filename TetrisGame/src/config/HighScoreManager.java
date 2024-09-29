@@ -1,55 +1,66 @@
 package config;
 
-import com.google.gson.reflect.TypeToken;
 import com.google.gson.Gson;
-import java.io.FileNotFoundException;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
+
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Comparator;
 import java.util.List;
-import java.util.ArrayList;
 
 public class HighScoreManager {
     private static final String HIGH_SCORE_FILE = "src/config/scores.json";
-    private List<HighScoreData> highScores;
+    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private static HighScoreData highScoreData;
 
-    //high scores list from the JSON file.
-    public HighScoreManager() {
-        try {
-            this.highScores = new Gson().fromJson(new FileReader(HIGH_SCORE_FILE),
-                    new TypeToken<List<HighScoreData>>() {
-                    }.getType());
-        } catch (FileNotFoundException e) {
-            highScores = new ArrayList<>();
-        }
-
-        if (highScores == null) {
-            highScores = new ArrayList<>();
+    static {
+        File highScoreFile = new File(HIGH_SCORE_FILE);
+        if (highScoreFile.exists()) {
+            highScoreData = loadFromFile();
+            //sort high scores for testing
+            highScoreData.getScores().sort((o1, o2) -> o2.getScore().compareTo(o1.getScore()));
+        } else {
+            highScoreData = new HighScoreData();
+            saveHighScores(highScoreData);
         }
     }
 
-    //put score to the list and re-sort it.
-    public void addScore(String player, int score) {
-        highScores.add(new HighScoreData(player, score));
-        highScores.sort(Comparator.comparing(HighScoreData::getScore).reversed());
-        while (highScores.size() > 10) {
-            highScores.remove(highScores.size() - 1);
+    public static HighScoreData getHighScoreData() {
+        if (highScoreData == null) {
+            highScoreData = new HighScoreData();
+            saveHighScores(highScoreData);
         }
-        saveHighScores();
+        return highScoreData;
     }
 
-    // Save the high scores
-    private void saveHighScores() {
+    public static HighScoreData loadFromFile() {
+        File highScoreFile = new File(HIGH_SCORE_FILE);
+        if (highScoreFile.exists() && highScoreFile.length() > 0) {
+            try (FileReader reader = new FileReader(highScoreFile)) {
+                List<HighScoreData.Score> scores = gson.fromJson(reader, new com.google.gson.reflect.TypeToken<List<HighScoreData.Score>>() {}.getType());
+                HighScoreData highScoreData = new HighScoreData();
+                highScoreData.setScores(scores);
+                return highScoreData;
+            } catch (IOException | JsonSyntaxException e) {
+                e.printStackTrace();
+            }
+        }
+        return new HighScoreData(); // Return a new HighScoreData object if file doesn't exist or is empty
+    }
+
+    public static void saveHighScores(HighScoreData highScores) {
+        HighScoreManager.highScoreData = highScores;
         try (FileWriter writer = new FileWriter(HIGH_SCORE_FILE)) {
-            Gson gson = new Gson();
-            gson.toJson(highScores, writer);
+            gson.toJson(highScores.getScores(), writer);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    // sort top 10 scores
-    public List<HighScoreData> getTopScores() {
-        return highScores;
+
+    public static void resetHighScores() {
+        highScoreData = new HighScoreData();
+        saveHighScores(highScoreData);
     }
 }

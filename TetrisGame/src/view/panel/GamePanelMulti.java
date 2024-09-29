@@ -34,10 +34,12 @@ public class GamePanelMulti extends GamePanel {
         playPanelTwo = new PlayPanel(mainFrame);
         playPanelTwo.setGame(gameTwo);
 
+        // make the panel larger for each config data fieldWidth and fieldHeight
+
         setLayout(new BorderLayout());
-        setSize(mainFrame.getWidth(), mainFrame.getHeight());
-        setPreferredSize(new Dimension(mainFrame.getWidth(), mainFrame.getHeight()));
-        setMinimumSize(new Dimension(mainFrame.getWidth(), mainFrame.getHeight()));
+        setSize(mainFrame.getWidth()+200, mainFrame.getHeight());
+        setPreferredSize(new Dimension(mainFrame.getWidth()+200, mainFrame.getHeight()));
+        setMinimumSize(new Dimension(mainFrame.getWidth()+200, mainFrame.getHeight()));
         mainFrame.setTitle("Tetris Window");
 
         // Ensure GamePanel is focusable and requests focus

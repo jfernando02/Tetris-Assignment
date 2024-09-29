@@ -50,7 +50,7 @@ public class PanelsController {
         HighScoreManager highScoreManager = new HighScoreManager();
 
         // method to communicate instance of HighScoreManager to HighScorePanel.
-        HighScorePanel highScorePanel = new HighScorePanel(mainFrame, highScoreManager);
+        HighScorePanel highScorePanel = new HighScorePanel(mainFrame);
 
         mainFrame.setContentPane(highScorePanel);
         mainFrame.revalidate();

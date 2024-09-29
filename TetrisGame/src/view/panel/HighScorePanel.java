@@ -3,9 +3,10 @@ package view.panel;
 import config.HighScoreData;
 import config.HighScoreManager;
 import controller.MainFrame;
+import view.UIGenerator;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.util.List;
 
 public class HighScorePanel extends JPanel {
@@ -16,19 +17,26 @@ public class HighScorePanel extends JPanel {
 
     public HighScorePanel(MainFrame mainFrame, HighScoreManager highScoreManager) {
         this.highScoreManager = highScoreManager;
-        setLayout(null);
 
-        //background color to black
-        setBackground(Color.BLACK);
+        // layout to BorderLayout
+        setLayout(new BorderLayout());
 
-        createLabels(); // dynamically labels
+        // Title label
+        JLabel titleLabel = new JLabel("High Score", JLabel.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 30));
+        add(titleLabel, BorderLayout.NORTH);
 
-        // Back button
-        backButton = new JButton("Back");
-        backButton.setPreferredSize(new Dimension(100, 30));
-        add(backButton);
+        // score panel to hold ranks, names, and scores
+        JPanel scorePanel = new JPanel();
+        scorePanel.setLayout(null);
+        add(scorePanel, BorderLayout.CENTER);
 
-        backButton.addActionListener((ActionEvent e) -> {
+        createLabels(scorePanel);
+
+        backButton = UIGenerator.createCustomButton("Back", 700, 20);
+        add(backButton, BorderLayout.SOUTH);
+
+        backButton.addActionListener(e -> {
             mainFrame.playSound("menuKeyPress");
             mainFrame.showMainPanel();
         });
@@ -36,57 +44,57 @@ public class HighScorePanel extends JPanel {
         addComponentListener(new java.awt.event.ComponentAdapter() {
             @Override
             public void componentResized(java.awt.event.ComponentEvent e) {
-                resizeComponents();
+                resizeComponents(scorePanel);
             }
         });
-        resizeComponents();
+        resizeComponents(scorePanel);
     }
-    private void createLabels() {
+
+    // Dynamically create the labels for ranks, names, and scores
+    private void createLabels(JPanel scorePanel) {
         List<HighScoreData> highScoreData = highScoreManager.getTopScores();
 
-        //ranking labels
+        // Rank labels (1 - 10)
         for (int i = 0; i < 10; i++) {
-            labels[i] = createLabel(String.valueOf(i + 1)); // Rank label (1 to 10)
-            add(labels[i]);
+            labels[i] = createLabel(String.valueOf(i + 1));
+            scorePanel.add(labels[i]);
         }
 
-        //name labels names
         for (int i = 0; i < 10; i++) {
             if (i < highScoreData.size()) {
                 labels[10 + i] = createLabel(highScoreData.get(i).getName());
             } else {
                 labels[10 + i] = createLabel("");
             }
-            add(labels[10 + i]);
+            scorePanel.add(labels[10 + i]);
         }
-
-        // labels scores added
         for (int i = 0; i < 10; i++) {
             if (i < highScoreData.size()) {
                 labels[20 + i] = createLabel(String.valueOf(highScoreData.get(i).getScore()));
             } else {
                 labels[20 + i] = createLabel("0");
             }
-            add(labels[20 + i]);
+            scorePanel.add(labels[20 + i]);
         }
     }
 
-    // JLabel with consistent style
     private JLabel createLabel(String text) {
         JLabel label = new JLabel(text);
-        label.setFont(new Font("Times Square", Font.PLAIN, 25));
-        label.setForeground(Color.WHITE);
-        label.setSize(200, 50);
+        label.setFont(new Font("Times Square", Font.PLAIN, 50));
+        label.setForeground(Color.BLACK);
+        label.setSize(150, 50);
         return label;
     }
 
-    private void resizeComponents() {
-        int width = getWidth();
-        int height = getHeight();
+    private void resizeComponents(JPanel scorePanel) {
+        int width = scorePanel.getWidth();
+        int height = scorePanel.getHeight();
         int fontSize = Math.max(20, height / 20);
+        int rankToNameDistance = 50;
+        int nameToScoreDistance = 500;
 
         for (JLabel label : labels) {
-            if (label != null) { // Check for null
+            if (label != null) { // Ensure labels exist
                 label.setFont(new Font("Times Square", Font.PLAIN, fontSize));
             }
         }
@@ -96,13 +104,8 @@ public class HighScorePanel extends JPanel {
             int y = 50 + i * (fontSize + 20);
 
             labels[i].setLocation(x, y);
-            labels[10 + i].setLocation(x + 100, y);
-            labels[20 + i].setLocation(x + 300, y);
-        }
-
-        //back button at the bottom
-        if (backButton != null) {
-            backButton.setBounds((width - 100) / 2, height - 70, 100, 30);
+            labels[10 + i].setLocation(x + rankToNameDistance, y);
+            labels[20 + i].setLocation(x + rankToNameDistance + nameToScoreDistance, y);
         }
     }
 }

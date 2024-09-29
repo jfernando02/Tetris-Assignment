@@ -48,7 +48,6 @@ public class HighScoreManager {
             e.printStackTrace();
         }
     }
-
     // sort top 10 scores
     public List<HighScoreData> getTopScores() {
         return highScores;

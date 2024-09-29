@@ -54,13 +54,12 @@ public class HighScorePanel extends JPanel {
     private void createLabels(JPanel scorePanel) {
         List<HighScoreData> highScoreData = highScoreManager.getTopScores();
 
-        // Rank labels (1 to 10)
+        // Rank labels (1 - 10)
         for (int i = 0; i < 10; i++) {
-            labels[i] = createLabel(String.valueOf(i + 1)); // Rank label (1 to 10)
+            labels[i] = createLabel(String.valueOf(i + 1));
             scorePanel.add(labels[i]);
         }
 
-        // Name labels
         for (int i = 0; i < 10; i++) {
             if (i < highScoreData.size()) {
                 labels[10 + i] = createLabel(highScoreData.get(i).getName());
@@ -69,8 +68,6 @@ public class HighScorePanel extends JPanel {
             }
             scorePanel.add(labels[10 + i]);
         }
-
-        // Score labels
         for (int i = 0; i < 10; i++) {
             if (i < highScoreData.size()) {
                 labels[20 + i] = createLabel(String.valueOf(highScoreData.get(i).getScore()));
@@ -81,21 +78,19 @@ public class HighScorePanel extends JPanel {
         }
     }
 
-    // Helper method to create JLabels with consistent styling
     private JLabel createLabel(String text) {
         JLabel label = new JLabel(text);
         label.setFont(new Font("Times Square", Font.PLAIN, 50));
         label.setForeground(Color.BLACK);
-        label.setSize(150, 50); // Set size for proper display
+        label.setSize(150, 50);
         return label;
     }
 
-    // Resize and reposition components based on the panel size
     private void resizeComponents(JPanel scorePanel) {
         int width = scorePanel.getWidth();
         int height = scorePanel.getHeight();
-        int fontSize = Math.max(20, height / 20);// Dynamically adjust font size
-        int rankToNameDistance = 50;  // Distance between rank and name
+        int fontSize = Math.max(20, height / 20);
+        int rankToNameDistance = 50;
         int nameToScoreDistance = 500;
 
         for (JLabel label : labels) {
@@ -104,14 +99,13 @@ public class HighScorePanel extends JPanel {
             }
         }
 
-        // Position labels (rank, name, score) in rows
         for (int i = 0; i < 10; i++) {
             int x = 50;
             int y = 50 + i * (fontSize + 20);
 
-            labels[i].setLocation(x, y);               // Rank label
-            labels[10 + i].setLocation(x + rankToNameDistance, y); // Name label (add custom distance)
-            labels[20 + i].setLocation(x + rankToNameDistance + nameToScoreDistance, y);    // Score label
+            labels[i].setLocation(x, y);
+            labels[10 + i].setLocation(x + rankToNameDistance, y);
+            labels[20 + i].setLocation(x + rankToNameDistance + nameToScoreDistance, y);
         }
     }
 }

@@ -73,7 +73,6 @@ public class PlayPanel extends JPanel {
         scoreLabel.setFont(labelFont);
         linesClearedLabel = new JLabel("Lines Erased: " + player.getLinesCleared(), JLabel.CENTER);
         linesClearedLabel.setFont(labelFont);
-        //label for thread period
         periodLabel = new JLabel("Period: " + game.getPeriod(), JLabel.CENTER);
         periodLabel.setFont(labelFont);
 
@@ -94,7 +93,6 @@ public class PlayPanel extends JPanel {
         playerInfoPanel.add(scoreLabel, infoGbc);
         infoGbc.gridy++;
         playerInfoPanel.add(linesClearedLabel, infoGbc);
-        // add the period as info too
         infoGbc.gridy++;
         playerInfoPanel.add(periodLabel, infoGbc);
         infoGbc.gridy++;
@@ -103,7 +101,11 @@ public class PlayPanel extends JPanel {
         playerInfoPanel.add(nextPieceFieldPane, infoGbc);
 
         // Set preferred size and make the panel transparent
-        playerInfoPanel.setPreferredSize(new Dimension(mainFrame.getConfigData().getFieldWidth() * 15+4, mainFrame.getConfigData().getFieldHeight() * 15));
+        int fieldPaneWidth = mainFrame.getConfigData().getFieldWidth() * 15;
+        if (mainFrame.getConfigData().getFieldWidth() < 10) {
+            fieldPaneWidth = 20*10;
+        }
+        playerInfoPanel.setPreferredSize(new Dimension(fieldPaneWidth, mainFrame.getConfigData().getFieldHeight() * 15));
         playerInfoPanel.setOpaque(true);
 
         // Add a blue border around the player info section

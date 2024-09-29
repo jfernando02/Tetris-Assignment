@@ -12,6 +12,8 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 import java.io.IOException;
 
+// Singleton pattern for thread safety with lazy initialisation
+// MainFrame is the facade class that controls most of the game
 public class MainFrame extends MainFrameBase {
     private static MainFrame instance;
 

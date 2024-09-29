@@ -273,7 +273,7 @@ public class GameDefault implements Game {
                 case KeyEvent.VK_DOWN:
                     System.out.println(playerName+": Down key pressed");
                     activeShape.softDrop();
-                    activeShape.softDrop(); //TODO: review down speed logic
+                    activeShape.softDrop();
                     break;
                 case KeyEvent.VK_UP:
                     System.out.println(playerName+": Up key pressed");

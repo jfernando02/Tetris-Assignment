@@ -65,7 +65,7 @@ public class GameController {
                 synchronized (game) {
                     game.play();
                     if (game.getPlayer().getPlayerType().equals("AI") || game.getPlayer().getPlayerType().equals("External")) { // FOR SERVER
-                        game.update(0);
+                        game.update(0); // For server communication or AI updates
                     }
                 }
             }

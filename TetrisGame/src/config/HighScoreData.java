@@ -11,7 +11,7 @@ public class HighScoreData {
         this.scores = new ArrayList<>();
         // add 10 empty scores
         for (int i = 0; i < 10; i++) {
-            this.scores.add(new Score("", 0));
+            this.scores.add(new Score("", 0, ""));
         }
     }
 
@@ -23,8 +23,8 @@ public class HighScoreData {
         this.scores = scores;
     }
 
-    public void addScore(String name, Integer score) {
-        this.scores.add(new Score(name, score));
+    public void addScore(String name, Integer score, String playerType) {
+        this.scores.add(new Score(name, score, playerType));
         this.scores.sort(Comparator.comparing(Score::getScore).reversed());
         while (this.scores.size() > 10) {
             this.scores.remove(this.scores.size() - 1);
@@ -47,18 +47,16 @@ public class HighScoreData {
     public static class Score {
         private String name;
         private Integer score;
+        private String playerType;
 
-        public Score(String name, Integer score) {
+        public Score(String name, Integer score, String playerType) {
             this.name = name;
             this.score = score;
+            this.playerType = playerType;
         }
 
         public String getName() {
             return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
         }
 
         public Integer getScore() {
@@ -67,6 +65,10 @@ public class HighScoreData {
 
         public void setScore(Integer score) {
             this.score = score;
+        }
+
+        public String getPlayerType() {
+            return playerType;
         }
 
         @Override

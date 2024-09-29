@@ -99,6 +99,7 @@ public class GamePanel extends JPanel {
         keyListenerMove();
     }
 
+
     //Thread for listening to pause/stop
     public void keyListenerOptions() {
         addKeyListener(new KeyAdapter() {

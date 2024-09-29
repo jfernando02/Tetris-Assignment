@@ -138,11 +138,14 @@ public class GameDefault implements Game {
         mainFrame.pauseGame();
 
         if(mainFrame.getHighScoreData().isTopTenScore(player.getScore()) && player.getScore() > 0) {
-            String playerName = JOptionPane.showInputDialog("Top 10 score! Enter your name if you wish to be on the leaderboard:");
-            // Add the score to the high score data
-            mainFrame.getHighScoreData().addScore(playerName, player.getScore());
-            // Save new score to scores.json
-            mainFrame.saveHighScoreData();
+            String playerName = JOptionPane.showInputDialog(player.getName() + " Score: " + player.getScore() +
+                    " is a top 10 score! Enter your name to add to the high scores:");
+            if(playerName != null && playerName.length() > 0) {
+                // Add the score to the high score data
+                mainFrame.getHighScoreData().addScore(playerName, player.getScore(), player.getPlayerType());
+                // Save new score to scores.json
+                mainFrame.saveHighScoreData();
+            }
         }
 
 

@@ -13,7 +13,7 @@ public class HighScorePanel extends JPanel {
 
     private JButton backButton;
     private JButton resetButton;
-    private JLabel[] labels = new JLabel[33]; // 30 for scores, 3 for headers
+    private JLabel[] labels = new JLabel[50]; // 40 for scores, 4 for headers
     private MainFrame mainFrame;
 
     public HighScorePanel(MainFrame mainFrame) {
@@ -42,7 +42,7 @@ public class HighScorePanel extends JPanel {
 
         add(northPanel, BorderLayout.NORTH); // Add the north panel to the main layout
 
-        // Score panel to hold ranks, names, and scores
+        // Score panel to hold ranks, names, player types, and scores
         JPanel scorePanel = new JPanel();
         scorePanel.setLayout(new BoxLayout(scorePanel, BoxLayout.Y_AXIS)); // Vertical alignment
         scorePanel.setOpaque(false); // Make the score panel transparent
@@ -65,47 +65,57 @@ public class HighScorePanel extends JPanel {
         });
     }
 
-    // Dynamically create the labels for headers, ranks, names, and scores
+    // Dynamically create the labels for headers, ranks, names, player types, and scores
     private void createLabels(JPanel scorePanel) {
-        // Header panel for the three columns (Ranking, Name, Score)
-        JPanel headerPanel = new JPanel(new GridLayout(1, 3));
+        // Header panel for the four columns (Ranking, Name, Player Type, Score)
+        JPanel headerPanel = new JPanel(new GridLayout(1, 4));
         headerPanel.setOpaque(false); // Make the header panel transparent
         labels[0] = createLabel("Ranking", JLabel.CENTER);
         labels[1] = createLabel("Name", JLabel.LEFT);
-        labels[2] = createLabel("Score", JLabel.LEFT);
+        labels[2] = createLabel("Player Type", JLabel.LEFT);
+        labels[3] = createLabel("Score", JLabel.LEFT);
         headerPanel.add(labels[0]);
         headerPanel.add(labels[1]);
         headerPanel.add(labels[2]);
+        headerPanel.add(labels[3]);
         scorePanel.add(headerPanel); // Add the header to the score panel
 
         List<HighScoreData.Score> highScoreData = mainFrame.getHighScoreData().getScores();
 
         Border bottomBorder = BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY); // Slight line (bottom only)
 
-        // For each rank, name, and score, create a new row
+        // For each rank, name, player type, and score, create a new row
         for (int i = 0; i < 10; i++) {
-            JPanel rowPanel = new JPanel(new GridLayout(1, 3)); // Create a row panel with 3 columns
+            JPanel rowPanel = new JPanel(new GridLayout(1, 4)); // Create a row panel with 4 columns
             rowPanel.setOpaque(false); // Make the row panel transparent
 
             // Rank label
-            labels[3 + i] = createLabel(String.valueOf(i + 1), JLabel.CENTER);
-            rowPanel.add(labels[3 + i]);
+            labels[4 + i] = createLabel(String.valueOf(i + 1), JLabel.CENTER);
+            rowPanel.add(labels[4 + i]);
 
             // Name label
             if (i < highScoreData.size()) {
-                labels[13 + i] = createLabel(highScoreData.get(i).getName(), JLabel.LEFT);
+                labels[14 + i] = createLabel(highScoreData.get(i).getName(), JLabel.LEFT);
             } else {
-                labels[13 + i] = createLabel("", JLabel.LEFT);
+                labels[14 + i] = createLabel("", JLabel.LEFT);
             }
-            rowPanel.add(labels[13 + i]);
+            rowPanel.add(labels[14 + i]);
+
+            // Player Type label
+            if (i < highScoreData.size()) {
+                labels[24 + i] = createLabel(highScoreData.get(i).getPlayerType(), JLabel.LEFT);
+            } else {
+                labels[24 + i] = createLabel("", JLabel.LEFT);
+            }
+            rowPanel.add(labels[24 + i]);
 
             // Score label
             if (i < highScoreData.size()) {
-                labels[23 + i] = createLabel(String.valueOf(highScoreData.get(i).getScore()), JLabel.LEFT);
+                labels[34 + i] = createLabel(String.valueOf(highScoreData.get(i).getScore()), JLabel.LEFT);
             } else {
-                labels[23 + i] = createLabel("0", JLabel.LEFT);
+                labels[34 + i] = createLabel("0", JLabel.LEFT);
             }
-            rowPanel.add(labels[23 + i]);
+            rowPanel.add(labels[34 + i]);
 
             // Add the row panel to the main score panel
             scorePanel.add(rowPanel);

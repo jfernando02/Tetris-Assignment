@@ -3,6 +3,7 @@ package model.gamefactory;
 import controller.MainFrame;
 import view.panel.GamePanel;
 
+import javax.swing.*;
 import java.awt.event.KeyEvent;
 
 public class GameOne extends GameDefault {
@@ -10,6 +11,7 @@ public class GameOne extends GameDefault {
     public GameOne(MainFrame mainFrame, GamePanel gamePanel, String playerName) {
         super(mainFrame, gamePanel, playerName);
     }
+
 
     // If second player is a real player:
     @Override

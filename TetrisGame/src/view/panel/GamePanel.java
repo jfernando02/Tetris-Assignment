@@ -7,15 +7,13 @@ import view.UIGenerator;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class GamePanel extends JPanel {
     protected Game game;
+    private Dimension originalSize;
     protected MainFrame mainFrame;
     protected JButton startButton;
     protected JButton pauseButton;
@@ -89,6 +87,8 @@ public class GamePanel extends JPanel {
         backButton.addActionListener(e -> {
             mainFrame.playSound("menuKeyPress");
             stopGame();
+            //reset size
+            resetSize();
         });
         background.add(backButton, BorderLayout.SOUTH);
 
@@ -98,6 +98,42 @@ public class GamePanel extends JPanel {
         //Listens for player/AI input
         keyListenerMove();
     }
+
+    public void adjustFrameSize() {
+        originalSize = mainFrame.getSize();
+        Dimension preferredSize = getPreferredSize();
+        mainFrame.setPreferredSize(preferredSize);
+        mainFrame.setMinimumSize(preferredSize);
+        mainFrame.pack();
+
+        mainFrame.addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                Dimension currentSize = mainFrame.getSize();
+                if (currentSize.width < preferredSize.width || currentSize.height < preferredSize.height) {
+                    mainFrame.setSize(Math.max(currentSize.width, preferredSize.width),
+                            Math.max(currentSize.height, preferredSize.height));
+                }
+            }
+        });
+    }
+
+    // In GamePanel.java
+    public void resetSize() {
+        // Remove all component listeners to avoid interference
+        for (ComponentListener listener : mainFrame.getComponentListeners()) {
+            mainFrame.removeComponentListener(listener);
+        }
+
+        // Reset the frame size to the original size
+        if (originalSize != null) {
+            mainFrame.setPreferredSize(originalSize);
+            mainFrame.setMinimumSize(originalSize);
+            mainFrame.setSize(originalSize);
+            mainFrame.pack();
+        }
+    }
+
 
 
     //Thread for listening to pause/stop
@@ -192,6 +228,7 @@ public class GamePanel extends JPanel {
             mainFrame.resetGames();
             dialog.dispose();
             //go to main panel
+            resetSize();
             mainFrame.showMainPanel();
             //reset field pane configuration to default (requirement)
             mainFrame.resetFieldPaneConfig();

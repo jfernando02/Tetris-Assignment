@@ -72,37 +72,12 @@ public class MainFrame extends MainFrameBase {
     public void initSoloGame() {
         // Spawn the blocks and initialize the game panel for solo mode
         batchSpawnBlocks();
-        gamePanel = new GamePanel(this);
+        this.gamePanel = new GamePanel(this);
         this.gameOne = gameFactory.createGame(this, gamePanel, 1);
 
         this.gameLogicOne = new GameController(this, gameOne);
-        gamePanel.setGame(gameOne, null);
-
-        // Get the preferred size of the game panel
-        Dimension preferredSize = gamePanel.getPreferredSize();
-
-        // Resize the main frame to accommodate the new game panel size
-        setPreferredSize(preferredSize);
-        setMinimumSize(preferredSize); // Set the minimum size of the frame
-
-        pack(); // Adjust the frame to fit the preferred size of its components
-
-        // Add a ComponentListener to ensure the frame cannot be resized smaller than the minimum size
-        addComponentListener(new java.awt.event.ComponentAdapter() {
-            @Override
-            public void componentResized(java.awt.event.ComponentEvent evt) {
-                // Get the current size of the frame
-                Dimension currentSize = getSize();
-
-                // Ensure the width and height are not smaller than the minimum size
-                if (currentSize.width < preferredSize.width || currentSize.height < preferredSize.height) {
-                    // Set the frame size to the minimum size if it's smaller
-                    setSize(Math.max(currentSize.width, preferredSize.width),
-                            Math.max(currentSize.height, preferredSize.height));
-                }
-            }
-        });
-        setResizable(true); // Allow the frame to be resizable
+        this.gamePanel.setGame(gameOne, null);
+        this.gamePanel.adjustFrameSize();
     }
 
 
@@ -119,32 +94,7 @@ public class MainFrame extends MainFrameBase {
         this.gameLogicTwo = new GameController(this, gameTwo);
 
         this.gamePanel.setGame(gameOne, gameTwo);
-
-        // Get the preferred size of the game panel
-        Dimension preferredSize = gamePanel.getPreferredSize();
-
-        // Resize the main frame to accommodate the new game panel size
-        setPreferredSize(preferredSize);
-        setMinimumSize(preferredSize); // Set the minimum size of the frame
-
-        pack(); // Adjust the frame to fit the preferred size of its components
-
-        // Add a ComponentListener to ensure the frame cannot be resized smaller than the minimum size
-        addComponentListener(new java.awt.event.ComponentAdapter() {
-            @Override
-            public void componentResized(java.awt.event.ComponentEvent evt) {
-                // Get the current size of the frame
-                Dimension currentSize = getSize();
-
-                // Ensure the width and height are not smaller than the minimum size
-                if (currentSize.width < preferredSize.width || currentSize.height < preferredSize.height) {
-                    // Set the frame size to the minimum size if it's smaller
-                    setSize(Math.max(currentSize.width, preferredSize.width),
-                            Math.max(currentSize.height, preferredSize.height));
-                }
-            }
-        });
-        setResizable(true); // Allow the frame to be resizable
+        this.gamePanel.adjustFrameSize();
     }
 
 

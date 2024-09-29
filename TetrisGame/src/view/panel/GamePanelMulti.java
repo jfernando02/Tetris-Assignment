@@ -12,6 +12,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
+import java.awt.Toolkit;
 
 public class GamePanelMulti extends GamePanel {
     private Game gameOne;
@@ -34,12 +35,19 @@ public class GamePanelMulti extends GamePanel {
         playPanelTwo = new PlayPanel(mainFrame);
         playPanelTwo.setGame(gameTwo);
 
-        // make the panel larger for each config data fieldWidth and fieldHeight
-
+        // adjusts the size so the board field panels won't collapse on themselves
         setLayout(new BorderLayout());
-        setSize(mainFrame.getWidth()+200, mainFrame.getHeight());
-        setPreferredSize(new Dimension(mainFrame.getWidth()+200, mainFrame.getHeight()));
-        setMinimumSize(new Dimension(mainFrame.getWidth()+200, mainFrame.getHeight()));
+        // if the mainFrame is less than max width -200:
+        if (mainFrame.getWidth() < Toolkit.getDefaultToolkit().getScreenSize().width - 200) {
+            setSize(mainFrame.getWidth() + 200, mainFrame.getHeight());
+            setPreferredSize(new Dimension(mainFrame.getWidth() + 200, mainFrame.getHeight()));
+            setMinimumSize(new Dimension(mainFrame.getWidth() + 200, mainFrame.getHeight()));
+        } else {
+            setSize(mainFrame.getWidth(), mainFrame.getHeight());
+            setPreferredSize(new Dimension(mainFrame.getWidth(), mainFrame.getHeight()));
+            setMinimumSize(new Dimension(mainFrame.getWidth(), mainFrame.getHeight()));
+        }
+
         mainFrame.setTitle("Tetris Window");
 
         // Ensure GamePanel is focusable and requests focus
@@ -99,6 +107,7 @@ public class GamePanelMulti extends GamePanel {
         backButton.addActionListener(e -> {
             mainFrame.playSound("menuKeyPress");
             stopGame();
+            resetSize();
         });
         background.add(backButton, BorderLayout.SOUTH);
 

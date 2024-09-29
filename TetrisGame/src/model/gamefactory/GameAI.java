@@ -109,6 +109,15 @@ public class GameAI extends GameDefault {
             return;
         }
 
+        if(mainFrame.getHighScoreData().isTopTenScore(player.getScore()) && player.getScore() > 0) {
+            if(playerName != null && playerName.length() > 0) {
+                // Add the score to the high score data
+                mainFrame.getHighScoreData().addScore(player.getName(), player.getScore(), player.getPlayerType());
+                // Save new score to scores.json
+                mainFrame.saveHighScoreData();
+            }
+        }
+
         //new JDIalog for game over to ask if they're sure if they want to quit
         JDialog dialog = new JDialog();
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -118,9 +127,17 @@ public class GameAI extends GameDefault {
         //centre the dialog
         dialog.setLocationRelativeTo(null);
 
+        int result;
+        String message;
         //ask if they want to quit the game
-        int result = JOptionPane.showConfirmDialog(dialog,
-                "Game Over! Do you want to go to the main menu?", "Game Over", JOptionPane.YES_NO_OPTION);
+        if (mainFrame.getConfigData().isExtendedMode()) {
+            //message declares who won
+            message = "Game Over! " + player.getName() + " won! Do you want to go to the main menu?";
+        } else {
+            message = "Game Over! Do you want to go to the main menu?";
+        }
+        result = JOptionPane.showConfirmDialog(dialog, message);
+
 
         if (result == JOptionPane.YES_OPTION) {
             System.out.println("Game Object said: going to main menu");

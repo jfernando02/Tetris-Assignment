@@ -95,7 +95,7 @@ class ClientHandler implements Runnable {
             // Logic for making better moves
             int[] columnHeights = calculateColumnHeights(cellsArray, width, height);
             int bestColumn = getBestColumn(columnHeights);
-            int bestRotation = random.nextInt(4); // Currently still random
+            int bestRotation = getRotation(currentShapeArray);
 
             return String.format("RotationCount: %d, xPosition: %d", bestRotation, bestColumn);
 
@@ -131,5 +131,36 @@ class ClientHandler implements Runnable {
             }
         }
         return bestColumn;
+    }
+
+    public static int getRotation(int[][] currentShapeArray) { // Since we're looking at empty columns to determine placement, rotate shapes to suit
+        int[] xCoords = currentShapeArray[0];
+        int[] yCoords = currentShapeArray[1];
+
+        // Find the width diff
+        int minX = Integer.MAX_VALUE;
+        int maxX = Integer.MIN_VALUE;
+        for (int x : xCoords) {
+            minX = Math.min(minX, x);
+            maxX = Math.max(maxX, x);
+        }
+        int width = maxX - minX;
+
+        // Find the height diff
+        int minY = Integer.MAX_VALUE;
+        int maxY = Integer.MIN_VALUE;
+        for (int y : yCoords) {
+            minY = Math.min(minY, y);
+            maxY = Math.max(maxY, y);
+        }
+        int height = maxY - minY;
+
+        if (width > height) {
+            return 1; // Rotate to Vertical
+        } else if (height > width) {
+            return 0; // Maintain Verticality
+        } else {
+            return random.nextInt(4); // Randomise for Other Shapes e.g. 2x2 block
+        }
     }
 }
